@@ -103,16 +103,16 @@ class Handler:
         # Locate Images and assemble FSR-Command
         self.files = ""
         self.filelist = os.listdir(self.tmppath)
+        self.filelist.pop(0)
         self.number = 0
         for self.file in self.filelist:
             self.number += 1
             if self.file == "":
                 pass
             else:
-                self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{self.number}.jpg"
+                self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{self.number}.jpg "
 
         self.maxlength = 32000
-        print(self.files)
         if len(self.files) > self.maxlength:
             self.fileout = []
             self.fileout.append(self.files[:self.maxlength])
