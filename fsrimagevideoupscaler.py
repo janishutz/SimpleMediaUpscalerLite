@@ -21,8 +21,8 @@ handler = bin.handler.Handler()
 class HomeWindow(Gtk.Window):
     def __init__(self):
         super().__init__(title="Test")
-        self.filechooserdialog = Gtk.FileChooserDialog(title="Choose input file", action=Gtk.FileChooserAction.OPEN)
-        self.filechooserdialog_save = Gtk.FileChooserDialog(title="Choose output file", action=Gtk.FileChooserAction.SAVE)
+        self.save_file = ""
+        self.open_file = ""
 
         # Spawn box
         self.box = Gtk.Box(spacing=6)
@@ -54,6 +54,7 @@ class HomeWindow(Gtk.Window):
         self.response = self.filechooserdialog.run()
         if self.response == Gtk.ResponseType.OK:
             print("ok, selected file:", self.filechooserdialog.get_filename())
+            self.open_file = self.filechooserdialog.get_filename()
         elif self.response == Gtk.ResponseType.CANCEL:
             print("cancel")
         self.filechooserdialog.destroy()
@@ -61,7 +62,7 @@ class HomeWindow(Gtk.Window):
     def opfilechooser_clicked(self, widget):
         self.filechooserdialog_save = Gtk.FileChooserDialog(title="Choose output file", action=Gtk.FileChooserAction.SAVE)
         Gtk.FileChooser.set_do_overwrite_confirmation(self.filechooserdialog_save, True)
-        Gtk.FileChooser.set_filename(self.filechooserdialog_save, "Test")
+        Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "video.mp4")
         self.filechooserdialog_save.add_buttons(
             Gtk.STOCK_CANCEL,
             Gtk.ResponseType.CANCEL,
@@ -71,23 +72,26 @@ class HomeWindow(Gtk.Window):
         self.response = self.filechooserdialog_save.run()
         if self.response == Gtk.ResponseType.OK:
             print("ok, selected file:", self.filechooserdialog_save.get_filename())
+            self.save_file = self.filechooserdialog_save.get_filename()
         elif self.response == Gtk.ResponseType.CANCEL:
             print("cancel")
         self.filechooserdialog_save.destroy()
 
     def start_clicked(self, widget):
-        print(str(Gtk.FileChooser.get_filename(self.filechooserdialog)))
-        if str(Gtk.FileChooser.get_filename(self.filechooserdialog)) != "" and str(Gtk.FileChooser.get_filename(self.filechooserdialog_save)) != "":
-            self.scaler = multiprocessing.Process(name="scaler",
-                                                  target=handler.handler,
-                                                  args=("./bin/lib/FidelityFX_CLI.exe",
-                                                        "/mnt/storage/SORTED/Videos/OBS_Rec/Behalten/2019-12-19 18-21-36.mp4",
-                                                        "default",
-                                                        "Quality",
-                                                        "./test.mp4",
-                                                        "./bin/lib/ffmpeg.exe")
-                                                  )
-            self.scaler.start()
+        if str(self.open_file) != "" and str(self.save_file) != "":
+            print("ok")
+            self.go = True
+            if self.go:
+                self.scaler = multiprocessing.Process(name="scaler",
+                                                      target=handler.handler,
+                                                      args=("./bin/lib/FidelityFX_CLI.exe",
+                                                            self.open_file,
+                                                            "default",
+                                                            "Quality",
+                                                            self.save_file,
+                                                            "./bin/lib/ffmpeg.exe")
+                                                      )
+                self.scaler.start()
         else:
             print("no file specified")
 
