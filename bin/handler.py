@@ -7,10 +7,12 @@
 #
 ###########################################################
 
+
 import os
 import sys
 import ffmpeg
 import configparser
+import time
 
 # Loading the config file to get user preferred temp path
 config = configparser.ConfigParser()
@@ -104,25 +106,55 @@ class Handler:
         self.files = ""
         self.filelist = os.listdir(self.tmppath)
         self.filelist.pop(0)
+        self.filelist.reverse()
         self.number = 0
         for self.file in self.filelist:
             self.number += 1
-            if self.file == "":
-                pass
-            else:
-                self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{self.number}.jpg "
-
+            self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{str(self.number).zfill(4)}.jpg "
         self.maxlength = 32000
+        self.pos = 1
+
+        # Refactoring of commands that are longer than 32K characters
         if len(self.files) > self.maxlength:
+            print("shrinking command length")
             self.fileout = []
-            self.fileout.append(self.files[:self.maxlength])
-            self.filesopt = self.files[:self.maxlength]
+
+            while self.files[self.maxlength - self.pos:self.maxlength - self.pos + 1] != " ":
+                self.pos += 1
+            self.file_processing = self.files[:self.maxlength - self.pos]
+            if self.file_processing[len(self.file_processing) - 13:len(self.file_processing) - 8] == "thumb":
+                self.pos += 5
+            else:
+                pass
+            while self.files[self.maxlength - self.pos:self.maxlength - self.pos + 1] != " ":
+                self.pos += 1
+            self.fileout.append(self.files[:self.maxlength - self.pos])
+            self.filesopt = self.files[self.maxlength - self.pos:]
             self.posx = 0
             self.posy = self.maxlength
-            while len(self.filesopt) > self.maxlength:
-                self.posx += self.maxlength
-                self.posy += self.maxlength
-                self.fileout.append(self.files[self.posx:self.posy])
+
+            # Command refactoring for commands that are longer than 64K characters
+            if len(self.filesopt) > self.maxlength:
+                while len(self.filesopt) > self.maxlength:
+                    self.posx += self.maxlength - self.pos
+                    self.posy += self.maxlength - self.pos
+                    self.pos = 1
+                    while self.files[self.posy - self.pos:self.posy - self.pos + 1] != " ":
+                        self.pos += 1
+                    self.file_processing = self.files[self.posx:self.posy - self.pos]
+                    if self.file_processing[len(self.file_processing) - 13:len(self.file_processing) - 8] == "thumb":
+                        self.pos += 5
+                    else:
+                        pass
+                    while self.files[self.posy - self.pos:self.posy - self.pos + 1] != " ":
+                        self.pos += 1
+
+                    self.file_processing = self.files[self.posx:self.posy - self.pos]
+                    self.fileout.append(self.file_processing)
+                    self.filesopt = self.files[self.posy - self.pos:]
+                self.fileout.append(self.filesopt)
+            else:
+                self.fileout.append(self.files[self.maxlength - self.pos:])
         else:
             self.fileout.append(self.files)
         print("filepath assembled")
@@ -133,7 +165,9 @@ class Handler:
             pass
 
         # Upscaling images
-        for self.files_handle in self.fileout:
+        print("\n\n\nUpscaling images... \n\n\n")
+        while self.fileout != []:
+            self.files_handle = self.fileout.pop(0)
             if quality_mode == "default":
                 if self.os_type == "linux":
                     self.command = f"wine {fsrpath} -QualityMode {quality_setting} {self.files_handle}"
@@ -151,10 +185,15 @@ class Handler:
                     else:
                         print("OS CURRENTLY UNSUPPORTED!")
                         return False
-            print(self.command)
+            print(self.command, "\n\n\nCOMMAND to EXECUTE\n\n\n")
             os.system(self.command)
+            print("Finished upscaling this section.")
+            time.sleep(3)
 
         # get Video's audio
+        print("Retrieving Video's audio to append")
+        os.remove(f"{self.tmppath}audio.aac")
+        os.remove(f"{output_path}")
         if self.os_type == "linux":
             self.command = f"ffmpeg -i {self.filepath} -vn -acodec copy {self.tmppath}audio.aac"
         elif self.os_type == "win32":
@@ -162,3 +201,17 @@ class Handler:
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
+        os.system(self.command)
+
+        # reassemble Video
+        print("Reassembling Video... with framerate @", self.framerate)
+        if self.os_type == "linux":
+            self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%04d.jpg {output_path} -i {self.tmppath}audio.aac"
+        elif self.os_type == "win32":
+            self.command = f"{ffmpegpath} -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%04d.jpg {output_path} -i {self.tmppath}audio.aac"
+        else:
+            print("OS CURRENTLY UNSUPPORTED!")
+            return False
+        os.system(self.command)
+
+        print("\n\n\n DONE \n\n\n\n")
