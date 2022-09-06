@@ -52,7 +52,7 @@ class HomeWindow(Gtk.Window):
 
         # Title
         self.title = Gtk.Label(label="Test")
-        self.title.set_markup("<big>FSR Image & Video Upscaler</big>")
+        self.title.set_text("FSR Image & Video Upscaler")
 
         self.sub_box.pack_start(self.box, True, True, 30)
         self.main_box.pack_start(self.title, True, True, 0)
