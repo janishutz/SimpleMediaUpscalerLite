@@ -25,23 +25,39 @@ class HomeWindow(Gtk.Window):
         self.open_file = ""
 
         # Spawn box
-        self.box = Gtk.Box(spacing=6)
-        self.add(self.box)
+        self.main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.sub_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+
+        # Headerbar
+        self.hb = Gtk.HeaderBar()
+        self.hb.set_show_close_button(True)
+        self.hb.props.title = "FSR Image & Video Upscaler"
+        self.set_titlebar(self.hb)
 
         # Create filechooser button
         self.filechoosebutton = Gtk.Button(label="Choose Input File")
         self.filechoosebutton.connect("clicked", self.filechooser_clicked)
-        self.box.pack_start(self.filechoosebutton, True, True, 10)
+        self.box.pack_start(self.filechoosebutton, True, True, 0)
 
         # Create output filechooser button
         self.opfchooserbutton = Gtk.Button(label="Choose Output File")
         self.opfchooserbutton.connect("clicked", self.opfilechooser_clicked)
-        self.box.pack_start(self.opfchooserbutton, True, True, 10)
+        self.box.pack_start(self.opfchooserbutton, True, True, 0)
 
         # Create start button
         self.start_button = Gtk.Button(label="Start upscaling")
         self.start_button.connect("clicked", self.start_clicked)
-        self.box.pack_start(self.start_button, True, True, 10)
+        self.box.pack_start(self.start_button, True, True, 0)
+
+        # Title
+        self.title = Gtk.Label(label="Test")
+        self.title.set_markup("<big>FSR Image & Video Upscaler</big>")
+
+        self.sub_box.pack_start(self.box, True, True, 30)
+        self.main_box.pack_start(self.title, True, True, 0)
+        self.main_box.pack_end(self.sub_box, True, True, 20)
+        self.add(self.main_box)
 
     def filechooser_clicked(self, widget):
         self.filechooserdialog = Gtk.FileChooserDialog(title="Choose input file", action=Gtk.FileChooserAction.OPEN)
