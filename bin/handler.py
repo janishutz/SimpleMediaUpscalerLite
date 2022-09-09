@@ -47,7 +47,7 @@ class Handler:
         if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv":
             print("upscaling video")
             self.video_scaling(ffmpegpath, fsrpath, filepath, quality_mode, quality_setting, output_path)
-        elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg":
+        elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg" or str(filepath)[len(filepath) - 5:] == ".jpeg":
             print("upscaling image")
             self.photo_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path)
         else:
@@ -192,8 +192,11 @@ class Handler:
 
         # get Video's audio
         print("Retrieving Video's audio to append")
-        os.remove(f"{self.tmppath}audio.aac")
-        os.remove(f"{output_path}")
+        try:
+            os.remove(f"{self.tmppath}audio.aac")
+            os.remove(f"{output_path}")
+        except FileNotFoundError:
+            pass
         if self.os_type == "linux":
             self.command = f"ffmpeg -i {self.filepath} -vn -acodec copy {self.tmppath}audio.aac"
         elif self.os_type == "win32":
