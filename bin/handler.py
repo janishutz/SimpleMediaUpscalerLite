@@ -26,7 +26,7 @@ class Handler:
         self.tmppath = ""
         self.videometa = {}
 
-    def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path, ffmpegpath):
+    def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path):
         # Function to be called when using this class as this function automatically determines if file is video or image
         if self.os_type == "linux":
             self.tmppath = config["PathSettings"]["tmpPathLinux"]
@@ -36,7 +36,7 @@ class Handler:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
         self.tmppath += "fsru/"
-        print(self.tmppath)
+        self.ffmpegpath = config["PathSettings"]["ffmpeg"]
         # checking for spaces in filepath (for use with terminal commands)
         self.filepath = ""
         for self.letter in filepath:
@@ -48,7 +48,7 @@ class Handler:
         # Determining filetype
         if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv":
             print("upscaling video")
-            self.video_scaling(ffmpegpath, fsrpath, filepath, quality_mode, quality_setting, output_path)
+            self.video_scaling(self.ffmpegpath, fsrpath, filepath, quality_mode, quality_setting, output_path)
         elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg" or str(filepath)[len(filepath) - 5:] == ".jpeg":
             print("upscaling image")
             self.photo_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path)
