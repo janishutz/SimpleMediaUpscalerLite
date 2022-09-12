@@ -22,20 +22,6 @@ checks = bin.checks.Checks()
 handler = bin.handler.Handler()
 
 
-class ProgressIndicator(Gtk.Dialog):
-    def __init__(self, parent):
-        super().__init__(title="Upscaling", transient_for=parent, flags=0)
-        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        self.set_default_size(150, 100)
-        self.spinner = Gtk.Spinner()
-        self.label = Gtk.Label(label="                     Upscaling. This process will take long (if a Video). \n             Duration depends on your Hardware and length and resolution of video \n           You may see the output of the app, if you switch to the other window that is behind it.            \n\n\n           click \"ok\" to start upscaling")
-        self.box = self.get_content_area()
-        self.box.pack_start(self.label, True, True, 20)
-        self.box.pack_start(self.spinner, True, True, 20)
-        self.spinner.start()
-        self.show_all()
-
-
 class ErrorDialogFileMissing(Gtk.Dialog):
     def __init__(self, parent):
         super().__init__(title="Error", transient_for=parent, flags=0)
@@ -203,6 +189,18 @@ class HomeWindow(Gtk.Window):
             pass
         self.filechooserdialog_save.destroy()
 
+    def info_button(self):
+        self.info_dialog = Gtk.Dialog()
+        self.remove_event = Gtk.Button(label="Don't show again")
+        self.info_dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        self.info_dialog.set_default_size(150, 100)
+        self.box = self.info_dialog.get_content_area()
+        self.label = Gtk.Label(label="                     Upscaling. This process will take long (if a Video). \n             Duration depends on your Hardware and length and resolution of video \n           You may see the output of the app, if you switch to the other window that is behind it.            \n\n\n           click \"ok\" to start upscaling")
+        self.box.pack_start(self.label, True, True, 0)
+        self.info_dialog.show_all()
+        self.info_response = self.info_dialog.run()
+        self.info_dialog.destroy()
+
     def start_clicked(self, widget):
         self.respawn = True
         try:
@@ -229,19 +227,21 @@ class HomeWindow(Gtk.Window):
                     self.go = True
                     if self.go:
                         print("\n\nStarting upscaling process!\n\n")
-                        self.pr_i = ProgressIndicator(self)
-                        self.pr_i.run()
-                        self.pr_i.destroy()
-                        self.scaler = multiprocessing.Process(name="scaler",
-                                                              target=handler.handler,
-                                                              args=("./bin/lib/FidelityFX_CLI.exe",
-                                                                    self.open_file,
-                                                                    self.quality_selected,
-                                                                    self.q,
-                                                                    self.save_file,
-                                                                    "./bin/lib/ffmpeg.exe")
-                                                              )
-                        self.scaler.start()
+                        self.info_button()
+                        if self.info_response == Gtk.ResponseType.OK:
+                            self.scaler = multiprocessing.Process(name="scaler",
+                                                                  target=handler.handler,
+                                                                  args=("./bin/lib/FidelityFX_CLI.exe",
+                                                                        self.open_file,
+                                                                        self.quality_selected,
+                                                                        self.q,
+                                                                        self.save_file,)
+                                                                  )
+                            self.scaler.start()
+                        elif self.info_response == Gtk.ResponseType.CANCEL:
+                            print("aborted")
+                        else:
+                            raise Exception
                 else:
                     print("File-checks unsuccessful. Please check your entries!")
                     self.checkerror()
