@@ -65,6 +65,7 @@ class HomeWindow(Gtk.Window):
         # Spawn box
         self.main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.sub_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.orient_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.top_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.quality_select_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
@@ -91,6 +92,17 @@ class HomeWindow(Gtk.Window):
         self.start_button.connect("clicked", self.start_clicked)
         self.box.pack_start(self.start_button, True, True, 0)
 
+        # Create Input File label
+        self.ip_file_label = Gtk.Label(label="Choose input file")
+
+        # Create Output File label
+        self.op_file_label = Gtk.Label(label="Choose output file")
+
+        # Pack File labels
+        self.filebox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.filebox.pack_start(self.ip_file_label, True, True, 10)
+        self.filebox.pack_start(self.op_file_label, True, True, 10)
+
         # QualitySelect
         self.title = Gtk.Label(label="Upscaling Multiplier Presets")
         self.qualities = Gtk.ListStore(str)
@@ -105,7 +117,7 @@ class HomeWindow(Gtk.Window):
         self.quality_select.add_attribute(self.text_renderer, "text", 0)
         self.quality_select.connect("changed", self.on_quality_change)
         self.quality_select_shrink = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.quality_select_shrink.pack_start(self.quality_select, True, False, 30)
+        self.quality_select_shrink.pack_start(self.quality_select, True, False, 10)
 
         self.quality_select_box.pack_start(self.title, True, True, 0)
         self.quality_select_box.pack_start(self.quality_select_shrink, True, True, 20)
@@ -114,7 +126,7 @@ class HomeWindow(Gtk.Window):
         self.custom_quality_selector_title = Gtk.Label(label="Custom Upscaling Multiplier\nNOTE that factors greater than 2 are not recommended!\nFactors greater than 4 will not run!")
         self.custom_quality_selector_shrink = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.custom_quality_selector = Gtk.Entry()
-        self.custom_quality_selector_shrink.pack_start(self.custom_quality_selector, True, False, 30)
+        self.custom_quality_selector_shrink.pack_start(self.custom_quality_selector, True, False, 10)
 
         self.custom_quality_selector_box.pack_start(self.custom_quality_selector_title, True, True, 0)
         self.custom_quality_selector_box.pack_start(self.custom_quality_selector_shrink, True, True, 20)
@@ -122,14 +134,25 @@ class HomeWindow(Gtk.Window):
         # Info
         self.infos = Gtk.Label(label="Settings")
 
+        # Details
+        self.details = Gtk.Label(label="Ready")
+
+        # Separator
+        self.separator = Gtk.Separator().new(Gtk.Orientation.HORIZONTAL)
+
         # Packing boxes
         self.top_box.pack_start(self.infos, True, True, 0)
         self.top_box.pack_start(self.quality_select_box, True, True, 0)
         self.top_box.pack_start(self.custom_quality_selector_box, True, True, 0)
+        self.top_box.pack_start(self.details, True, True, 0)
+        self.top_box.pack_start(self.separator, True, False, 0)
 
-        self.sub_box.pack_start(self.box, True, True, 30)
-        self.main_box.pack_start(self.top_box, True, True, 20)
-        self.main_box.pack_end(self.sub_box, True, True, 20)
+
+        self.orient_box.pack_start(self.filebox, True, True, 0)
+        self.orient_box.pack_start(self.box, True, True, 0)
+        self.sub_box.pack_start(self.orient_box, True, True, 30)
+        self.main_box.pack_start(self.top_box, True, True, 0)
+        self.main_box.pack_end(self.sub_box, True, True, 5)
         self.add(self.main_box)
 
     def on_quality_change(self, quality):
@@ -149,10 +172,10 @@ class HomeWindow(Gtk.Window):
         )
         self.response = self.filechooserdialog.run()
         if self.response == Gtk.ResponseType.OK:
-            print("ok, selected file:", self.filechooserdialog.get_filename())
+            self.ip_file_label.set_text(self.filechooserdialog.get_filename())
             self.open_file = self.filechooserdialog.get_filename()
         elif self.response == Gtk.ResponseType.CANCEL:
-            print("cancel")
+            pass
         self.filechooserdialog.destroy()
 
     def opfilechooser_clicked(self, widget):
@@ -184,6 +207,7 @@ class HomeWindow(Gtk.Window):
         )
         self.response = self.filechooserdialog_save.run()
         if self.response == Gtk.ResponseType.OK:
+            self.op_file_label.set_text(self.filechooserdialog_save.get_filename())
             self.save_file = self.filechooserdialog_save.get_filename()
         elif self.response == Gtk.ResponseType.CANCEL:
             pass
