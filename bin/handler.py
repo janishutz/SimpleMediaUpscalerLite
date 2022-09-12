@@ -92,7 +92,10 @@ class Handler:
             self.framerate = float(self.infos[:len(self.infos) - 2])
 
         # Splitting video into frames
-        os.remove(self.tmppath)
+        try:
+            os.remove(self.tmppath)
+        except FileNotFoundError:
+            pass
         try:
             os.mkdir(self.tmppath)
         except FileExistsError:
