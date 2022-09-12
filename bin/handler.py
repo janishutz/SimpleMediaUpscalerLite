@@ -16,7 +16,7 @@ import time
 
 # Loading the config file to get user preferred temp path
 config = configparser.ConfigParser()
-config.read('../config/settings.ini')
+config.read('./config/settings.ini')
 
 
 class Handler:
@@ -29,12 +29,14 @@ class Handler:
     def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path, ffmpegpath):
         # Function to be called when using this class as this function automatically determines if file is video or image
         if self.os_type == "linux":
-            self.tmppath = "/tmp/fsru/" # config["PathSettings"]["tmpPathLinux"]
+            self.tmppath = config["PathSettings"]["tmpPathLinux"]
         elif self.os_type == "win32":
             self.tmppath = config["PathSettings"]["tmpPathWindows"]
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
+        self.tmppath += "fsru/"
+        print(self.tmppath)
         # checking for spaces in filepath (for use with terminal commands)
         self.filepath = ""
         for self.letter in filepath:
@@ -83,9 +85,14 @@ class Handler:
         # Retrieving Video metadata
         self.duration = self.videometa.get("duration")
         self.frames = self.videometa.get("nb_frames")
-        self.framerate = round(float(self.frames) / float(self.duration), 1)
+        try:
+            self.framerate = round(float(self.frames) / float(self.duration), 1)
+        except TypeError:
+            self.infos = str(self.videometa.get("r_frame_rate"))
+            self.framerate = float(self.infos[:len(self.infos) - 2])
 
         # Splitting video into frames
+        os.remove(self.tmppath)
         try:
             os.mkdir(self.tmppath)
         except FileExistsError:
@@ -93,9 +100,9 @@ class Handler:
 
         if self.os_type == "linux":
             print("linux")
-            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}thumb%04d.jpg -hide_banner"
+            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}thumb%08d.jpg"
         elif self.os_type == "win32":
-            self.command = f"{ffmpegpath} -i {str(self.filepath)} {self.tmppath}thumb%04d.jpg -hide_banner"
+            self.command = f"{ffmpegpath} -i {str(self.filepath)} {self.tmppath}thumb%08d.jpg"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
@@ -110,13 +117,12 @@ class Handler:
         self.number = 0
         for self.file in self.filelist:
             self.number += 1
-            self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{str(self.number).zfill(4)}.jpg "
+            self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{str(self.number).zfill(8)}.jpg "
         self.maxlength = 32000
         self.pos = 1
 
         # Refactoring of commands that are longer than 32K characters
         if len(self.files) > self.maxlength:
-            print("shrinking command length")
             self.fileout = []
 
             while self.files[self.maxlength - self.pos:self.maxlength - self.pos + 1] != " ":
@@ -157,7 +163,6 @@ class Handler:
                 self.fileout.append(self.files[self.maxlength - self.pos:])
         else:
             self.fileout.append(self.files)
-        print("filepath assembled")
 
         try:
             os.mkdir(f"{self.tmppath}upscaled/")
@@ -185,7 +190,6 @@ class Handler:
                     else:
                         print("OS CURRENTLY UNSUPPORTED!")
                         return False
-            print(self.command, "\n\n\nCOMMAND to EXECUTE\n\n\n")
             os.system(self.command)
             print("Finished upscaling this section.")
             time.sleep(3)
@@ -209,9 +213,9 @@ class Handler:
         # reassemble Video
         print("Reassembling Video... with framerate @", self.framerate)
         if self.os_type == "linux":
-            self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%04d.jpg {output_path} -i {self.tmppath}audio.aac"
+            self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%08d.jpg {output_path} -i {self.tmppath}audio.aac"
         elif self.os_type == "win32":
-            self.command = f"{ffmpegpath} -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%04d.jpg {output_path} -i {self.tmppath}audio.aac"
+            self.command = f"{ffmpegpath} -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%08d.jpg {output_path} -i {self.tmppath}audio.aac"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False

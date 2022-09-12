@@ -18,24 +18,39 @@ class Checks:
             try:
                 self.custom_quality = float(custom_q)
             except ValueError:
-                return False
-            return True
+                if str(custom_q)[len(custom_q) - 1:] == "x":
+                    print("x found")
+                    try:
+                        self.custom_quality = float(str(custom_q)[:len(custom_q) - 1])
+                    except ValueError:
+                        print("invalid custom quality multiplier")
+                        return False
+                else:
+                    print("invalid letter in custom quality multiplier!")
+                    return False
+            if 4 >= self.custom_quality >= 1:
+                print("quality selction ok")
+                return True
+            else:
+                print("invalid range for multiplier!")
 
     def file_checks(self, i_fp, o_fp):
         self.i_file_extension = str(i_fp)[len(i_fp) - 4:]
         if self.i_file_extension == ".png" or self.i_file_extension == ".jpg":
-            pass
+            print("file extensions ok (image)")
         elif self.i_file_extension == "jpeg":
             if str(i_fp)[len(i_fp) - 5:] == ".jpeg":
-                pass
+                print("file extensions ok (image)")
             else:
                 return False
         elif self.i_file_extension == ".mp4" or self.i_file_extension == ".mkv":
-            pass
+            print("file extensions ok (video)")
         else:
             return False
 
         if str(i_fp)[len(i_fp) - 4:] == str(o_fp)[len(o_fp) - 4:]:
+            print("file extensions are the same in output and input")
             return True
         else:
+            print("files don't have same extension!")
             return False

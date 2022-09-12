@@ -6,7 +6,7 @@
 # Developed 2022 by Janis Hutz
 #
 ###########################################################
-
+import sys
 import gi
 import bin.handler
 import multiprocessing
@@ -28,7 +28,7 @@ class ProgressIndicator(Gtk.Dialog):
         self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         self.set_default_size(150, 100)
         self.spinner = Gtk.Spinner()
-        self.label = Gtk.Label(label="                     Upscaling. This process will take long (if a Video). \n             Duration depends on your Hardware and length and resolution of video \n You may see the output of the app, if you switch to the other window that is behind it.            ")
+        self.label = Gtk.Label(label="                     Upscaling. This process will take long (if a Video). \n             Duration depends on your Hardware and length and resolution of video \n           You may see the output of the app, if you switch to the other window that is behind it.            \n\n\n           click \"ok\" to start upscaling")
         self.box = self.get_content_area()
         self.box.pack_start(self.label, True, True, 20)
         self.box.pack_start(self.spinner, True, True, 20)
@@ -41,7 +41,7 @@ class ErrorDialogFileMissing(Gtk.Dialog):
         super().__init__(title="Error", transient_for=parent, flags=0)
         self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         self.set_default_size(150, 100)
-        self.label = Gtk.Label(label="    No file specified. Please select a input AND output file!     ")
+        self.label = Gtk.Label(label="    No file specified. Please select an input AND output file!     ")
         self.box = self.get_content_area()
         self.box.pack_start(self.label, True, True, 20)
         self.show_all()
@@ -63,7 +63,7 @@ class ErrorDialogCheckFail(Gtk.Dialog):
         super().__init__(title="Error", transient_for=parent, flags=0)
         self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         self.set_default_size(150, 100)
-        self.label = Gtk.Label(label="    Filechecks failed. Make sure to specify the same file extension in the output like in the input     ")
+        self.label = Gtk.Label(label="       File and settings check failed. \n       Make sure to specify the same file extension in the output like in the input                 \n       make sure that the entries you made as settings are valid! (4 >= scale >= 1)                 ")
         self.box = self.get_content_area()
         self.box.pack_start(self.label, True, True, 20)
         self.show_all()
@@ -72,6 +72,7 @@ class ErrorDialogCheckFail(Gtk.Dialog):
 class HomeWindow(Gtk.Window):
     def __init__(self):
         super().__init__(title="Test")
+        self.os_type = sys.platform
         self.save_file = ""
         self.open_file = ""
 
@@ -124,7 +125,7 @@ class HomeWindow(Gtk.Window):
         self.quality_select_box.pack_start(self.quality_select_shrink, True, True, 20)
 
         # Custom Quality Selector
-        self.custom_quality_selector_title = Gtk.Label(label="Custom Upscaling Multiplier")
+        self.custom_quality_selector_title = Gtk.Label(label="Custom Upscaling Multiplier\nNOTE that factors greater than 2 are not recommended!\nFactors greater than 4 will not run!")
         self.custom_quality_selector_shrink = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.custom_quality_selector = Gtk.Entry()
         self.custom_quality_selector_shrink.pack_start(self.custom_quality_selector, True, False, 30)
@@ -171,7 +172,24 @@ class HomeWindow(Gtk.Window):
     def opfilechooser_clicked(self, widget):
         self.filechooserdialog_save = Gtk.FileChooserDialog(title="Choose output file", action=Gtk.FileChooserAction.SAVE)
         Gtk.FileChooser.set_do_overwrite_confirmation(self.filechooserdialog_save, True)
-        Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "video.mp4")
+        if self.os_type == "linux":
+            Gtk.FileChooser.set_current_folder(self.filechooserdialog_save, "/home")
+        elif self.os_type == "win32":
+            Gtk.FileChooser.set_current_folder(self.filechooserdialog_save, "%HOMEPATH%")
+        else:
+            pass
+        if str(self.open_file)[len(self.open_file) - 4:] == ".mp4":
+            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "video.mp4")
+        elif str(self.open_file)[len(self.open_file) - 4:] == ".mkv":
+            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "video.mkv")
+        elif str(self.open_file)[len(self.open_file) - 4:] == ".png":
+            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "image.png")
+        elif str(self.open_file)[len(self.open_file) - 4:] == ".jpg":
+            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "image.jpg")
+        elif str(self.open_file)[len(self.open_file) - 4:] == ".jpeg":
+            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "image.jpeg")
+        else:
+            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "")
         self.filechooserdialog_save.add_buttons(
             Gtk.STOCK_CANCEL,
             Gtk.ResponseType.CANCEL,
@@ -180,10 +198,9 @@ class HomeWindow(Gtk.Window):
         )
         self.response = self.filechooserdialog_save.run()
         if self.response == Gtk.ResponseType.OK:
-            print("ok, selected file:", self.filechooserdialog_save.get_filename())
             self.save_file = self.filechooserdialog_save.get_filename()
         elif self.response == Gtk.ResponseType.CANCEL:
-            print("cancel")
+            pass
         self.filechooserdialog_save.destroy()
 
     def start_clicked(self, widget):
@@ -199,16 +216,19 @@ class HomeWindow(Gtk.Window):
 
         if self.respawn:
             if str(self.open_file) != "" and str(self.save_file) != "":
-                print("ok")
                 if checks.perform(self.output, self.custom_quality_selector.get_text(), self.open_file, self.save_file):
                     if self.output == "Custom (will respect value below)":
                         self.quality_selected = "custom"
-                        self.q = f"{self.custom_quality_selector.get_text()} {self.custom_quality_selector.get_text()}"
+                        if self.custom_quality_selector.get_text()[len(self.custom_quality_selector.get_text()) - 1] == "x":
+                            self.q = f"{self.custom_quality_selector.get_text()} {self.custom_quality_selector.get_text()}"
+                        else:
+                            self.q = f"{self.custom_quality_selector.get_text()}x {self.custom_quality_selector.get_text()}x"
                     else:
                         self.quality_selected = "default"
                         self.q = str(arg.get(self.output))
                     self.go = True
                     if self.go:
+                        print("\n\nStarting upscaling process!\n\n")
                         self.pr_i = ProgressIndicator(self)
                         self.pr_i.run()
                         self.pr_i.destroy()
@@ -229,6 +249,7 @@ class HomeWindow(Gtk.Window):
                 print("no file specified")
                 self.fileerror()
         else:
+            self.runningerror()
             print("Already running!")
 
     def runningerror(self):
