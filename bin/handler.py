@@ -100,9 +100,9 @@ class Handler:
 
         if self.os_type == "linux":
             print("linux")
-            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}thumb%08d.jpg"
+            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}thumb%08d.png"
         elif self.os_type == "win32":
-            self.command = f"{ffmpegpath} -i {str(self.filepath)} {self.tmppath}thumb%08d.jpg"
+            self.command = f"{ffmpegpath} -i {str(self.filepath)} {self.tmppath}thumb%08d.png"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
@@ -117,7 +117,7 @@ class Handler:
         self.number = 0
         for self.file in self.filelist:
             self.number += 1
-            self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{str(self.number).zfill(8)}.jpg "
+            self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{str(self.number).zfill(8)}.png "
         self.maxlength = 32000
         self.pos = 1
 
@@ -213,9 +213,9 @@ class Handler:
         # reassemble Video
         print("Reassembling Video... with framerate @", self.framerate)
         if self.os_type == "linux":
-            self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%08d.jpg {output_path} -i {self.tmppath}audio.aac"
+            self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%08d.png {output_path} -i {self.tmppath}audio.aac"
         elif self.os_type == "win32":
-            self.command = f"{ffmpegpath} -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%08d.jpg {output_path} -i {self.tmppath}audio.aac"
+            self.command = f"{ffmpegpath} -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%08d.png {output_path} -i {self.tmppath}audio.aac"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
