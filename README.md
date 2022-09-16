@@ -4,7 +4,7 @@ A GTK frontend to upscale images / videos using AMD's FidelityFX Super Resolutio
 
 # Functionality
 This App is a GTK frontend to AMD's FidelityFX Super Resolution codebase, which allows you to upscale basically anything that is some kind of an image. 
-- Choose a input & output file from a GUI filemanager.
+- Choose an input & output file from a GUI filemanager.
 - Choose from different quality presets or set your own multiplier
 - You may upscale Images (currently .png, .jpg and .jpeg) or Videos (currently .mp4 and .mkv)
 - Output file will be written to a specified folder.
