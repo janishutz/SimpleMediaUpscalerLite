@@ -15,7 +15,8 @@ If you have any suggestions or features you'd like to have implemented, you may 
 
 # Roadmap
 V1.0.0:
-- Get the app working with installer
+- Get the app working -- :white_check_mark:
+- Create installer
 - Quality selector (presets and custom multiplier) -- :white_check_mark:
 - Filechoosers -- :white_check_mark:
 - Imageformats: .png, .jpg, .jpeg; Videoformats: .mp4, .mkv -- :white_check_mark:
