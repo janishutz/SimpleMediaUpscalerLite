@@ -1,0 +1,21 @@
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication, QMainWindow
+
+class FSRImageVideoUpscaler:
+    def __init__(self):
+        self.app = QApplication(sys.argv)
+        self.window = QMainWindow()
+        self.label = QtWidgets.QLabel(self.window)
+
+    def runapp(self):
+        self.window.setGeometry(200, 200, 800, 600)
+        self.window.setWindowTitle("FSR Image & Video upscaler")
+
+        self.label.setText("Hello World")
+        self.label.move(300, 300)
+
+
+        self.window.show()
+        sys.exit(self.app.exec_())
+
+FSRImageVideoUpscaler().runapp()
