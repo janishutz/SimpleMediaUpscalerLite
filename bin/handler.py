@@ -13,6 +13,7 @@ import sys
 import ffmpeg
 import configparser
 import time
+import shutil
 
 # Loading the config file to get user preferred temp path
 config = configparser.ConfigParser()
@@ -93,7 +94,7 @@ class Handler:
 
         # Splitting video into frames
         try:
-            os.remove(self.tmppath)
+            shutil.rmtree(self.tmppath)
         except FileNotFoundError:
             pass
         try:
@@ -103,9 +104,9 @@ class Handler:
 
         if self.os_type == "linux":
             print("linux")
-            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}thumb%08d.png"
+            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
         elif self.os_type == "win32":
-            self.command = f"{ffmpegpath} -i {str(self.filepath)} {self.tmppath}thumb%08d.png"
+            self.command = f"{ffmpegpath} -i {str(self.filepath)} {self.tmppath}ex%08d.png"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
@@ -120,18 +121,17 @@ class Handler:
         self.number = 0
         for self.file in self.filelist:
             self.number += 1
-            self.files += f"{self.tmppath}{self.file} {self.tmppath}upscaled/USImage{str(self.number).zfill(8)}.png "
-        self.maxlength = 32000
+            self.files += f"{self.tmppath}{self.file} {self.tmppath}sc/ig{str(self.number).zfill(8)}.png "
+        self.maxlength = 31900
         self.pos = 1
 
         # Refactoring of commands that are longer than 32K characters
         if len(self.files) > self.maxlength:
             self.fileout = []
-
             while self.files[self.maxlength - self.pos:self.maxlength - self.pos + 1] != " ":
                 self.pos += 1
             self.file_processing = self.files[:self.maxlength - self.pos]
-            if self.file_processing[len(self.file_processing) - 13:len(self.file_processing) - 8] == "thumb":
+            if self.file_processing[len(self.file_processing) - 14:len(self.file_processing) - 12] == "ex":
                 self.pos += 5
             else:
                 pass
@@ -151,7 +151,8 @@ class Handler:
                     while self.files[self.posy - self.pos:self.posy - self.pos + 1] != " ":
                         self.pos += 1
                     self.file_processing = self.files[self.posx:self.posy - self.pos]
-                    if self.file_processing[len(self.file_processing) - 13:len(self.file_processing) - 8] == "thumb":
+                    print(self.file_processing[len(self.file_processing) - 14:len(self.file_processing) - 12])
+                    if self.file_processing[len(self.file_processing) - 14:len(self.file_processing) - 12] == "ex":
                         self.pos += 5
                     else:
                         pass
@@ -168,7 +169,7 @@ class Handler:
             self.fileout.append(self.files)
 
         try:
-            os.mkdir(f"{self.tmppath}upscaled/")
+            os.mkdir(f"{self.tmppath}sc/")
         except FileExistsError:
             pass
 
@@ -193,6 +194,7 @@ class Handler:
                     else:
                         print("OS CURRENTLY UNSUPPORTED!")
                         return False
+            print(self.command, "\n\n\nCOMMAND\n\n\n")
             os.system(self.command)
             print("Finished upscaling this section.")
             time.sleep(3)
@@ -216,9 +218,9 @@ class Handler:
         # reassemble Video
         print("Reassembling Video... with framerate @", self.framerate)
         if self.os_type == "linux":
-            self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%08d.png {output_path} -i {self.tmppath}audio.aac"
+            self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.png {output_path} -i {self.tmppath}audio.aac"
         elif self.os_type == "win32":
-            self.command = f"{ffmpegpath} -framerate {self.framerate} -i {self.tmppath}upscaled/USImage%08d.png {output_path} -i {self.tmppath}audio.aac"
+            self.command = f"{ffmpegpath} -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.png {output_path} -i {self.tmppath}audio.aac"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False

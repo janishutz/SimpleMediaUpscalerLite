@@ -250,9 +250,11 @@ class HomeWindow(Gtk.Window):
                         self.q = str(arg.get(self.output))
                     self.go = True
                     if self.go:
+                        self.details.set_text("Starting upscaling process")
                         print("\n\nStarting upscaling process!\n\n")
                         self.info_button()
                         if self.info_response == Gtk.ResponseType.OK:
+                            self.details.set_text("Upscaling")
                             self.scaler = multiprocessing.Process(name="scaler",
                                                                   target=handler.handler,
                                                                   args=("./bin/lib/FidelityFX_CLI.exe",
@@ -263,13 +265,16 @@ class HomeWindow(Gtk.Window):
                                                                   )
                             self.scaler.start()
                         elif self.info_response == Gtk.ResponseType.CANCEL:
+                            self.details.set_text("Ready")
                             print("aborted")
                         else:
                             raise Exception
                 else:
+                    self.details.set_text("File-checks failed! Please check your entries!")
                     print("File-checks unsuccessful. Please check your entries!")
                     self.checkerror()
             else:
+                self.details.set_text("No file specified!")
                 print("no file specified")
                 self.fileerror()
         else:
