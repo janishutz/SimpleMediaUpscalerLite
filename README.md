@@ -1,6 +1,5 @@
 # FSRImageVideoUpscalerFrontend
 A GTK frontend to upscale images / videos using AMD's FidelityFX Super Resolution. 
-*NOTE: THIS PROJECT IS STILL IN DEVELOPMENT AND MAY STILL CONTAIN SOME FUNDEMENTAL BUGS!*
 
 # Functionality
 This App is a GTK frontend to AMD's FidelityFX Super Resolution codebase, which allows you to upscale basically anything that is some kind of an image. 
@@ -21,8 +20,8 @@ V1.0.0:
 - Imageformats: .png, .jpg, .jpeg; Videoformats: .mp4, .mkv -- :white_check_mark:
 - Working UI -- :white_check_mark:
 - Basic Wiki
-- Add all compiling infos to the repo
-- Add about section inside app
+- Add all compiling infos to the repo -- :white_check_mark:
+- Add about section inside app 
 
 V1.1.0: 
 - Migrate to PyQt5
