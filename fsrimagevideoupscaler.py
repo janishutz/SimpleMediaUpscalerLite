@@ -7,7 +7,6 @@
 #
 ###########################################################
 import sys
-from gi.repository import Gtk
 import gi
 import bin.handler
 import multiprocessing
@@ -17,6 +16,9 @@ import bin.arg_assembly
 arg = bin.arg_assembly.ArgAssembly()
 checks = bin.checks.Checks()
 handler = bin.handler.Handler()
+
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
 
 class ErrorDialogFileMissing(Gtk.Dialog):
     def __init__(self, parent):
