@@ -19,7 +19,7 @@ V1.0.0:
 - Filechoosers -- :white_check_mark:
 - Imageformats: .png, .jpg, .jpeg; Videoformats: .mp4, .mkv -- :white_check_mark:
 - Working UI -- :white_check_mark:
-- Basic Wiki
+- Basic Wiki -- :white_check_mark:
 - Add all compiling infos to the repo -- :white_check_mark:
 - Add about section inside app 
 
