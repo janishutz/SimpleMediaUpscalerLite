@@ -18,6 +18,7 @@ checks = bin.checks.Checks()
 handler = bin.handler.Handler()
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QFileDialog, QComboBox, QHBoxLayout, QVBoxLayout, QWidget
+from PyQt5.QtCore import QUrl
 
 
 class HomeWindow(QMainWindow):
@@ -27,18 +28,29 @@ class HomeWindow(QMainWindow):
         self.save_file = ""
         self.open_file = ""
 
-        box = QHBoxLayout();
+        box = QVBoxLayout();
+        actionsBox = QHBoxLayout();
+
         widget = QWidget();
+        actionsWidget = QWidget();
 
         self.button = QPushButton( 'Input file' );
         self.button.clicked.connect( self.filechooser_clicked );
+        self.button_out = QPushButton( 'Output file' );
+        self.button_out.clicked.connect( self.opfilechooser_clicked );
+        self.button_run = QPushButton( 'Upscale' );
+        self.button_run.clicked.connect( self.info_button );
 
         self.qualitySelector = QComboBox();
         self.qualitySelector.addItems( ['2x', '1.7x', '1.5x', '1.3x', 'Custom (will respect value below)' ] );
 
+        actionsBox.addWidget( self.button );
+        actionsBox.addWidget( self.button_out );
+        actionsBox.addWidget( self.button_run );
+        actionsWidget.setLayout( actionsBox );
 
-        box.addWidget( self.button )
         box.addWidget( self.qualitySelector );
+        box.addWidget( actionsWidget );
         widget.setLayout( box );
 
         self.setCentralWidget( widget );
@@ -53,46 +65,33 @@ class HomeWindow(QMainWindow):
             self.model = quality.get_model()
             self.output = self.model[self.tree_iter][0]
 
-    def filechooser_clicked(self, widget):
+    def filechooser_clicked( self ):
         self.open_file = QFileDialog.getOpenFileName( self, 'Open input file', '', 'Image & Video files (*.jpg *.png *.mp4 *.mkv *.jpeg)' );
         
 
-    def opfilechooser_clicked(self, widget):       
+    def opfilechooser_clicked( self ):       
         self.path = '';
 
-        if str(self.open_file)[len(self.open_file) - 4:] == '.mp4':
+        if str( self.open_file )[len(self.open_file) - 4:] == '.mp4':
             self.path = 'video.mp4';
-        elif str(self.open_file)[len(self.open_file) - 4:] == '.mkv':
+        elif str( self.open_file )[len(self.open_file) - 4:] == '.mkv':
             self.path = 'video.mkv';
-        elif str(self.open_file)[len(self.open_file) - 4:] == '.png':
+        elif str( self.open_file )[len(self.open_file) - 4:] == '.png':
             self.path = 'image.png';
-        elif str(self.open_file)[len(self.open_file) - 4:] == '.jpg':
+        elif str( self.open_file )[len(self.open_file) - 4:] == '.jpg':
             self.path = 'image.jpg';
-        elif str(self.open_file)[len(self.open_file) - 4:] == '.jpeg':
+        elif str( self.open_file )[len(self.open_file) - 4:] == '.jpeg':
             self.path = 'image.jpeg';
 
-        self.open_file_out = QFileDialog( self, 'Select output file', '', 'Image & Video files (*.jpg *.png *.mp4 *.mkv *.jpeg)' );
-        self.open_file_out.setAcceptMode( 'AcceptSave' );
-        if self.os_type == 'linux':
-            self.open_file_out.setDirectoryUrl( '/home' );
-        elif self.os_type == 'win32':
-            self.open_file_out.setDirectoryUrl( '%HOMEPATH%' );
-        else:
-            pass;
+        self.open_file_out = QFileDialog.getOpenFileName( self, 'Select output file', '', 'Image & Video files (*.jpg *.png *.mp4 *.mkv *.jpeg)' );
 
     def info_button(self):
-        self.info_dialog = Gtk.Dialog()
-        self.remove_event = Gtk.Button(label="Don't show again")
-        self.info_dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        self.info_dialog.set_default_size(150, 100)
-        self.box = self.info_dialog.get_content_area()
-        self.label = Gtk.Label(label="                     Upscaling. This process will take long (if a Video). \n             Duration depends on your Hardware and length and resolution of video \n           You may see the output of the app, if you switch to the other window that is behind it.            \n\n\n           click \"ok\" to start upscaling")
-        self.box.pack_start(self.label, True, True, 0)
-        self.info_dialog.show_all()
-        self.info_response = self.info_dialog.run()
-        self.info_dialog.destroy()
+        self.fileMissingErrorDialog = QDialog( self );
+        self.fileMissingErrorDialog.setWindowTitle( 'Upscaling! This process might take a LONG time!' );
+        self.fileMissingErrorDialog.exec();
+        self.start_clicked();
 
-    def start_clicked(self, widget):
+    def start_clicked(self):
         self.respawn = True
         try:
             if self.scaler.is_alive():

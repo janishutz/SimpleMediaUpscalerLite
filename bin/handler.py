@@ -1,11 +1,11 @@
-###########################################################
-#
-# Handler for FSRImageVideoUpscalerFrontend
-#
-# This code is licensed under the GPL V3 License!
-# Developed 2022 by Janis Hutz
-#
-###########################################################
+"""
+*				FSRImageVideoUpscalerFrontend - handler.py
+*
+*	Created by Janis Hutz 03/14/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+"""
 
 
 import os
@@ -29,6 +29,8 @@ class Handler:
 
     def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path):
         # Function to be called when using this class as this function automatically determines if file is video or image
+        print( '\n\nFSRImageVideoUpscalerFrontend - V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\n\n\n\n' );
+
         if self.os_type == "linux":
             self.tmppath = config["PathSettings"]["tmpPathLinux"]
         elif self.os_type == "win32":
@@ -55,6 +57,7 @@ class Handler:
             self.photo_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path)
         else:
             print("not supported")
+            return False
 
     def photo_scaling(self, fsrpath, filepath, quality_mode, quality_setting, output_path):
         # DO NOT CALL THIS! Use Handler().handler() instead!
@@ -194,13 +197,11 @@ class Handler:
                     else:
                         print("OS CURRENTLY UNSUPPORTED!")
                         return False
-            print(self.command, "\n\n\nCOMMAND\n\n\n")
             os.system(self.command)
-            print("Finished upscaling this section.")
             time.sleep(3)
 
         # get Video's audio
-        print("Retrieving Video's audio to append")
+        print("Finished Upscaling individual images. \n\n\nRetrieving Video's audio to append")
         try:
             os.remove(f"{self.tmppath}audio.aac")
             os.remove(f"{output_path}")
