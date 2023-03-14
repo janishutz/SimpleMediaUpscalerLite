@@ -1,13 +1,13 @@
-###########################################################
-#
-# FSRImageVideoUpscalerFrontend written in GTK+
-#
-# This code is licensed under the GPL V3 License!
-# Developed 2022 by Janis Hutz
-#
-###########################################################
+"""
+*		FSRImageVideoUpscalerFrontend - fsrimagevideoupscaler.py
+*
+*	Created by Janis Hutz 03/14/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+"""
+
 import sys
-import gi
 import bin.handler
 import multiprocessing
 import bin.checks
@@ -17,141 +17,33 @@ arg = bin.arg_assembly.ArgAssembly()
 checks = bin.checks.Checks()
 handler = bin.handler.Handler()
 
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
-
-class ErrorDialogFileMissing(Gtk.Dialog):
-    def __init__(self, parent):
-        super().__init__(title="Error", transient_for=parent, flags=0)
-        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        self.set_default_size(150, 100)
-        self.label = Gtk.Label(label="    No file specified. Please select an input AND output file!     ")
-        self.box = self.get_content_area()
-        self.box.pack_start(self.label, True, True, 20)
-        self.show_all()
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QFileDialog, QComboBox, QHBoxLayout, QVBoxLayout, QWidget
 
 
-class ErrorDialogRunning(Gtk.Dialog):
-    def __init__(self, parent):
-        super().__init__(title="Error", transient_for=parent, flags=0)
-        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        self.set_default_size(150, 100)
-        self.label = Gtk.Label(label="    You are already upscaling. Please wait for the current job to finish!      ")
-        self.box = self.get_content_area()
-        self.box.pack_start(self.label, True, True, 20)
-        self.show_all()
-
-
-class ErrorDialogCheckFail(Gtk.Dialog):
-    def __init__(self, parent):
-        super().__init__(title="Error", transient_for=parent, flags=0)
-        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        self.set_default_size(150, 100)
-        self.label = Gtk.Label(label="       File and settings check failed. \n       Make sure to specify the same file extension in the output like in the input                 \n       make sure that the entries you made as settings are valid! (4 >= scale >= 1)                 ")
-        self.box = self.get_content_area()
-        self.box.pack_start(self.label, True, True, 20)
-        self.show_all()
-
-
-class HomeWindow(Gtk.Window):
-    def __init__(self):
-        super().__init__(title="Test")
+class HomeWindow(QMainWindow):
+    def __init__( self, parent=None ):
+        super( HomeWindow, self ).__init__( parent  )
         self.os_type = sys.platform
         self.save_file = ""
         self.open_file = ""
-        # Spawn box
-        self.main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.sub_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.orient_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.top_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.quality_select_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.custom_quality_selector_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
-        # Headerbar
-        self.hb = Gtk.HeaderBar()
-        self.hb.set_show_close_button(True)
-        self.hb.props.title = "FSR Image & Video Upscaler"
-        self.set_titlebar(self.hb)
+        box = QHBoxLayout();
+        widget = QWidget();
 
-        # Create filechooser button
-        self.filechoosebutton = Gtk.Button(label="Choose Input File")
-        self.filechoosebutton.connect("clicked", self.filechooser_clicked)
-        self.box.pack_start(self.filechoosebutton, True, True, 0)
+        self.button = QPushButton( 'Input file' );
+        self.button.clicked.connect( self.filechooser_clicked );
 
-        # Create output filechooser button
-        self.opfchooserbutton = Gtk.Button(label="Choose Output File")
-        self.opfchooserbutton.connect("clicked", self.opfilechooser_clicked)
-        self.box.pack_start(self.opfchooserbutton, True, True, 0)
-
-        # Create start button
-        self.start_button = Gtk.Button(label="Start upscaling")
-        self.start_button.connect("clicked", self.start_clicked)
-        self.box.pack_start(self.start_button, True, True, 0)
-
-        # Create Input File label
-        self.ip_file_label = Gtk.Label(label="Choose input file")
-
-        # Create Output File label
-        self.op_file_label = Gtk.Label(label="Choose output file")
-
-        # Pack File labels
-        self.filebox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.filebox.pack_start(self.ip_file_label, True, True, 10)
-        self.filebox.pack_start(self.op_file_label, True, True, 10)
-
-        # QualitySelect
-        self.title = Gtk.Label(label="Upscaling Multiplier Presets")
-        self.qualities = Gtk.ListStore(str)
-        self.qualities.append(["2x"])
-        self.qualities.append(["1.7x"])
-        self.qualities.append(["1.5x"])
-        self.qualities.append(["1.3x"])
-        self.qualities.append(["Custom (will respect value below)"])
-        self.quality_select = Gtk.ComboBox.new_with_model(self.qualities)
-        self.text_renderer = Gtk.CellRendererText()
-        self.quality_select.pack_start(self.text_renderer, True)
-        self.quality_select.add_attribute(self.text_renderer, "text", 0)
-        self.quality_select.connect("changed", self.on_quality_change)
-        self.quality_select_shrink = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.quality_select_shrink.pack_start(self.quality_select, True, False, 10)
-
-        self.quality_select_box.pack_start(self.title, True, True, 0)
-        self.quality_select_box.pack_start(self.quality_select_shrink, True, True, 20)
-
-        # Custom Quality Selector
-        self.custom_quality_selector_title = Gtk.Label(label="Custom Upscaling Multiplier\nNOTE that factors greater than 2 are not recommended!\nFactors greater than 4 will not run!")
-        self.custom_quality_selector_shrink = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.custom_quality_selector = Gtk.Entry()
-        self.custom_quality_selector_shrink.pack_start(self.custom_quality_selector, True, False, 10)
-
-        self.custom_quality_selector_box.pack_start(self.custom_quality_selector_title, True, True, 0)
-        self.custom_quality_selector_box.pack_start(self.custom_quality_selector_shrink, True, True, 20)
-
-        # Info
-        self.infos = Gtk.Label(label="Settings")
-
-        # Details
-        self.details = Gtk.Label(label="Ready")
-
-        # Separator
-        self.separator = Gtk.Separator().new(Gtk.Orientation.HORIZONTAL)
-
-        # Packing boxes
-        self.top_box.pack_start(self.infos, True, True, 0)
-        self.top_box.pack_start(self.quality_select_box, True, True, 0)
-        self.top_box.pack_start(self.custom_quality_selector_box, True, True, 0)
-        self.top_box.pack_start(self.details, True, True, 0)
-        self.top_box.pack_start(self.separator, True, False, 0)
+        self.qualitySelector = QComboBox();
+        self.qualitySelector.addItems( ['2x', '1.7x', '1.5x', '1.3x', 'Custom (will respect value below)' ] );
 
 
-        self.orient_box.pack_start(self.filebox, True, True, 0)
-        self.orient_box.pack_start(self.box, True, True, 0)
-        self.sub_box.pack_start(self.orient_box, True, True, 30)
-        self.main_box.pack_start(self.top_box, True, True, 0)
-        self.main_box.pack_end(self.sub_box, True, True, 5)
-        self.add(self.main_box)
+        box.addWidget( self.button )
+        box.addWidget( self.qualitySelector );
+        widget.setLayout( box );
 
+        self.setCentralWidget( widget );
+
+        self.setWindowTitle( 'FSRImageVideoUpscalerFrontend' );
 
 
     def on_quality_change(self, quality):
@@ -162,55 +54,31 @@ class HomeWindow(Gtk.Window):
             self.output = self.model[self.tree_iter][0]
 
     def filechooser_clicked(self, widget):
-        self.filechooserdialog = Gtk.FileChooserDialog(title="Choose input file", action=Gtk.FileChooserAction.OPEN)
-        self.filechooserdialog.add_buttons(
-            Gtk.STOCK_CANCEL,
-            Gtk.ResponseType.CANCEL,
-            Gtk.STOCK_OPEN,
-            Gtk.ResponseType.OK,
-        )
-        self.response = self.filechooserdialog.run()
-        if self.response == Gtk.ResponseType.OK:
-            self.ip_file_label.set_text(self.filechooserdialog.get_filename())
-            self.open_file = self.filechooserdialog.get_filename()
-        elif self.response == Gtk.ResponseType.CANCEL:
-            pass
-        self.filechooserdialog.destroy()
+        self.open_file = QFileDialog.getOpenFileName( self, 'Open input file', '', 'Image & Video files (*.jpg *.png *.mp4 *.mkv *.jpeg)' );
+        
 
-    def opfilechooser_clicked(self, widget):
-        self.filechooserdialog_save = Gtk.FileChooserDialog(title="Choose output file", action=Gtk.FileChooserAction.SAVE)
-        Gtk.FileChooser.set_do_overwrite_confirmation(self.filechooserdialog_save, True)
-        if self.os_type == "linux":
-            Gtk.FileChooser.set_current_folder(self.filechooserdialog_save, "/home")
-        elif self.os_type == "win32":
-            Gtk.FileChooser.set_current_folder(self.filechooserdialog_save, "%HOMEPATH%")
+    def opfilechooser_clicked(self, widget):       
+        self.path = '';
+
+        if str(self.open_file)[len(self.open_file) - 4:] == '.mp4':
+            self.path = 'video.mp4';
+        elif str(self.open_file)[len(self.open_file) - 4:] == '.mkv':
+            self.path = 'video.mkv';
+        elif str(self.open_file)[len(self.open_file) - 4:] == '.png':
+            self.path = 'image.png';
+        elif str(self.open_file)[len(self.open_file) - 4:] == '.jpg':
+            self.path = 'image.jpg';
+        elif str(self.open_file)[len(self.open_file) - 4:] == '.jpeg':
+            self.path = 'image.jpeg';
+
+        self.open_file_out = QFileDialog( self, 'Select output file', '', 'Image & Video files (*.jpg *.png *.mp4 *.mkv *.jpeg)' );
+        self.open_file_out.setAcceptMode( 'AcceptSave' );
+        if self.os_type == 'linux':
+            self.open_file_out.setDirectoryUrl( '/home' );
+        elif self.os_type == 'win32':
+            self.open_file_out.setDirectoryUrl( '%HOMEPATH%' );
         else:
-            pass
-        if str(self.open_file)[len(self.open_file) - 4:] == ".mp4":
-            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "video.mp4")
-        elif str(self.open_file)[len(self.open_file) - 4:] == ".mkv":
-            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "video.mkv")
-        elif str(self.open_file)[len(self.open_file) - 4:] == ".png":
-            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "image.png")
-        elif str(self.open_file)[len(self.open_file) - 4:] == ".jpg":
-            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "image.jpg")
-        elif str(self.open_file)[len(self.open_file) - 4:] == ".jpeg":
-            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "image.jpeg")
-        else:
-            Gtk.FileChooser.set_current_name(self.filechooserdialog_save, "")
-        self.filechooserdialog_save.add_buttons(
-            Gtk.STOCK_CANCEL,
-            Gtk.ResponseType.CANCEL,
-            Gtk.STOCK_SAVE,
-            Gtk.ResponseType.OK,
-        )
-        self.response = self.filechooserdialog_save.run()
-        if self.response == Gtk.ResponseType.OK:
-            self.op_file_label.set_text(self.filechooserdialog_save.get_filename())
-            self.save_file = self.filechooserdialog_save.get_filename()
-        elif self.response == Gtk.ResponseType.CANCEL:
-            pass
-        self.filechooserdialog_save.destroy()
+            pass;
 
     def info_button(self):
         self.info_dialog = Gtk.Dialog()
@@ -286,9 +154,9 @@ class HomeWindow(Gtk.Window):
         self.runningerrordialog.destroy()
 
     def fileerror(self):
-        self.fileerrordialog = ErrorDialogFileMissing(self)
-        self.fileerrordialog.run()
-        self.fileerrordialog.destroy()
+        self.fileMissingErrorDialog = QDialog( self );
+        self.fileMissingErrorDialog.setWindowTitle( 'Missing file selection! Please ensure you have selected both an input and output file!' );
+        self.fileMissingErrorDialog.exec();
 
     def checkerror(self):
         self.checkerrordialog = ErrorDialogCheckFail(self)
@@ -296,8 +164,7 @@ class HomeWindow(Gtk.Window):
         self.checkerrordialog.destroy()
 
 
-win = HomeWindow()
-win.set_default_size(800, 600)
-win.connect("destroy", Gtk.main_quit)
-win.show_all()
-Gtk.main()
+app = QApplication( sys.argv );
+ex = HomeWindow();
+ex.show();
+sys.exit( app.exec_() );
