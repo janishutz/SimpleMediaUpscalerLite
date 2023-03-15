@@ -94,7 +94,7 @@ class Handler:
     def video_scaling(self, ffmpegpath, fsrpath, filepath, quality_mode, quality_setting, output_path):
         # DO NOT CALL THIS! Use Handler().handler() instead!
         if ( sys.platform == 'win32' ):
-        	self.videometa = ffmpeg.probe(str(filepath), 'bin\lib\ffprobe.exe')["streams"].pop(0)
+        	self.videometa = ffmpeg.probe(str(filepath), 'lib\ffprobe.exe')["streams"].pop(0)
         else:
             self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
         # Retrieving Video metadata
