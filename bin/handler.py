@@ -45,7 +45,10 @@ class Handler:
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
-        self.tmppath += "fsru/"
+        if ( self.tmppath[len(self.tmppath) - 1: ] == '/' ):
+            self.tmppath += "fsru/"
+        else:
+            self.tmppath += '/fsru/'
         self.ffmpegpath = config["PathSettings"]["ffmpeg"]
         # checking for spaces in filepath (for use with terminal commands)
         self.filepath = ""
@@ -85,9 +88,7 @@ class Handler:
                 self.command = f"{fsrpath} -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
             else:
                 print("OS CURRENTLY UNSUPPORTED!")
-                return False
-            print( self.command )
-            
+                return False            
             os.system(self.command)
             print("photo upscaled")
 
@@ -120,7 +121,7 @@ class Handler:
             print("linux")
             self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
         elif self.os_type == "win32":
-            self.command = f"{ffmpegpath} -i {str(self.filepath)} {self.tmppath}ex%08d.png"
+            self.command = f"ffmpeg -i {str(self.filepath)} ${self.tmppath}ex%08d.png"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
