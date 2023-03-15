@@ -10,10 +10,12 @@
 
 import os
 import sys
-import ffmpeg
+import bin.lib.ffmpeg
 import configparser
 import time
 import shutil
+
+ffmpeg = bin.lib.ffmpeg
 
 # Loading the config file to get user preferred temp path
 config = configparser.ConfigParser()
