@@ -71,17 +71,18 @@ class Handler:
             else:
                 print("OS CURRENTLY UNSUPPORTED!")
                 return False
-
             os.system(self.command)
             print("photo upscaled")
         else:
             if self.os_type == "linux":
-                self.command = f"wine {fsrpath} -Scale {quality_setting} {self.filepath} {output_path}"
+                self.command = f"wine {fsrpath} -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
             elif self.os_type == "win32":
-                self.command = f"{fsrpath} -Scale {quality_setting} {self.filepath} {output_path}"
+                self.command = f"{fsrpath} -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
             else:
                 print("OS CURRENTLY UNSUPPORTED!")
                 return False
+            print( self.command )
+            
             os.system(self.command)
             print("photo upscaled")
 

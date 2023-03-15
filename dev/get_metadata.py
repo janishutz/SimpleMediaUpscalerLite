@@ -1,4 +1,6 @@
-import ffmpeg
+import bin.lib.ffmpeg
+
+ffmpeg = bin.lib.ffmpeg
 
 
 class MetaDataParser:

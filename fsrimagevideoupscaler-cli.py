@@ -11,9 +11,11 @@ import argparse
 import bin.handler
 
 ap = argparse.ArgumentParser(description="FSRImageVideoUpscaler - CLI")
-ap.add_argument("Input file", help="Path to txt file containing the testdata")
+ap.add_argument("inputfile", help="File path for the video / image to be upscaled")
+ap.add_argument("outputfile", help="File path for the video / image that was upscaled")
+ap.add_argument('-s', '--scalefactor', help="Scale factor for the video / image")
 args = ap.parse_args()
 
 handler = bin.handler.Handler()
 
-handler.handler( 'bin/lib/FidelityFX_CLI.exe',  )
+handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile )
