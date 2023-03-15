@@ -18,7 +18,10 @@ args = ap.parse_args()
 
 handler = bin.handler.Handler()
 
-if ( args.scalefactor[ len(args.scalefactor) -1: ] == 'x' ):
-    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile )
+if ( args.scalefactor ):
+    if ( args.scalefactor[ len(args.scalefactor) -1: ] == 'x' ):
+        handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile )
+    else:
+        raise NameError( 'Argument Scale does require to be of form 2x! (it has to end in x)' )
 else:
-    raise NameError( 'Argument Scale does require to be of form 2x! (it has to end in x)' )
+    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile )
