@@ -93,7 +93,7 @@ class Handler:
 
     def video_scaling(self, ffmpegpath, fsrpath, filepath, quality_mode, quality_setting, output_path):
         # DO NOT CALL THIS! Use Handler().handler() instead!
-        self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
+        self.videometa = ffmpeg.probe(str(filepath), './lib/ffprobe.exe')["streams"].pop(0)
         # Retrieving Video metadata
         self.duration = self.videometa.get("duration")
         self.frames = self.videometa.get("nb_frames")
