@@ -10,13 +10,8 @@
 
 import os
 import sys
-
-if ( sys.platform == 'win32' ):
-    import bin.lib.ffmpeg.ffmpeg
-    ffmpeg = bin.lib.ffmpeg.ffmpeg
-else:
-    import bin.lib.ffmpeg
-    ffmpeg = bin.lib.ffmpeg
+import bin.lib.ffmpeg
+ffmpeg = bin.lib.ffmpeg
 import configparser
 import time
 import shutil
