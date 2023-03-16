@@ -56,7 +56,7 @@ class Handler:
                 self.filepath += self.letter
 
         # Determining filetype
-        if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv":
+        if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv" or str(filepath)[len(filepath) - 4:] == ".MP4":
             print("upscaling video")
             self.video_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path)
         elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg" or str(filepath)[len(filepath) - 5:] == ".jpeg":
@@ -70,9 +70,9 @@ class Handler:
         # DO NOT CALL THIS! Use Handler().handler() instead!
         if quality_mode == "default":
             if self.os_type == "linux":
-                self.command = f"wine {fsrpath} -QualityMode {quality_setting} {self.filepath} {output_path}"
+                self.command = f"wine {fsrpath} -QualityMode {quality_setting} {quality_setting} {self.filepath} {output_path}"
             elif self.os_type == "win32":
-                self.command = f"FidelityFX_CLI -QualityMode {quality_setting} {self.filepath} {output_path}"
+                self.command = f"FidelityFX_CLI -QualityMode {quality_setting} {quality_setting} {self.filepath} {output_path}"
             else:
                 print("OS CURRENTLY UNSUPPORTED!")
                 return False
@@ -94,7 +94,6 @@ class Handler:
         # if ( sys.platform == 'win32' ):
         #    self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
         # else:
-        print("\n\n\nupscaling video\n\n\n")
         self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
         # Retrieving Video metadata
         self.duration = self.videometa.get("duration")
@@ -134,7 +133,7 @@ class Handler:
         self.files = ""
         self.filelist = os.listdir(self.tmppath)
         self.filelist.pop(0)
-        self.filelist.reverse()
+        self.filelist.sort()
         self.number = 0
         for self.file in self.filelist:
             self.number += 1
@@ -206,21 +205,20 @@ class Handler:
             self.files_handle = self.fileout.pop(0)
             if quality_mode == "default":
                 if self.os_type == "linux":
-                    self.command_us = f"wine {fsrpath} -QualityMode {quality_setting} {self.files_handle}"
+                    self.command_us = f"wine {fsrpath} -QualityMode {quality_setting} {quality_setting}  {self.files_handle}"
                 elif self.os_type == "win32":
-                    self.command_us = f"FidelityFX_CLI -QualityMode {quality_setting} {self.files_handle}"
+                    self.command_us = f"FidelityFX_CLI -QualityMode {quality_setting} {quality_setting}  {self.files_handle}"
                 else:
                     print("OS CURRENTLY UNSUPPORTED!")
                     return False
             else:
                 if self.os_type == "linux":
-                    self.command_us = f"wine {fsrpath} -Scale {quality_setting} {self.files_handle} {self.tmppath}"
+                    self.command_us = f"wine {fsrpath} -Scale {quality_setting} {quality_setting}  {self.files_handle} {self.tmppath}"
                 elif self.os_type == "win32":
-                    self.command_us = f"FidelityFX_CLI -Scale {quality_setting} {self.files_handle} {self.tmppath}"
+                    self.command_us = f"FidelityFX_CLI -Scale {quality_setting} {quality_setting}  {self.files_handle} {self.tmppath}"
                 else:
                     print("OS CURRENTLY UNSUPPORTED!")
                     return False
-            print(self.command_us)
             os.system(self.command_us)
             time.sleep(3)
 

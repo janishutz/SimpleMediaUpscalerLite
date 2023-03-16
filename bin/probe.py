@@ -4,6 +4,7 @@
 
 import json
 import subprocess
+import sys
 
 try:
     from collections.abc import Iterable
@@ -47,7 +48,10 @@ def probe(filename, cmd='ffprobe', timeout=None, **kwargs):
     args += convert_kwargs_to_cmd_line_args(kwargs)
     args += [filename]
 
-    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    if ( sys.platform == 'win32' ):
+        p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    else:
+        p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     communicate_kwargs = {}
     if timeout is not None:
         communicate_kwargs['timeout'] = timeout
