@@ -118,7 +118,7 @@ class Handler:
             print("linux")
             self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
         elif self.os_type == "win32":
-            self.command = f"ffmpeg -i {str(self.filepath)} ${self.tmppath}ex%08d.png"
+            self.command = f"ffmpeg -i {str(self.filepath)} \"{self.tmppath}ex%08d.png\""
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
