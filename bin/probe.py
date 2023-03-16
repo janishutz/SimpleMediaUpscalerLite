@@ -1,3 +1,7 @@
+"""
+    This file here was created from multiple parts of ffmpeg-python
+"""
+
 import json
 import subprocess
 
