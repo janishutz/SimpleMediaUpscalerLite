@@ -53,6 +53,7 @@ def probe(filename, cmd='ffprobe', timeout=None, **kwargs):
         communicate_kwargs['timeout'] = timeout
     out, err = p.communicate(**communicate_kwargs)
     if p.returncode != 0:
+        print( p.returncode, out, err )
         raise Error('ffprobe', out, err)
     return json.loads(out.decode('utf-8'))
 
