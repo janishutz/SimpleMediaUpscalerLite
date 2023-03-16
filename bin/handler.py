@@ -94,6 +94,7 @@ class Handler:
         # if ( sys.platform == 'win32' ):
         #    self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
         # else:
+        print("\n\n\nupscaling video\n\n\n")
         self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
         # Retrieving Video metadata
         self.duration = self.videometa.get("duration")
@@ -113,7 +114,9 @@ class Handler:
             os.mkdir(self.tmppath)
         except FileExistsError:
             pass
-
+            
+        print("created dir")
+                
         if self.os_type == "linux":
             print("linux")
             self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
@@ -122,6 +125,8 @@ class Handler:
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
+        
+        print(self.command)
         os.system(self.command)
         print("video split")
 
@@ -139,6 +144,8 @@ class Handler:
                 self.files += f"{self.tmppath}{self.file} {self.tmppath}sc/ig{str(self.number).zfill(8)}.png "
         self.maxlength = 31900
         self.pos = 1
+        
+        print("found files, assembling commands")
 
         # Refactoring of commands that are longer than 32K characters
         if len(self.files) > self.maxlength:
@@ -187,6 +194,8 @@ class Handler:
             os.mkdir(f"{self.tmppath}sc/")
         except FileExistsError:
             pass
+            
+        print("prepared commands")
 
         # Upscaling images
         print("\n\n\nUpscaling images... \n\n\n")
