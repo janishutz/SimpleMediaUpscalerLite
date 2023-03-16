@@ -209,14 +209,13 @@ class Handler:
                     print("OS CURRENTLY UNSUPPORTED!")
                     return False
             else:
-                if quality_mode == "default":
-                    if self.os_type == "linux":
-                        self.command_us = f"wine {fsrpath} -Scale {quality_setting} {self.files_handle} {self.tmppath}"
-                    elif self.os_type == "win32":
-                        self.command_us = f"FidelityFX_CLI -Scale {quality_setting} {self.files_handle} {self.tmppath}"
-                    else:
-                        print("OS CURRENTLY UNSUPPORTED!")
-                        return False
+                if self.os_type == "linux":
+                    self.command_us = f"wine {fsrpath} -Scale {quality_setting} {self.files_handle} {self.tmppath}"
+                elif self.os_type == "win32":
+                    self.command_us = f"FidelityFX_CLI -Scale {quality_setting} {self.files_handle} {self.tmppath}"
+                else:
+                    print("OS CURRENTLY UNSUPPORTED!")
+                    return False
             os.system(self.command_us)
             time.sleep(3)
 
