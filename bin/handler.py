@@ -173,7 +173,6 @@ class Handler:
                     while self.files[self.posy - self.pos:self.posy - self.pos + 1] != " ":
                         self.pos += 1
                     self.file_processing = self.files[self.posx:self.posy - self.pos]
-                    print(self.file_processing[len(self.file_processing) - 14:len(self.file_processing) - 12])
                     if self.file_processing[len(self.file_processing) - 14:len(self.file_processing) - 12] == "ex":
                         self.pos += 5
                     else:
@@ -203,22 +202,22 @@ class Handler:
             self.files_handle = self.fileout.pop(0)
             if quality_mode == "default":
                 if self.os_type == "linux":
-                    self.command = f"wine {fsrpath} -QualityMode {quality_setting} {self.files_handle}"
+                    self.command_us = f"wine {fsrpath} -QualityMode {quality_setting} {self.files_handle}"
                 elif self.os_type == "win32":
-                    self.command = f"FidelityFX_CLI -QualityMode {quality_setting} {self.files_handle}"
+                    self.command_us = f"FidelityFX_CLI -QualityMode {quality_setting} {self.files_handle}"
                 else:
                     print("OS CURRENTLY UNSUPPORTED!")
                     return False
             else:
                 if quality_mode == "default":
                     if self.os_type == "linux":
-                        self.command = f"wine {fsrpath} -Scale {quality_setting} {self.files_handle} {self.tmppath}"
+                        self.command_us = f"wine {fsrpath} -Scale {quality_setting} {self.files_handle} {self.tmppath}"
                     elif self.os_type == "win32":
-                        self.command = f"FidelityFX_CLI -Scale {quality_setting} {self.files_handle} {self.tmppath}"
+                        self.command_us = f"FidelityFX_CLI -Scale {quality_setting} {self.files_handle} {self.tmppath}"
                     else:
                         print("OS CURRENTLY UNSUPPORTED!")
                         return False
-            os.system(self.command)
+            os.system(self.command_us)
             time.sleep(3)
 
         # get Video's audio
