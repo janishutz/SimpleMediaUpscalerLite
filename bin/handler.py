@@ -220,6 +220,7 @@ class Handler:
                 else:
                     print("OS CURRENTLY UNSUPPORTED!")
                     return False
+            print(self.command_us)
             os.system(self.command_us)
             time.sleep(3)
 
