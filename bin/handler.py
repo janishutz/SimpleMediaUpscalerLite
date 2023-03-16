@@ -40,10 +40,13 @@ class Handler:
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
-        if ( self.tmppath[len(self.tmppath) - 1: ] == '/' ):
-            self.tmppath += "fsru/"
+        if ( self.os_type == 'win32' ):
+            self.tmppath += '\\fsru\\'
         else:
-            self.tmppath += '/fsru/'
+            if ( self.tmppath[len(self.tmppath) - 1: ] == '/' ):
+                self.tmppath += "fsru/"
+            else:
+                self.tmppath += '/fsru/'
         # checking for spaces in filepath (for use with terminal commands)
         self.filepath = ""
         for self.letter in filepath:
@@ -115,7 +118,7 @@ class Handler:
             print("linux")
             self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
         elif self.os_type == "win32":
-            self.command = f"ffmpeg -i {str(self.filepath)} ${self.tmppath}ex%08d.png"
+            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
@@ -130,7 +133,10 @@ class Handler:
         self.number = 0
         for self.file in self.filelist:
             self.number += 1
-            self.files += f"{self.tmppath}{self.file} {self.tmppath}sc/ig{str(self.number).zfill(8)}.png "
+            if ( self.os_type == 'win32' ):
+                self.files += f"{self.tmppath}{self.file} {self.tmppath}sc\\ig{str(self.number).zfill(8)}.png "
+            else:
+                self.files += f"{self.tmppath}{self.file} {self.tmppath}sc/ig{str(self.number).zfill(8)}.png "
         self.maxlength = 31900
         self.pos = 1
 
