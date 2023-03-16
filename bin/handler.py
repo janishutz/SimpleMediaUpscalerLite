@@ -142,7 +142,11 @@ class Handler:
                 self.files += f"{self.tmppath}{self.file} {self.tmppath}sc\\ig{str(self.number).zfill(8)}.png "
             else:
                 self.files += f"{self.tmppath}{self.file} {self.tmppath}sc/ig{str(self.number).zfill(8)}.png "
-        self.maxlength = 31900
+        
+        if ( self.os_type == 'win32' ):
+            self.maxlength = 8000
+        else:
+        	self.maxlength = 31900
         self.pos = 1
         
         print("found files, assembling commands")
@@ -240,7 +244,7 @@ class Handler:
         if self.os_type == "linux":
             self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.png {output_path} -i {self.tmppath}audio.aac"
         elif self.os_type == "win32":
-            self.command = f"ffmpeg -framerate {self.framerate} -i ${self.tmppath}sc/ig%08d.png {output_path} -i {self.tmppath}audio.aac"
+            self.command = f"ffmpeg -framerate {self.framerate} -i \"{self.tmppath}sc/ig%08d.png\" {output_path} -i {self.tmppath}audio.aac"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
