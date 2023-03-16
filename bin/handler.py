@@ -10,8 +10,8 @@
 
 import os
 import sys
-import bin.lib.ffmpeg
-ffmpeg = bin.lib.ffmpeg
+import bin.probe
+ffmpeg = bin.probe
 import configparser
 import time
 import shutil
@@ -69,7 +69,7 @@ class Handler:
             if self.os_type == "linux":
                 self.command = f"wine {fsrpath} -QualityMode {quality_setting} {self.filepath} {output_path}"
             elif self.os_type == "win32":
-                self.command = f"{fsrpath} -QualityMode {quality_setting} {self.filepath} {output_path}"
+                self.command = f"FidelityFX_CLI -QualityMode {quality_setting} {self.filepath} {output_path}"
             else:
                 print("OS CURRENTLY UNSUPPORTED!")
                 return False
@@ -79,7 +79,7 @@ class Handler:
             if self.os_type == "linux":
                 self.command = f"wine {fsrpath} -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
             elif self.os_type == "win32":
-                self.command = f"{fsrpath} -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
+                self.command = f"FidelityFX_CLI -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
             else:
                 print("OS CURRENTLY UNSUPPORTED!")
                 return False            
@@ -190,7 +190,7 @@ class Handler:
                 if self.os_type == "linux":
                     self.command = f"wine {fsrpath} -QualityMode {quality_setting} {self.files_handle}"
                 elif self.os_type == "win32":
-                    self.command = f"{fsrpath} -QualityMode {quality_setting} {self.files_handle}"
+                    self.command = f"FidelityFX_CLI -QualityMode {quality_setting} {self.files_handle}"
                 else:
                     print("OS CURRENTLY UNSUPPORTED!")
                     return False
@@ -199,7 +199,7 @@ class Handler:
                     if self.os_type == "linux":
                         self.command = f"wine {fsrpath} -Scale {quality_setting} {self.files_handle} {self.tmppath}"
                     elif self.os_type == "win32":
-                        self.command = f"{fsrpath} -Scale {quality_setting} {self.files_handle} {self.tmppath}"
+                        self.command = f"FidelityFX_CLI -Scale {quality_setting} {self.files_handle} {self.tmppath}"
                     else:
                         print("OS CURRENTLY UNSUPPORTED!")
                         return False
