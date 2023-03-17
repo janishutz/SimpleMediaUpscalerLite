@@ -147,12 +147,10 @@ class Handler:
         else:
         	self.maxlength = 31900
         self.pos = 1
-        
-        print("found files, assembling commands")
 
         # Refactoring of commands that are longer than 32K characters
+        self.fileout = []
         if len(self.files) > self.maxlength:
-            self.fileout = []
             while self.files[self.maxlength - self.pos:self.maxlength - self.pos + 1] != " ":
                 self.pos += 1
             self.file_processing = self.files[:self.maxlength - self.pos]
@@ -192,8 +190,9 @@ class Handler:
         else:
             self.fileout.append(self.files)
 
+
         try:
-            os.mkdir(f"{self.tmppath}sc/")
+            os.mkdir(f"{self.tmppath}sc")
         except FileExistsError:
             pass
             
@@ -219,6 +218,7 @@ class Handler:
                 else:
                     print("OS CURRENTLY UNSUPPORTED!")
                     return False
+            print( self.command_us )
             os.system(self.command_us)
             time.sleep(3)
 
