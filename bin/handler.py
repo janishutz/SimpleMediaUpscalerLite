@@ -103,6 +103,8 @@ class Handler:
         except TypeError:
             self.infos = str(self.videometa.get("r_frame_rate"))
             self.framerate = float(self.infos[:len(self.infos) - 2])
+            
+        print('\n\nframe rate is: ', self.framerate, '\n\n')
 
         # Splitting video into frames
         try:
