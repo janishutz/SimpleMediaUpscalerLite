@@ -125,7 +125,6 @@ class Handler:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
         
-        print(self.command)
         os.system(self.command)
         print("video split")
 
@@ -212,9 +211,9 @@ class Handler:
                     return False
             else:
                 if self.os_type == "linux":
-                    self.command_us = f"wine {fsrpath} -Scale {quality_setting} {quality_setting} {self.files_handle} {self.tmppath}"
+                    self.command_us = f"wine {fsrpath} -Scale {quality_setting} {quality_setting} {self.files_handle}"
                 elif self.os_type == "win32":
-                    self.command_us = f"FidelityFX_CLI -Scale {quality_setting} {quality_setting} {self.files_handle} {self.tmppath}"
+                    self.command_us = f"FidelityFX_CLI -Scale {quality_setting} {quality_setting} {self.files_handle}"
                 else:
                     print("OS CURRENTLY UNSUPPORTED!")
                     return False
