@@ -243,7 +243,7 @@ class Handler:
         if self.os_type == "linux":
             self.command = f"ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.png {output_path} -i {self.tmppath}audio.aac"
         elif self.os_type == "win32":
-            self.command = f"ffmpeg -framerate {self.framerate} -i \"{self.tmppath}sc/ig%08d.png\" {output_path} -i {self.tmppath}audio.aac"
+            self.command = f"ffmpeg -framerate {self.framerate} -i \"{self.tmppath}sc\\ig%08d.png\" {output_path} -i {self.tmppath}audio.aac"
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
