@@ -15,6 +15,7 @@ ffmpeg = bin.probe
 import configparser
 import time
 import shutil
+import subprocess
 
 
 # Loading the config file to get user preferred temp path
