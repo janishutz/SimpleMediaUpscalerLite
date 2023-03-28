@@ -99,16 +99,17 @@ class Handler:
         self.duration = self.videometa.get( 'duration' )
         self.frames = self.videometa.get( 'nb_frames' )
         try:
-            self.framerate = round(float(self.frames) / float(self.duration), 1)
+            self.infos = str( self.videometa.get( 'r_frame_rate' ) )
+            self.framerate = float( self.infos[:len(self.infos) - 2] )
         except TypeError:
-            self.infos = str( self.videometa.get("r_frame_rate") )
             print( '\n\n=> using fallback method to get framerate' )
-            self.framerate = float(self.infos[:len(self.infos) - 2])
+            self.framerate = round(float(self.frames) / float(self.duration), 1)
+            
             
         print( '==> Video duration is: ', self.duration, 's' )
         print( '==> Framecount is: ', self.frames, ' frames' )
         print( '==> Frame rate is: ', self.framerate, ' FPS' )
-        print( '==> Running with ', threads, ' threads\n\n' )
+        print( '==> Running with: ', threads, ' threads\n\n' )
 
         time.sleep( 2 );
 
