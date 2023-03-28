@@ -60,10 +60,10 @@ class Handler:
 
         # Determining filetype
         if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv" or str(filepath)[len(filepath) - 4:] == ".MP4":
-            print("upscaling video")
+            print( '\n\n==> Upscaling video' )
             self.video_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path, threads)
         elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg" or str(filepath)[len(filepath) - 5:] == ".jpeg":
-            print("upscaling image")
+            print( '\n==>upscaling image' )
             self.photo_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path)
         else:
             print("not supported")
@@ -79,8 +79,6 @@ class Handler:
             else:
                 print("OS CURRENTLY UNSUPPORTED!")
                 return False
-            os.system(self.command)
-            print("photo upscaled")
         else:
             if self.os_type == "linux":
                 self.command = f"wine {fsrpath} -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
@@ -88,25 +86,31 @@ class Handler:
                 self.command = f"FidelityFX_CLI -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
             else:
                 print("OS CURRENTLY UNSUPPORTED!")
-                return False            
-            os.system(self.command)
-            print("photo upscaled")
+                return False 
+                      
+        os.system(self.command)
+        print( '\n\n==>Photo upscaled' );
 
     def video_scaling(self, fsrpath, filepath, quality_mode, quality_setting, output_path, threads):
         # DO NOT CALL THIS! Use Handler().handler() instead!
         self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
 
         # Retrieving Video metadata
-        self.duration = self.videometa.get("duration")
-        self.frames = self.videometa.get("nb_frames")
+        self.duration = self.videometa.get( 'duration' )
+        self.frames = self.videometa.get( 'nb_frames' )
         try:
             self.framerate = round(float(self.frames) / float(self.duration), 1)
         except TypeError:
-            self.infos = str(self.videometa.get("r_frame_rate"))
+            self.infos = str( self.videometa.get("r_frame_rate") )
+            print( '\n\n=> using fallback method to get framerate' )
             self.framerate = float(self.infos[:len(self.infos) - 2])
             
-        print( '\n\nframe rate is: ', self.framerate, '\n\n' )
-        print( '\n\nRunning with ', threads, ' threads\n\n' )
+        print( '==> Video duration is: ', self.duration, 's' )
+        print( '==> Framecount is: ', self.duration, ' frames' )
+        print( '==> Frame rate is: ', self.framerate, ' FPS' )
+        print( '==> Running with ', threads, ' threads\n\n' )
+
+        time.sleep( 2 );
 
         # Splitting video into frames
         try:
@@ -118,7 +122,7 @@ class Handler:
         except FileExistsError:
             pass
             
-        print("created dir")
+        print( '\n==> Created directory' )
                 
         if self.os_type == "linux":
             self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
@@ -129,7 +133,7 @@ class Handler:
             return False
         
         os.system( self.command )
-        print( 'video split' )
+        print( '\n==> Video split ' )
 
         # Locate Images and assemble FSR-Command
         self.file_list = []
@@ -165,7 +169,7 @@ class Handler:
         if ( threads > multiprocessing.cpu_count() ):
             self.threads = multiprocessing.cpu_count();
 
-        print( f'\n\nUsing { self.threads } threads\n\n' );
+        print( f'\n\n==>Using { self.threads } threads <==\n\n' );
 
         time.sleep( 2 );
 
@@ -188,7 +192,7 @@ class Handler:
 
         
         # get Video's audio
-        print( 'Finished Upscaling individual images. \n\n\nRetrieving Video audio to append' )
+        print( '\n\n==>Finished Upscaling individual images. \n==>Retrieving Video audio to append\n\n' )
         time.sleep( 2 );
         try:
             os.remove(f"{self.tmppath}audio.aac")
@@ -205,7 +209,7 @@ class Handler:
         os.system( self.command )
 
         # reassemble Video
-        print( 'Reassembling Video... with framerate @', self.framerate )
+        print( '\n\n==>Reassembling Video... with framerate @', self.framerate, '\n\n' )
         if self.os_type == 'linux':
             self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.png {output_path} -i {self.tmppath}audio.aac'
         elif self.os_type == 'win32':
