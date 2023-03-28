@@ -25,7 +25,7 @@ go = True;
 
 if __name__ == '__main__':
     multiprocessing.freeze_support();
-	if ( os.path.exists( args.outputfile ) ):
+    if ( os.path.exists( args.outputfile ) ):
         if ( input( 'File already exists. Do you want to replace it? (y/n) ' ).lower() == 'y' ):
             go = True
             os.remove( args.outputfile );
