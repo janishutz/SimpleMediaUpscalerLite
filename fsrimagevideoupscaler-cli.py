@@ -12,7 +12,7 @@ import bin.handler
 import os
 import multiprocessing
 
-ap = argparse.ArgumentParser( description='FSRImageVideoUpscaler - CLI' )
+ap = argparse.ArgumentParser( description='FSRImageVideoUpscaler - CLI, a CLI application to upscale videos and images using FSR. ' )
 ap.add_argument( 'inputfile', help='File path for the video / image to be upscaled' )
 ap.add_argument( 'outputfile', help='File path for the video / image that was upscaled' )
 ap.add_argument( '-s', '--scalefactor', help='Scale factor for the video / image' )
