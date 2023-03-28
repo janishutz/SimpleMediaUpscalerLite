@@ -120,7 +120,6 @@ class Handler:
         print("created dir")
                 
         if self.os_type == "linux":
-            print("linux")
             self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
         elif self.os_type == "win32":
             self.command = f"ffmpeg -i {str(self.filepath)} \"{self.tmppath}ex%08d.png\""

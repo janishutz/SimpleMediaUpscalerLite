@@ -12,18 +12,18 @@ import bin.handler
 import os
 import multiprocessing
 
-ap = argparse.ArgumentParser( description='FSRImageVideoUpscaler - CLI, a CLI application to upscale videos and images using FSR. ' )
-ap.add_argument( 'inputfile', help='File path for the video / image to be upscaled' )
-ap.add_argument( 'outputfile', help='File path for the video / image that was upscaled' )
-ap.add_argument( '-s', '--scalefactor', help='Scale factor for the video / image' )
-ap.add_argument( '-T', '--threads', help='Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread)' )
-args = ap.parse_args()
-
-handler = bin.handler.Handler()
-
-go = True;
-
 if __name__ == '__main__':
+    ap = argparse.ArgumentParser( description='FSRImageVideoUpscaler - CLI, a CLI application to upscale videos and images using FSR. ' )
+    ap.add_argument( 'inputfile', help='File path for the video / image to be upscaled' )
+    ap.add_argument( 'outputfile', help='File path for the video / image that was upscaled' )
+    ap.add_argument( '-s', '--scalefactor', help='Scale factor for the video / image' )
+    ap.add_argument( '-T', '--threads', help='Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread)' )
+    args = ap.parse_args()
+
+    handler = bin.handler.Handler()
+
+    go = True;
+
     multiprocessing.freeze_support();
     if ( os.path.exists( args.outputfile ) ):
         if ( input( 'File already exists. Do you want to replace it? (y/n) ' ).lower() == 'y' ):
