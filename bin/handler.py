@@ -93,26 +93,7 @@ class Handler:
 
     def video_scaling(self, fsrpath, filepath, quality_mode, quality_setting, output_path, threads):
         # DO NOT CALL THIS! Use Handler().handler() instead!
-        self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
-
-        # Retrieving Video metadata
-        self.duration = self.videometa.get( 'duration' )
-        self.frames = self.videometa.get( 'nb_frames' )
-        try:
-            self.infos = str( self.videometa.get( 'r_frame_rate' ) )
-            self.framerate = float( self.infos[:len(self.infos) - 2] )
-        except TypeError:
-            print( '\n\n=> using fallback method to get framerate' )
-            self.framerate = round(float(self.frames) / float(self.duration), 1)
-            
-            
-        print( '==> Video duration is: ', self.duration, 's' )
-        print( '==> Framecount is: ', self.frames, ' frames' )
-        print( '==> Frame rate is: ', self.framerate, ' FPS' )
-        print( '==> Running with: ', threads, ' threads\n\n' )
-
-        time.sleep( 2 );
-
+        
         # Splitting video into frames
         try:
             shutil.rmtree(self.tmppath)
@@ -154,6 +135,26 @@ class Handler:
         else:
         	self.maxlength = 31900
         self.pos = 1
+
+
+        # Retrieving Video metadata
+        self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
+
+        self.duration = self.videometa.get( 'duration' )
+        self.frames = len( self.filelist )
+        try:
+            self.framerate = round(float(self.frames) / float(self.duration), 1)
+        except TypeError:
+            print( '\n\n=> using fallback method to get framerate' )
+            self.infos = str( self.videometa.get( 'r_frame_rate' ) )
+            self.framerate = float( self.infos[:len(self.infos) - 2] )
+            
+        print( '\n\n==> Video duration is: ', self.duration, 's' )
+        print( '==> Framecount is: ', self.frames, ' frames' )
+        print( '==> Frame rate is: ', self.framerate, ' FPS' )
+        print( '==> Running with: ', threads, ' threads\n\n' )
+
+        time.sleep( 2 );
 
         try:
             os.mkdir(f"{self.tmppath}sc")
