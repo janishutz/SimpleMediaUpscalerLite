@@ -10,7 +10,7 @@
 import argparse
 import bin.handler
 import os
-import time
+import multiprocessing
 
 ap = argparse.ArgumentParser( description='FSRImageVideoUpscaler - CLI' )
 ap.add_argument( 'inputfile', help='File path for the video / image to be upscaled' )
@@ -23,25 +23,27 @@ handler = bin.handler.Handler()
 
 go = True;
 
-if ( os.path.exists( args.outputfile ) ):
-    if ( input( 'File already exists. Do you want to replace it? (y/n) ' ).lower() == 'y' ):
-        go = True
-        os.remove( args.outputfile );
-    else:
-        print( '\nRefusing to Upscale video. Please delete the file or specify another filepath!')
-        go = False
+if __name__ == '__main__':
+    multiprocessing.freeze_support();
+	if ( os.path.exists( args.outputfile ) ):
+        if ( input( 'File already exists. Do you want to replace it? (y/n) ' ).lower() == 'y' ):
+            go = True
+            os.remove( args.outputfile );
+        else:
+            print( '\nRefusing to Upscale video. Please delete the file or specify another filepath!')
+            go = False
 
-if ( go ):
-    if ( args.scalefactor ):
-        if ( args.scalefactor[ len(args.scalefactor) -1: ] == 'x' ):
-            if ( args.threads != None ):
-                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, threads=int( args.threads ) );
+    if ( go ):
+        if ( args.scalefactor ):
+            if ( args.scalefactor[ len(args.scalefactor) -1: ] == 'x' ):
+                if ( args.threads != None ):
+                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, threads=int( args.threads ) );
+                else:
+                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile );
             else:
-                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile );
+                raise NameError( 'Argument Scale does require to be of form 2x! (it has to end in x)' )
         else:
-            raise NameError( 'Argument Scale does require to be of form 2x! (it has to end in x)' )
-    else:
-        if ( args.threads != None ):
-            handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, threads=int( args.threads ) );
-        else:
-            handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile )
+            if ( args.threads != None ):
+                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, threads=int( args.threads ) );
+            else:
+                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile )
