@@ -106,7 +106,7 @@ class Handler:
             self.framerate = float(self.infos[:len(self.infos) - 2])
             
         print( '==> Video duration is: ', self.duration, 's' )
-        print( '==> Framecount is: ', self.duration, ' frames' )
+        print( '==> Framecount is: ', self.frames, ' frames' )
         print( '==> Frame rate is: ', self.framerate, ' FPS' )
         print( '==> Running with ', threads, ' threads\n\n' )
 
