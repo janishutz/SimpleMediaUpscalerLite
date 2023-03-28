@@ -32,7 +32,7 @@ class Handler:
         self.tmppath = ""
         self.videometa = {}
 
-    def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path, threads=4):
+    def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path, sharpening, scaling, threads=4 ):
         # Function to be called when using this class as this function automatically determines if file is video or image
         print( '\n\nFSRImageVideoUpscalerFrontend - V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\n\n\n\n' );
 
@@ -61,7 +61,7 @@ class Handler:
         # Determining filetype
         if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv" or str(filepath)[len(filepath) - 4:] == ".MP4":
             print( '\n\n==> Upscaling video' )
-            self.video_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path, threads)
+            self.video_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path, threads, sharpening, scaling)
         elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg" or str(filepath)[len(filepath) - 5:] == ".jpeg":
             print( '\n==>upscaling image' )
             self.photo_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path)
@@ -91,7 +91,7 @@ class Handler:
         os.system(self.command)
         print( '\n\n==>Photo upscaled' );
 
-    def video_scaling(self, fsrpath, filepath, quality_mode, quality_setting, output_path, threads):
+    def video_scaling( self, fsrpath, filepath, quality_mode, quality_setting, output_path, threads, sharpening, scaling ):
         # DO NOT CALL THIS! Use Handler().handler() instead!
         
         # Splitting video into frames
@@ -185,7 +185,7 @@ class Handler:
             if ( i == self.threads - 1 ):
                 for element in self.file_list:
                     self.files += element;
-            self.command_list.append( ( quality_mode, self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type ) )
+            self.command_list.append( ( quality_mode, self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type, sharpening, scaling ) )
 
         self.pool = multiprocessing.Pool( self.threads )
         self.pool.starmap( upscalerEngine, self.command_list );
@@ -221,10 +221,9 @@ class Handler:
             return False
         os.system( self.command )
 
-        print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\nFSRImageVideoUpscalerFrontend V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n' )
 
 
-def upscalerEngine (  quality_mode, files, fsrpath, quality_setting, number, maxlength, os_type ):
+def upscalerEngine (  quality_mode, files, fsrpath, quality_setting, number, maxlength, os_type, sharpening, scaling ):
     files = files;
     # Refactoring of commands that are longer than 32K characters
     fileout = [];
@@ -274,23 +273,36 @@ def upscalerEngine (  quality_mode, files, fsrpath, quality_setting, number, max
 
     while len( fileout ) > 0:
         files_handle = fileout.pop(0)
-        if quality_mode == 'default':
+        if ( not scaling ):
+            if quality_mode == 'default':
+                if os_type == 'linux':
+                    command_us = f'wine {fsrpath} -QualityMode {quality_setting} {files_handle}'
+                elif os_type == 'win32':
+                    command_us = f'FidelityFX_CLI -QualityMode {quality_setting} {files_handle}'
+                else:
+                    print( 'OS CURRENTLY UNSUPPORTED!' )
+                    return False
+            else:
+                if os_type == 'linux':
+                    command_us = f'wine {fsrpath} -Scale {quality_setting} {quality_setting} {files_handle}'
+                elif os_type == 'win32':
+                    command_us = f'FidelityFX_CLI -Scale {quality_setting} {quality_setting} {files_handle}'
+                else:
+                    print( 'OS CURRENTLY UNSUPPORTED!' )
+                    return False
+            sub = subprocess.Popen( command_us, shell=True );
+            sub.wait();
+        if sharpening != '':
+            print( '\n\n\n PROCESS: ', number, '\nRunning sharpening filter\n\n\n' );
             if os_type == 'linux':
-                command_us = f'wine {fsrpath} -QualityMode {quality_setting} {files_handle}'
+                command_sharpening = f'wine {fsrpath} -Mode CAS -Sharpness {sharpening} {files_handle}'
             elif os_type == 'win32':
-                command_us = f'FidelityFX_CLI -QualityMode {quality_setting} {files_handle}'
+                command_sharpening = f'FidelityFX_CLI -Mode CAS -Sharpness {sharpening} {files_handle}'
             else:
                 print( 'OS CURRENTLY UNSUPPORTED!' )
                 return False
-        else:
-            if os_type == "linux":
-                command_us = f'wine {fsrpath} -Scale {quality_setting} {quality_setting} {files_handle}'
-            elif os_type == "win32":
-                command_us = f'FidelityFX_CLI -Scale {quality_setting} {quality_setting} {files_handle}'
-            else:
-                print( 'OS CURRENTLY UNSUPPORTED!' )
-                return False
-        sub = subprocess.Popen( command_us, shell=True );
-        sub.wait();
+            sub2 = subprocess.Popen( command_sharpening, shell=True );
+            sub2.wait()
+        
         time.sleep(3)
     print( '\n\nCompleted executing Job\n\n\n PROCESS: ', number, '\n\n\n' );
