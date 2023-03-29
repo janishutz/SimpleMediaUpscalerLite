@@ -107,9 +107,9 @@ class Handler:
         print( '\n==> Created directory' )
                 
         if self.os_type == "linux":
-            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.png"
+            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.bmp"
         elif self.os_type == "win32":
-            self.command = f"ffmpeg -i {str(self.filepath)} \"{self.tmppath}ex%08d.png\""
+            self.command = f"ffmpeg -i {str(self.filepath)} \"{self.tmppath}ex%08d.bmp\""
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
@@ -126,9 +126,9 @@ class Handler:
         for self.file in self.filelist:
             self.number += 1
             if ( self.os_type == 'win32' ):
-                self.file_list.append( f"{self.tmppath}{self.file} {self.tmppath}sc\\ig{str(self.number).zfill(8)}.png " );
+                self.file_list.append( f"{self.tmppath}{self.file} {self.tmppath}sc\\ig{str(self.number).zfill(8)}.bmp " );
             else:
-                self.file_list.append( f"{self.tmppath}{self.file} {self.tmppath}sc/ig{str(self.number).zfill(8)}.png " );
+                self.file_list.append( f"{self.tmppath}{self.file} {self.tmppath}sc/ig{str(self.number).zfill(8)}.bmp " );
         
         if ( self.os_type == 'win32' ):
             self.maxlength = 8000
@@ -213,9 +213,9 @@ class Handler:
         # reassemble Video
         print( '\n\n==>Reassembling Video... with framerate @', self.framerate, '\n\n' )
         if self.os_type == 'linux':
-            self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.png {output_path} -i {self.tmppath}audio.aac'
+            self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.bmp {output_path} -i {self.tmppath}audio.aac'
         elif self.os_type == 'win32':
-            self.command = f'ffmpeg -framerate {self.framerate} -i \"{self.tmppath}sc\\ig%08d.png\" {output_path} -i {self.tmppath}audio.aac'
+            self.command = f'ffmpeg -framerate {self.framerate} -i \"{self.tmppath}sc\\ig%08d.bmp\" {output_path} -i {self.tmppath}audio.aac'
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' );
             return False
