@@ -36,27 +36,34 @@ if __name__ == '__main__':
             go = False
 
     if ( args.noscaling ):
-        if ( float( args.sharpening ) > 0 ):
-            go = True;
-        else: 
+        if ( args.sharpening != None ):
+            if ( float( args.sharpening ) > 0 ):
+                go = True;
+            else: 
+                go = False;
+        else:
+            print( 'Missing argument for Sharpening. Please specify that argument and try again!' )
             go = False;
 
-    if ( go ):
+    if ( args.sharpening != None ):
         if ( float( args.sharpening ) > 1 ):
             print( 'Invalid argument for Sharpening, please specify  value between 0 and 1!' )
-        else:
-            if ( args.scalefactor ):
-                if ( args.scalefactor[ len(args.scalefactor) -1: ] == 'x' ):
-                    if ( args.threads != None ):
-                        handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, args.sharpening, args.noscaling, threads=int( args.threads ) );
-                    else:
-                        handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, args.sharpening, args.noscaling );
-                else:
-                    raise NameError( 'Argument Scale does require to be of form 2x! (it has to end in x)' )
-            else:
+            go = False;
+
+
+    if ( go ):
+        if ( args.scalefactor ):
+            if ( args.scalefactor[ len(args.scalefactor) -1: ] == 'x' ):
                 if ( args.threads != None ):
-                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, args.sharpening, args.noscaling, threads=int( args.threads ) );
+                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, args.sharpening, args.noscaling, threads=int( args.threads ) );
                 else:
-                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, args.sharpening, args.noscaling )
-            print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\nFSRImageVideoUpscalerFrontend V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n' )
+                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, args.sharpening, args.noscaling );
+            else:
+                raise NameError( 'Argument Scale does require to be of form 2x! (it has to end in x)' )
+        else:
+            if ( args.threads != None ):
+                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, args.sharpening, args.noscaling, threads=int( args.threads ) );
+            else:
+                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, args.sharpening, args.noscaling )
+        print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\nFSRImageVideoUpscalerFrontend V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n' )
 
