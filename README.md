@@ -8,6 +8,16 @@ This App is a PyQT5 frontend to AMD's FidelityFX Super Resolution codebase, whic
 - You may upscale Images (currently .png, .jpg and .jpeg) or Videos (currently .mp4 and .mkv)
 - Output file will be written to the specified.
 
+This App also features a CLI interface.
+- Options:
+```
+-s SCALEFACTOR	--scalefactor SCALEFACTOR		Factor of form 2x, maximum 4x
+-S SHARPENING	--sharpening SHARPENING			Value (0 - 1)
+-T THREADCOUNT	--threads THREADCOUNT			Choose how many threads in parallel. Maximum is max threads of your CPU
+-F FILETYPE		--filetype FILETYPE				Choose file type of temporary image files when upscaling videos (required)
+-N 				--noscaling						No upscaling, requires -S option (Sharpening option)
+```
+
 # Contributing
 If you have any suggestions or features you'd like to have implemented, you may either implement the feature yourself and open a pull request, or open an issue on this GitHub page. Both things are appreciated!
 *I am looking for somebody willing to maintain the Windows version (including installer) as I am running Linux*
