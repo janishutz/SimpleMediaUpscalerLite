@@ -117,9 +117,41 @@ class Handler:
         os.system( self.command )
         print( '\n==> Video split ' )
 
+        self.fsrScaler( self.tmppath, filepath, threads, quality_mode, fsrpath, quality_setting, sharpening, scaling )
+        
+        # get Video's audio
+        print( '\n\n==>Finished Upscaling individual images. \n==>Retrieving Video audio to append\n\n' )
+        time.sleep( 2 );
+        try:
+            os.remove(f"{self.tmppath}audio.aac")
+            os.remove(f"{output_path}")
+        except FileNotFoundError:
+            pass
+        if self.os_type == 'linux':
+            self.command = f'ffmpeg -i {self.filepath} -vn -acodec copy {self.tmppath}audio.aac'
+        elif self.os_type == 'win32':
+            self.command = f'ffmpeg -i {self.filepath} -vn -acodec copy {self.tmppath}audio.aac'
+        else:
+            print( 'OS CURRENTLY UNSUPPORTED!' )
+            return False
+        os.system( self.command )
+
+        # reassemble Video
+        print( '\n\n==>Reassembling Video... with framerate @', self.framerate, '\n\n' )
+        if self.os_type == 'linux':
+            self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.bmp {output_path} -i {self.tmppath}audio.aac'
+        elif self.os_type == 'win32':
+            self.command = f'ffmpeg -framerate {self.framerate} -i \"{self.tmppath}sc\\ig%08d.bmp\" {output_path} -i {self.tmppath}audio.aac'
+        else:
+            print( 'OS CURRENTLY UNSUPPORTED!' );
+            return False
+        os.system( self.command )
+
+
+    def fsrScaler ( self, tmppath, filepath, threads, quality_mode, fsrpath, quality_setting, sharpening, scaling ):
         # Locate Images and assemble FSR-Command
         self.file_list = []
-        self.filelist = os.listdir(self.tmppath)
+        self.filelist = os.listdir(tmppath)
         self.filelist.pop(0)
         self.filelist.sort()
         self.number = 0
@@ -133,7 +165,7 @@ class Handler:
         if ( self.os_type == 'win32' ):
             self.maxlength = 8000
         else:
-        	self.maxlength = 31900
+            self.maxlength = 31900
         self.pos = 1
 
 
