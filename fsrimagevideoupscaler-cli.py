@@ -23,6 +23,7 @@ if __name__ == '__main__':
     ap.add_argument( '-S', '--sharpening', help='Sharpening factor (between 0 and 1 wheras 0 means no sharpening, 1 the most sharpening. Recommendation: Do not exceed 0.25, as it often looks bad)' )
     ap.add_argument( '-N', '--noscaling', help='Do not upscale video, instead only sharpen. Sharpening argument required!', action='store_true' )
     ap.add_argument( '-T', '--threads', help='Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread)' )
+    ap.add_argument( '-E', '--engine', help='Upscaling engine. Can be fsr or SS (for Real-ESRGAN). FSR tends to be lower quality, but faster, Real-ESRGAN higher quality, but slower. Defaults to Real-ESRGAN' )
     args = ap.parse_args()
 
     handler = bin.handler.Handler()
@@ -30,6 +31,7 @@ if __name__ == '__main__':
     go = True;
     go2 = True;
     go3 = True;
+    engine = 'SS';
 
     multiprocessing.freeze_support();
     if ( os.path.exists( args.outputfile ) ):
@@ -39,6 +41,13 @@ if __name__ == '__main__':
         else:
             print( '\nRefusing to Upscale video. Please delete the file or specify another filepath!')
             go = False
+
+    if ( args.engine != None ):
+        if ( args.engine == 'fsr' or args.engine == 'SS' ):
+            engine = args.engine;
+        else:
+            print( 'Invalid argument for engine' )
+            go2 = False;
 
     if ( args.noscaling ):
         if ( args.sharpening != None ):
@@ -69,15 +78,15 @@ if __name__ == '__main__':
         if ( args.scalefactor ):
             if ( args.scalefactor[ len(args.scalefactor) -1: ] == 'x' ):
                 if ( args.threads != None ):
-                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, args.sharpening, args.noscaling, filetype, threads=int( args.threads ) );
+                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, args.sharpening, args.noscaling, filetype, engine, threads=int( args.threads ) );
                 else:
-                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, args.sharpening, args.noscaling, filetype );
+                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', args.scalefactor, args.outputfile, args.sharpening, args.noscaling, filetype, engine );
             else:
                 raise NameError( 'Argument Scale does require to be of form 2x! (it has to end in x)' )
         else:
             if ( args.threads != None ):
-                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, args.sharpening, args.noscaling, filetype, threads=int( args.threads ) );
+                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, args.sharpening, args.noscaling, filetype, engine, threads=int( args.threads ) );
             else:
-                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, args.sharpening, args.noscaling, filetype )
+                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, 'custom', '2x', args.outputfile, args.sharpening, args.noscaling, filetype, engine )
         print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\nFSRImageVideoUpscalerFrontend V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n' )
 

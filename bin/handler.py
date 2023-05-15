@@ -32,7 +32,7 @@ class Handler:
         self.tmppath = ""
         self.videometa = {}
 
-    def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path, sharpening, scaling, filetype, threads=4 ):
+    def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path, sharpening, scaling, filetype, scalerEngine, threads=4 ):
         # Function to be called when using this class as this function automatically determines if file is video or image
         print( '\n\nFSRImageVideoUpscalerFrontend - V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\n\n\n\n' );
 
@@ -61,7 +61,7 @@ class Handler:
         # Determining filetype
         if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv" or str(filepath)[len(filepath) - 4:] == ".MP4":
             print( '\n\n==> Upscaling video' )
-            self.video_scaling( fsrpath, filepath, quality_mode, quality_setting, output_path, threads, sharpening, scaling, filetype )
+            self.video_scaling( fsrpath, filepath, quality_mode, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine )
         elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg" or str(filepath)[len(filepath) - 5:] == ".jpeg":
             print( '\n==>upscaling image' )
             self.photo_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path)
@@ -91,7 +91,7 @@ class Handler:
         os.system(self.command)
         print( '\n\n==>Photo upscaled' );
 
-    def video_scaling( self, fsrpath, filepath, quality_mode, quality_setting, output_path, threads, sharpening, scaling, filetype ):
+    def video_scaling( self, fsrpath, filepath, quality_mode, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine ):
         # DO NOT CALL THIS! Use Handler().handler() instead!
         
         # Splitting video into frames
@@ -107,9 +107,9 @@ class Handler:
         print( '\n==> Created directory' )
                 
         if self.os_type == "linux":
-            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ex%08d.{ filetype }"
+            self.command = f"ffmpeg -i {str(self.filepath)} {self.tmppath}ig%08d.{ filetype }"
         elif self.os_type == "win32":
-            self.command = f"ffmpeg -i {str(self.filepath)} \"{self.tmppath}ex%08d.{ filetype }\""
+            self.command = f"ffmpeg -i {str(self.filepath)} \"{self.tmppath}ig%08d.{ filetype }\""
         else:
             print("OS CURRENTLY UNSUPPORTED!")
             return False
@@ -117,10 +117,24 @@ class Handler:
         os.system( self.command )
         print( '\n==> Video split ' )
 
-        self.fsrScaler( self.tmppath, filepath, threads, quality_mode, fsrpath, quality_setting, sharpening, scaling )
+
+        if ( scalerEngine == 'fsr' ):
+            self.fsrScaler( self.tmppath, filepath, threads, quality_mode, fsrpath, quality_setting, sharpening, scaling, filetype )
+        elif ( scalerEngine == 'SS' ):
+            self.superScaler( self.tmppath, threads, quality_setting, self.os_type )
+        else:
+            raise Exception( 'ERROR upscaling. scalerEngine invalid' );
         
         # get Video's audio
         print( '\n\n==>Finished Upscaling individual images. \n==>Retrieving Video audio to append\n\n' )
+
+        try:
+            self.framerate = round(float(self.frames) / float(self.duration), 1)
+        except TypeError:
+            print( '\n\n=> using fallback method to get framerate' )
+            self.infos = str( self.videometa.get( 'r_frame_rate' ) )
+            self.framerate = float( self.infos[:len(self.infos) - 2] )
+
         time.sleep( 2 );
         try:
             os.remove(f"{self.tmppath}audio.aac")
@@ -148,7 +162,16 @@ class Handler:
         os.system( self.command )
 
 
-    def fsrScaler ( self, tmppath, filepath, threads, quality_mode, fsrpath, quality_setting, sharpening, scaling ):
+    def superScaler ( self, tmppath, threads, quality_setting, os_platform ):
+        print( tmppath );
+        if ( os_platform == 'win32' ):
+            self.command = f'realesrgan-ncnn-vulkan -i {tmppath} -o {tmppath}\\us -s {quality_setting} -j {threads}:{threads}:{threads}'
+        elif ( os_platform == 'linux' ):
+            self.command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {tmppath} -o {tmppath}/us -s {quality_setting} -j {threads}:{threads}:{threads}'
+        os.system( self.command );
+
+
+    def fsrScaler ( self, tmppath, filepath, threads, quality_mode, fsrpath, quality_setting, sharpening, scaling, filetype ):
         # Locate Images and assemble FSR-Command
         self.file_list = []
         self.filelist = os.listdir(tmppath)
@@ -158,9 +181,9 @@ class Handler:
         for self.file in self.filelist:
             self.number += 1
             if ( self.os_type == 'win32' ):
-                self.file_list.append( f"{self.tmppath}{self.file} {self.tmppath}us\\ig{str(self.number).zfill(8)}.{ filetype } " );
+                self.file_list.append( f"{tmppath}{self.file} {tmppath}us\\ig{str(self.number).zfill(8)}.{ filetype } " );
             else:
-                self.file_list.append( f"{self.tmppath}{self.file} {self.tmppath}us/ig{str(self.number).zfill(8)}.{ filetype } " );
+                self.file_list.append( f"{tmppath}{self.file} {tmppath}us/ig{str(self.number).zfill(8)}.{ filetype } " );
         
         if ( self.os_type == 'win32' ):
             self.maxlength = 8000
@@ -189,7 +212,7 @@ class Handler:
         time.sleep( 2 );
 
         try:
-            os.mkdir( f'{self.tmppath}us' )
+            os.mkdir( f'{tmppath}us' )
         except FileExistsError:
             pass
 
@@ -228,14 +251,14 @@ class Handler:
             print( f'\n\n\n==> Sharpening using { self.threads } threads <==\n\n' );
             time.sleep( 2 );
 
-            self.pathSharpening = self.tmppath
+            self.pathSharpening = tmppath
 
             if ( not scaling ):
                 self.pathSharpening += 'us'
 
             time.sleep( 2 );
             try:
-                os.mkdir( f'{self.tmppath}sh' )
+                os.mkdir( f'{tmppath}sh' )
             except FileExistsError:
                 pass
             # Locate Images and assemble FSR-Command
@@ -247,9 +270,9 @@ class Handler:
             for self.file in self.filelist:
                 self.number += 1
                 if ( self.os_type == 'win32' ):
-                    self.file_list.append( f"{self.pathSharpening}\\{self.file} {self.tmppath}sh\\ig{str(self.number).zfill(8)}.{ filetype } " );
+                    self.file_list.append( f"{self.pathSharpening}\\{self.file} {tmppath}sh\\ig{str(self.number).zfill(8)}.{ filetype } " );
                 else:
-                    self.file_list.append( f"{self.pathSharpening}/{self.file} {self.tmppath}sh/ig{str(self.number).zfill(8)}.{ filetype } " );
+                    self.file_list.append( f"{self.pathSharpening}/{self.file} {tmppath}sh/ig{str(self.number).zfill(8)}.{ filetype } " );
             
             if ( self.os_type == 'win32' ):
                 self.maxlength = 8000
@@ -274,43 +297,6 @@ class Handler:
             self.pool.starmap( sharpeningEngine, self.command_list );
             self.pool.close();
             self.pool.join();
-
-        
-        # get Video's audio
-        print( '\n\n==>Finished Upscaling individual images. \n==>Retrieving Video audio to append\n\n' )
-        time.sleep( 2 );
-        try:
-            os.remove(f"{self.tmppath}audio.aac")
-            os.remove(f"{output_path}")
-        except FileNotFoundError:
-            pass
-        if self.os_type == 'linux':
-            self.command = f'ffmpeg -i {self.filepath} -vn -acodec copy {self.tmppath}audio.aac'
-        elif self.os_type == 'win32':
-            self.command = f'ffmpeg -i {self.filepath} -vn -acodec copy {self.tmppath}audio.aac'
-        else:
-            print( 'OS CURRENTLY UNSUPPORTED!' )
-            return False
-        os.system( self.command )
-
-        # reassemble Video
-
-        self.outputPath = self.tmppath
-        if ( sharpening != '' ):
-            self.outputPath += 'sh'
-        else:
-            self.outputPath += 'us'
-
-
-        print( '\n\n==> Reassembling Video... with framerate @', self.framerate, ' <==\n\n' )
-        if self.os_type == 'linux':
-            self.command = f'ffmpeg -framerate {self.framerate} -i {self.outputPath}/ig%08d.{ filetype } { output_path } -i {self.tmppath}audio.aac'
-        elif self.os_type == 'win32':
-            self.command = f'ffmpeg -framerate {self.framerate} -i \"{self.outputPath}\\ig%08d.{ filetype }\" { output_path } -i {self.tmppath}audio.aac'
-        else:
-            print( 'OS CURRENTLY UNSUPPORTED!' );
-            return False
-        os.system( self.command )
 
 
 
