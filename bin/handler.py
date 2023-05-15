@@ -32,7 +32,10 @@ class Handler:
         self.tmppath = ""
         self.videometa = {}
 
-    def handler(self, fsrpath, filepath, quality_mode, quality_setting, output_path, sharpening, scaling, filetype, scalerEngine, threads=4 ):
+
+# TODO: CHECK if this upscaler is any good: https://github.com/Maximellerbach/Image-Processing-using-AI (looks quite promising)
+
+    def handler(self, fsrpath, filepath, quality_setting, output_path, sharpening, scaling, filetype, scalerEngine, model, threads=4 ):
         # Function to be called when using this class as this function automatically determines if file is video or image
         print( '\n\nFSRImageVideoUpscalerFrontend - V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\n\n\n\n' );
 
@@ -61,37 +64,28 @@ class Handler:
         # Determining filetype
         if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv" or str(filepath)[len(filepath) - 4:] == ".MP4":
             print( '\n\n==> Upscaling video' )
-            self.video_scaling( fsrpath, filepath, quality_mode, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine )
+            self.video_scaling( fsrpath, filepath, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine, model )
         elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg" or str(filepath)[len(filepath) - 5:] == ".jpeg":
             print( '\n==>upscaling image' )
-            self.photo_scaling(fsrpath, filepath, quality_mode, quality_setting, output_path)
+            self.photo_scaling(fsrpath, filepath, quality_setting, output_path)
         else:
             print("not supported")
             return False
 
-    def photo_scaling(self, fsrpath, filepath, quality_mode, quality_setting, output_path):
+    def photo_scaling(self, fsrpath, filepath, quality_setting, output_path):
         # DO NOT CALL THIS! Use Handler().handler() instead!
-        if quality_mode == "default":
-            if self.os_type == "linux":
-                self.command = f"wine {fsrpath} -QualityMode {quality_setting} {self.filepath} {output_path}"
-            elif self.os_type == "win32":
-                self.command = f"FidelityFX_CLI -QualityMode {quality_setting} {self.filepath} {output_path}"
-            else:
-                print("OS CURRENTLY UNSUPPORTED!")
-                return False
+        if self.os_type == "linux":
+            self.command = f"wine {fsrpath} -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
+        elif self.os_type == "win32":
+            self.command = f"FidelityFX_CLI -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
         else:
-            if self.os_type == "linux":
-                self.command = f"wine {fsrpath} -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
-            elif self.os_type == "win32":
-                self.command = f"FidelityFX_CLI -Scale {quality_setting} {quality_setting} {self.filepath} {output_path}"
-            else:
-                print("OS CURRENTLY UNSUPPORTED!")
-                return False 
+            print("OS CURRENTLY UNSUPPORTED!")
+            return False 
                       
         os.system(self.command)
         print( '\n\n==>Photo upscaled' );
 
-    def video_scaling( self, fsrpath, filepath, quality_mode, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine ):
+    def video_scaling( self, fsrpath, filepath, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine, model ):
         # DO NOT CALL THIS! Use Handler().handler() instead!
         
         # Splitting video into frames
@@ -117,11 +111,31 @@ class Handler:
         os.system( self.command )
         print( '\n==> Video split ' )
 
+        # Retrieving Video metadata
+        self.filelist = os.listdir(self.tmppath)
+        self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
+
+        self.duration = self.videometa.get( 'duration' )
+        self.frames = len( self.filelist )
+        try:
+            self.framerate = round(float(self.frames) / float(self.duration), 1)
+        except TypeError:
+            print( '\n\n=> using fallback method to get framerate' )
+            self.infos = str( self.videometa.get( 'r_frame_rate' ) )
+            self.framerate = float( self.infos[:len(self.infos) - 2] )
+            
+        print( '\n\n==> Video duration is: ', self.duration, 's' )
+        print( '==> Framecount is: ', self.frames, ' frames' )
+        print( '==> Frame rate is: ', self.framerate, ' FPS' )
+        print( '==> Running with: ', threads, ' threads\n\n' )
+
+        time.sleep( 2 );
+
 
         if ( scalerEngine == 'fsr' ):
-            self.fsrScaler( self.tmppath, filepath, threads, quality_mode, fsrpath, quality_setting, sharpening, scaling, filetype )
+            self.fsrScaler( self.tmppath, filepath, threads, fsrpath, quality_setting + 'x', sharpening, scaling, filetype )
         elif ( scalerEngine == 'SS' ):
-            self.superScaler( self.tmppath, threads, quality_setting, self.os_type )
+            self.superScaler( self.tmppath, threads, quality_setting, self.os_type, model )
         else:
             raise Exception( 'ERROR upscaling. scalerEngine invalid' );
         
@@ -153,25 +167,31 @@ class Handler:
         # reassemble Video
         print( '\n\n==>Reassembling Video... with framerate @', self.framerate, '\n\n' )
         if self.os_type == 'linux':
-            self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.bmp {output_path} -i {self.tmppath}audio.aac'
+            self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.{filetype} {output_path} -i {self.tmppath}audio.aac'
         elif self.os_type == 'win32':
-            self.command = f'ffmpeg -framerate {self.framerate} -i \"{self.tmppath}sc\\ig%08d.bmp\" {output_path} -i {self.tmppath}audio.aac'
+            self.command = f'ffmpeg -framerate {self.framerate} -i \"{self.tmppath}sc\\ig%08d.{filetype}\" {output_path} -i {self.tmppath}audio.aac'
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' );
             return False
         os.system( self.command )
 
 
-    def superScaler ( self, tmppath, threads, quality_setting, os_platform ):
-        print( tmppath );
+    def superScaler ( self, tmppath, threads, quality_setting, os_platform, model ):
+        print( '\n\n==> Preparing to upscale videos <==\n\n==> You will see a lot of numbers flying by showing the progress of the upscaling of each individual image.\n==> This process might take a long time, depending on the length of the video.\n\n')
+        time.sleep( 2 );
+
+        try:
+            os.mkdir( f'{tmppath}sc' )
+        except FileExistsError:
+            pass
         if ( os_platform == 'win32' ):
-            self.command = f'realesrgan-ncnn-vulkan -i {tmppath} -o {tmppath}\\us -s {quality_setting} -j {threads}:{threads}:{threads}'
+            self.command = f'realesrgan-ncnn-vulkan -i {tmppath} -o {tmppath}sc -s {quality_setting} -j {threads}:{threads}:{threads} -n {model}'
         elif ( os_platform == 'linux' ):
-            self.command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {tmppath} -o {tmppath}/us -s {quality_setting} -j {threads}:{threads}:{threads}'
+            self.command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {tmppath} -o {tmppath}sc -s {quality_setting} -j {threads}:{threads}:{threads} -n {model}'
         os.system( self.command );
 
 
-    def fsrScaler ( self, tmppath, filepath, threads, quality_mode, fsrpath, quality_setting, sharpening, scaling, filetype ):
+    def fsrScaler ( self, tmppath, filepath, threads, fsrpath, quality_setting, sharpening, scaling, filetype ):
         # Locate Images and assemble FSR-Command
         self.file_list = []
         self.filelist = os.listdir(tmppath)
@@ -190,26 +210,6 @@ class Handler:
         else:
             self.maxlength = 31900
         self.pos = 1
-
-
-        # Retrieving Video metadata
-        self.videometa = ffmpeg.probe(str(filepath))["streams"].pop(0)
-
-        self.duration = self.videometa.get( 'duration' )
-        self.frames = len( self.filelist )
-        try:
-            self.framerate = round(float(self.frames) / float(self.duration), 1)
-        except TypeError:
-            print( '\n\n=> using fallback method to get framerate' )
-            self.infos = str( self.videometa.get( 'r_frame_rate' ) )
-            self.framerate = float( self.infos[:len(self.infos) - 2] )
-            
-        print( '\n\n==> Video duration is: ', self.duration, 's' )
-        print( '==> Framecount is: ', self.frames, ' frames' )
-        print( '==> Frame rate is: ', self.framerate, ' FPS' )
-        print( '==> Running with: ', threads, ' threads\n\n' )
-
-        time.sleep( 2 );
 
         try:
             os.mkdir( f'{tmppath}us' )
@@ -240,7 +240,7 @@ class Handler:
                 if ( i == self.threads - 1 ):
                     for element in self.file_list:
                         self.files += element;
-                self.command_list.append( ( quality_mode, self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type ) )
+                self.command_list.append( ( self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type ) )
 
             self.pool = multiprocessing.Pool( self.threads )
             self.pool.starmap( upscalerEngine, self.command_list );
@@ -300,7 +300,7 @@ class Handler:
 
 
 
-def upscalerEngine (  quality_mode, files, fsrpath, quality_setting, number, maxlength, os_type ):
+def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type ):
     files = files;
     # Refactoring of commands that are longer than 32K characters
     fileout = [];
@@ -350,22 +350,13 @@ def upscalerEngine (  quality_mode, files, fsrpath, quality_setting, number, max
 
     while len( fileout ) > 0:
         files_handle = fileout.pop(0)
-        if quality_mode == 'default':
-            if os_type == 'linux':
-                command_us = f'wine {fsrpath} -QualityMode {quality_setting} {files_handle}'
-            elif os_type == 'win32':
-                command_us = f'FidelityFX_CLI -QualityMode {quality_setting} {files_handle}'
-            else:
-                print( 'OS CURRENTLY UNSUPPORTED!' )
-                return False
+        if os_type == 'linux':
+            command_us = f'wine {fsrpath} -Scale {quality_setting} {quality_setting} {files_handle}'
+        elif os_type == 'win32':
+            command_us = f'FidelityFX_CLI -Scale {quality_setting} {quality_setting} {files_handle}'
         else:
-            if os_type == 'linux':
-                command_us = f'wine {fsrpath} -Scale {quality_setting} {quality_setting} {files_handle}'
-            elif os_type == 'win32':
-                command_us = f'FidelityFX_CLI -Scale {quality_setting} {quality_setting} {files_handle}'
-            else:
-                print( 'OS CURRENTLY UNSUPPORTED!' )
-                return False
+            print( 'OS CURRENTLY UNSUPPORTED!' )
+            return False
         sub = subprocess.Popen( command_us, shell=True );
         sub.wait();        
         time.sleep(3)
