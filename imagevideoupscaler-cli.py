@@ -23,8 +23,8 @@ if __name__ == '__main__':
     ap.add_argument( '-S', '--sharpening', help='Sharpening factor (between 0 and 1 whereas 0 means no sharpening, 1 the most sharpening. Recommendation: Do not exceed 0.25, as it often looks bad)' )
     ap.add_argument( '-N', '--noscaling', help='Do not upscale video, instead only sharpen. Sharpening argument required!', action='store_true' )
     ap.add_argument( '-T', '--threads', help='Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread). Scales well with FSR, barely with Real-ESRGAN, as it uses mostly the GPU to upscale' )
-    ap.add_argument( '-E', '--engine', help='Upscaling engine. Can be fsr or SS (for Real-ESRGAN). FSR tends to be lower quality, but faster, Real-ESRGAN higher quality, but slower. Defaults to Real-ESRGAN' )
-    ap.add_argument( '-M', '--model', help='Only available if using Real-ESRGAN. Change the ML-Model used to upsample video, can be: realesr-animevideov3 | realesrgan-x4plus | realesrgan-x4plus-anime , defaults to realesrgan-x4plus' )
+    ap.add_argument( '-E', '--engine', help='Upscaling engine. Can be fsr or SS (for Real-ESRGAN). FSR tends to be lower quality, but faster, Real-ESRGAN is meant for anime. Defaults to fsr' )
+    ap.add_argument( '-M', '--model', help='Only available if using Real-ESRGAN. Change the ML-Model used to upsample video, can be: realesr-animevideov3 | realesrgan-x4plus-anime , defaults to realesr-animevideov3' )
     args = ap.parse_args()
 
     handler = bin.handler.Handler()
@@ -32,9 +32,9 @@ if __name__ == '__main__':
     go = True;
     go2 = True;
     go3 = True;
-    engine = 'SS';
-    model = 'realesrgan-x4plus';
-    availableModels = [ 'realesr-animevideov3', 'realesrgan-x4plus', 'realesrgan-x4plus-anime' ];
+    engine = 'fsr';
+    model = 'realesr-animevideov3';
+    availableModels = [ 'realesr-animevideov3', 'realesrgan-x4plus-anime' ];
 
     multiprocessing.freeze_support();
     if ( os.path.exists( args.outputfile ) ):
