@@ -35,7 +35,7 @@ class Handler:
 
 # TODO: CHECK if this upscaler is any good: https://github.com/Maximellerbach/Image-Processing-using-AI (looks quite promising)
 
-    def handler(self, fsrpath, filepath, quality_setting, output_path, sharpening, scaling, filetype, scalerEngine, model, threads=4 ):
+    def handler(self, fsrpath, filepath, quality_setting, output_path, sharpening, scaling, filetype, scalerEngine, model, useSpecialModeSS, threads=4 ):
         # Function to be called when using this class as this function automatically determines if file is video or image
         print( '\n\nFSRImageVideoUpscalerFrontend - V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\n\n\n\n' );
 
@@ -64,7 +64,7 @@ class Handler:
         # Determining filetype
         if str(filepath)[len(filepath) - 4:] == ".mp4" or str(filepath)[len(filepath) - 4:] == ".mkv" or str(filepath)[len(filepath) - 4:] == ".MP4":
             print( '\n\n==> Upscaling video' )
-            self.video_scaling( fsrpath, filepath, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine, model )
+            self.video_scaling( fsrpath, filepath, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine, model, useSpecialModeSS )
         elif str(filepath)[len(filepath) - 4:] == ".JPG" or str(filepath)[len(filepath) - 4:] == ".png" or str(filepath)[len(filepath) - 4:] == ".jpg" or str(filepath)[len(filepath) - 5:] == ".jpeg":
             print( '\n==>upscaling image' )
             self.photo_scaling(fsrpath, filepath, quality_setting, output_path)
@@ -85,7 +85,7 @@ class Handler:
         os.system(self.command)
         print( '\n\n==>Photo upscaled' );
 
-    def video_scaling( self, fsrpath, filepath, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine, model ):
+    def video_scaling( self, fsrpath, filepath, quality_setting, output_path, threads, sharpening, scaling, filetype, scalerEngine, model, useSpecialModeSS ):
         # DO NOT CALL THIS! Use Handler().handler() instead!
         
         # Splitting video into frames
@@ -135,7 +135,10 @@ class Handler:
         if ( scalerEngine == 'fsr' ):
             self.fsrScaler( self.tmppath, filepath, threads, fsrpath, quality_setting + 'x', sharpening, scaling, filetype )
         elif ( scalerEngine == 'SS' ):
-            self.superScaler( self.tmppath, threads, quality_setting, self.os_type, model )
+            if ( not useSpecialModeSS ):
+                self.superScaler( self.tmppath, threads, quality_setting, self.os_type, model )
+            else:
+                self.specialSuperScaler( )
         else:
             raise Exception( 'ERROR upscaling. scalerEngine invalid' );
         
@@ -190,6 +193,10 @@ class Handler:
             self.command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {tmppath} -o {tmppath}sc -s {quality_setting} -j {threads}:{threads}:{threads} -n {model}'
         os.system( self.command );
 
+
+    def specialSuperScaler ():
+        pass
+    
 
     def fsrScaler ( self, tmppath, filepath, threads, fsrpath, quality_setting, sharpening, scaling, filetype ):
         # Locate Images and assemble FSR-Command
