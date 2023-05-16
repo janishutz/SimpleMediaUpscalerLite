@@ -314,7 +314,7 @@ class Handler:
 
             time.sleep( 2 );
             try:
-                os.mkdir( f'{tmppath}sh' )
+                os.mkdir( f'{tmppath}sc' )
             except FileExistsError:
                 pass
             # Locate Images and assemble FSR-Command
@@ -326,9 +326,9 @@ class Handler:
             for self.file in self.filelist:
                 self.number += 1
                 if ( self.os_type == 'win32' ):
-                    self.file_list.append( f"{self.pathSharpening}\\{self.file} {tmppath}sh\\ig{str(self.number).zfill(8)}.{ filetype } " );
+                    self.file_list.append( f"{self.pathSharpening}\\{self.file} {tmppath}sc\\ig{str(self.number).zfill(8)}.{ filetype } " );
                 else:
-                    self.file_list.append( f"{self.pathSharpening}/{self.file} {tmppath}sh/ig{str(self.number).zfill(8)}.{ filetype } " );
+                    self.file_list.append( f"{self.pathSharpening}/{self.file} {tmppath}sc/ig{str(self.number).zfill(8)}.{ filetype } " );
             
             if ( self.os_type == 'win32' ):
                 self.maxlength = 8000
@@ -374,7 +374,7 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
         while files[maxlength - pos:maxlength - pos + 1] != ' ':
             pos += 1
         file_processing = files[:maxlength - pos]
-        if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ex':
+        if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
             pos += 5
         else:
             pass
@@ -394,7 +394,7 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
                 while files[posy - pos:posy - pos + 1] != ' ':
                     pos += 1
                 file_processing = files[posx:posy - pos]
-                if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ex':
+                if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
                     pos += 5
                 else:
                     pass
@@ -443,7 +443,7 @@ def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening ):
         while files[maxlength - pos:maxlength - pos + 1] != ' ':
             pos += 1
         file_processing = files[:maxlength - pos]
-        if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ex':
+        if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
             pos += 5
         else:
             pass
@@ -463,7 +463,7 @@ def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening ):
                 while files[posy - pos:posy - pos + 1] != ' ':
                     pos += 1
                 file_processing = files[posx:posy - pos]
-                if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ex':
+                if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
                     pos += 5
                 else:
                     pass
