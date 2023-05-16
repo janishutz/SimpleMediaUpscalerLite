@@ -17,7 +17,6 @@ import time
 import shutil
 import subprocess
 import multiprocessing
-import itertools
 
 
 # Loading the config file to get user preferred temp path
@@ -138,7 +137,7 @@ class Handler:
             if ( not useSpecialModeSS ):
                 self.superScaler( self.tmppath, threads, quality_setting, self.os_type, model )
             else:
-                self.specialSuperScaler( )
+                self.specialSuperScaler( self.tmppath, threads, quality_setting, model )
         else:
             raise Exception( 'ERROR upscaling. scalerEngine invalid' );
         
@@ -194,9 +193,62 @@ class Handler:
         os.system( self.command );
 
 
-    def specialSuperScaler ():
-        pass
+    def specialSuperScaler ( self, tmppath, threads, quality_setting, model ):
+        self.fileList = os.listdir( tmppath )
+        self.fileList.pop( 0 )
+        self.fileList.sort()
+        if ( threads > multiprocessing.cpu_count() * 2 ):
+            self.threads = multiprocessing.cpu_count() * 2;
+        else:
+            self.threads = threads
     
+        self.fileCount = len( self.fileList ) // self.threads
+        self.spareFiles = len( self.fileList ) % self.threads
+        
+        self.cmdList = [];
+
+        for t in range( threads ): 
+            try:
+                os.mkdir( f'{tmppath}{t}' )
+            except FileExistsError:
+                pass
+
+            self.base = t * self.fileCount;
+            print( self.base );
+            if ( self.os_type == 'win32' ):
+                for j in range( self.fileCount ):
+                    os.rename( f'{tmppath}{self.fileList[ self.base + j ] }', f'{tmppath}{ t }\\{self.fileList[ self.base + j ] }' )
+            elif ( self.os_type == 'linux' ):
+                for j in range( self.fileCount ):
+                    os.rename( f'{tmppath}{self.fileList[ self.base + j ] }', f'{tmppath}{ t }/{self.fileList[ self.base + j ] }' )
+            
+            self.cmdList.append( ( tmppath, t, quality_setting, model, self.os_type ) )
+
+        print( self.threads * self.fileCount );
+
+        try:
+            os.mkdir( f'{tmppath}{self.threads + 1}' )
+        except FileExistsError:
+            pass
+
+        if ( self.os_type == 'win32' ):
+            for k in range( self.spareFiles ):
+                os.rename( f'{tmppath}{self.fileList[ self.threads * self.fileCount + k ] }', f'{tmppath}{ t }\\{self.fileList[ self.threads  * self.fileCount + k ] }' )
+        elif ( self.os_type == 'linux' ):
+            for k in range( self.spareFiles ):
+                os.rename( f'{tmppath}{self.fileList[ self.threads * self.fileCount + k ] }', f'{tmppath}{ self.threads + 1 }/{self.fileList[ self.threads * self.fileCount + k ] }' )
+
+        try:
+            os.mkdir( f'{tmppath}sc' )
+        except FileExistsError:
+            pass
+
+        self.pool_ss = multiprocessing.Pool( self.threads )
+        self.pool_ss.starmap( specialScalerEngine, self.cmdList );
+        self.pool_ss.close();
+        self.pool_ss.join();
+    
+        specialScalerEngine( tmppath, t, quality_setting, model, self.os_type )
 
     def fsrScaler ( self, tmppath, filepath, threads, fsrpath, quality_setting, sharpening, scaling, filetype ):
         # Locate Images and assemble FSR-Command
@@ -304,6 +356,15 @@ class Handler:
             self.pool.starmap( sharpeningEngine, self.command_list );
             self.pool.close();
             self.pool.join();
+
+
+def specialScalerEngine ( tmppath, tNumber, quality_setting, model, os_type ):
+    if ( os_type == 'win32' ):
+        command = f'realesrgan-ncnn-vulkan -i {tmppath}{tNumber} -o {tmppath}sc -s {quality_setting} -n {model}'
+    elif ( os_type == 'linux' ):
+        command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {tmppath}{tNumber} -o {tmppath}sc -s {quality_setting} -n {model}'
+    sub = subprocess.Popen( command, shell=True );
+    sub.wait();
 
 
 

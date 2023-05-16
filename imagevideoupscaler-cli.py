@@ -59,7 +59,7 @@ if __name__ == '__main__':
         if ( args.model in availableModels ):
             model = args.model;
         else:
-            print( 'Invalid argument for model. Can be: realesr-animevideov3 | realesrgan-x4plus | realesrgan-x4plus-anime | realesrnet-x4plus' )
+            print( 'Invalid argument for model. Can be: realesr-animevideov3 | realesrgan-x4plus-anime' )
             go2 = False;
 
     if ( args.noscaling ):
@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
     if ( args.sharpening != None ):
         if ( float( args.sharpening ) > 1 ):
-            print( 'Invalid argument for Sharpening, please specify  value between 0 and 1!' )
+            print( 'Invalid argument for Sharpening, please specify a value between 0 and 1!' )
             go3 = False;
     
     if ( args.filetype != None ):
