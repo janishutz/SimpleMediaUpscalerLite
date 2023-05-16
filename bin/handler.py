@@ -214,7 +214,6 @@ class Handler:
                 pass
 
             self.base = t * self.fileCount;
-            print( self.base );
             if ( self.os_type == 'win32' ):
                 for j in range( self.fileCount ):
                     os.rename( f'{tmppath}{self.fileList[ self.base + j ] }', f'{tmppath}{ t }\\{self.fileList[ self.base + j ] }' )
@@ -223,8 +222,6 @@ class Handler:
                     os.rename( f'{tmppath}{self.fileList[ self.base + j ] }', f'{tmppath}{ t }/{self.fileList[ self.base + j ] }' )
             
             self.cmdList.append( ( tmppath, t, quality_setting, model, self.os_type ) )
-
-        print( self.threads * self.fileCount );
 
         try:
             os.mkdir( f'{tmppath}{self.threads + 1}' )
