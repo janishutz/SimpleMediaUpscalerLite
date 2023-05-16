@@ -254,23 +254,35 @@ class Handler:
         self.filelist.pop(0)
         self.filelist.sort()
         self.number = 0
-        for self.file in self.filelist:
-            self.number += 1
-            if ( self.os_type == 'win32' ):
-                self.file_list.append( f"{tmppath}{self.file} {tmppath}us\\ig{str(self.number).zfill(8)}.{ filetype } " );
-            else:
-                self.file_list.append( f"{tmppath}{self.file} {tmppath}us/ig{str(self.number).zfill(8)}.{ filetype } " );
+        if sharpening != '' and sharpening != None:
+            for self.file in self.filelist:
+                self.number += 1
+                if ( self.os_type == 'win32' ):
+                    self.file_list.append( f"{tmppath}{self.file} {tmppath}us\\ig{str(self.number).zfill(8)}.{ filetype } " );
+                else:
+                    self.file_list.append( f"{tmppath}{self.file} {tmppath}us/ig{str(self.number).zfill(8)}.{ filetype } " );
+            try:
+                os.mkdir( f'{tmppath}us' )
+            except FileExistsError:
+                pass
+        else:
+            for self.file in self.filelist:
+                self.number += 1
+                if ( self.os_type == 'win32' ):
+                    self.file_list.append( f"{tmppath}{self.file} {tmppath}sc\\ig{str(self.number).zfill(8)}.{ filetype } " );
+                else:
+                    self.file_list.append( f"{tmppath}{self.file} {tmppath}sc/ig{str(self.number).zfill(8)}.{ filetype } " );
+        
+            try:
+                os.mkdir( f'{tmppath}sc' )
+            except FileExistsError:
+                pass
         
         if ( self.os_type == 'win32' ):
             self.maxlength = 8000
         else:
             self.maxlength = 31900
         self.pos = 1
-
-        try:
-            os.mkdir( f'{tmppath}us' )
-        except FileExistsError:
-            pass
 
         ############################################
         #
@@ -303,7 +315,7 @@ class Handler:
             self.pool.close();
             self.pool.join();
 
-        if sharpening != '':
+        if sharpening != '' and sharpening != None:
             print( f'\n\n\n==> Sharpening using { self.threads } threads <==\n\n' );
             time.sleep( 2 );
 
