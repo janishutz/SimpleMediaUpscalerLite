@@ -95,7 +95,8 @@ class Handler:
         try:
             os.mkdir(self.tmppath)
         except FileExistsError:
-            pass
+            print( '==> ERROR: Temp path does not exist! <==' )
+            return False
             
         print( '\n==> Created directory' )
                 
@@ -322,7 +323,10 @@ class Handler:
             self.pathSharpening = tmppath
 
             if ( not scaling ):
-                self.pathSharpening += 'us'
+                if ( self.os_type == 'win32' ):
+                    self.pathSharpening += 'us\\'
+                elif ( self.os_type == 'linux' ):
+                    self.pathSharpening += 'us/'
 
             time.sleep( 2 );
             try:
@@ -338,9 +342,9 @@ class Handler:
             for self.file in self.filelist:
                 self.number += 1
                 if ( self.os_type == 'win32' ):
-                    self.file_list.append( f"{self.pathSharpening}\\{self.file} {tmppath}sc\\ig{str(self.number).zfill(8)}.{ filetype } " );
+                    self.file_list.append( f"{self.pathSharpening}{self.file} {tmppath}sc\\ig{str(self.number).zfill(8)}.{ filetype } " );
                 else:
-                    self.file_list.append( f"{self.pathSharpening}/{self.file} {tmppath}sc/ig{str(self.number).zfill(8)}.{ filetype } " );
+                    self.file_list.append( f"{self.pathSharpening}{self.file} {tmppath}sc/ig{str(self.number).zfill(8)}.{ filetype } " );
             
             if ( self.os_type == 'win32' ):
                 self.maxlength = 8000
