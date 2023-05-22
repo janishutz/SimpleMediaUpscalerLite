@@ -132,8 +132,8 @@ class Handler:
         time.sleep( 2 );
 
 
-        if ( scalerEngine == 'fsr' ):
-            self.fsrScaler( self.tmppath, filepath, threads, fsrpath, quality_setting + 'x', sharpening, scaling, filetype )
+        if ( scalerEngine == 'fsr' or scalerEngine == 'NN' ):
+            self.fsrScaler( self.tmppath, filepath, threads, fsrpath, quality_setting + 'x', sharpening, scaling, filetype, scalerEngine )
         elif ( scalerEngine == 'SS' ):
             if ( not useSpecialModeSS ):
                 self.superScaler( self.tmppath, threads, quality_setting, self.os_type, model )
@@ -248,7 +248,7 @@ class Handler:
     
         specialScalerEngine( tmppath, t, quality_setting, model, self.os_type )
 
-    def fsrScaler ( self, tmppath, filepath, threads, fsrpath, quality_setting, sharpening, scaling, filetype ):
+    def fsrScaler ( self, tmppath, filepath, threads, fsrpath, quality_setting, sharpening, scaling, filetype, mode ):
         # Locate Images and assemble FSR-Command
         self.file_list = []
         self.filelist = os.listdir(tmppath)
@@ -295,7 +295,9 @@ class Handler:
             self.threads = multiprocessing.cpu_count();
 
         if ( not scaling ):
+            engines = { 'NN': 'NearestNeighbor', 'fsr':'FidelityFX Super Resolution' }
             print( f'\n\n==> Upscaling using { self.threads } threads <==\n\n' );
+            print( f'\n\n==> Upscaling Engine is { engines[ mode ] } <==\n\n' );
 
             time.sleep( 2 );
 
@@ -312,7 +314,10 @@ class Handler:
                 self.command_list.append( ( self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type ) )
 
             self.pool = multiprocessing.Pool( self.threads )
-            self.pool.starmap( upscalerEngine, self.command_list );
+            if ( mode == 'NN' ):
+                self.pool.starmap( bilinearEngine, self.command_list );
+            elif ( mode == 'fsr' ):
+                self.pool.starmap( upscalerEngine, self.command_list );
             self.pool.close();
             self.pool.join();
 
@@ -443,6 +448,68 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
         time.sleep(3)
     print( '\n\nCompleted executing Job\n\n\n PROCESS: ', number, '\n\n\n' );
 
+
+def bilinearEngine ( files, fsrpath, quality_setting, number, maxlength, os_type ):
+    files = files;
+    # Refactoring of commands that are longer than 32K characters
+    fileout = [];
+    pos = 0;
+    if len( files ) > maxlength:
+        while files[maxlength - pos:maxlength - pos + 1] != ' ':
+            pos += 1
+        file_processing = files[:maxlength - pos]
+        if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
+            pos += 5
+        else:
+            pass
+        while files[maxlength - pos:maxlength - pos + 1] != ' ':
+            pos += 1
+        fileout.append(files[:maxlength - pos])
+        filesopt = files[maxlength - pos:]
+        posx = 0
+        posy = maxlength
+
+        # Command refactoring for commands that are longer than 64K characters
+        if len(filesopt) > maxlength:
+            while len(filesopt) > maxlength:
+                posx += maxlength - pos
+                posy += maxlength - pos
+                pos = 1
+                while files[posy - pos:posy - pos + 1] != ' ':
+                    pos += 1
+                file_processing = files[posx:posy - pos]
+                if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
+                    pos += 5
+                else:
+                    pass
+                while files[posy - pos:posy - pos + 1] != ' ':
+                    pos += 1
+
+                file_processing = files[posx:posy - pos]
+                fileout.append(file_processing)
+                filesopt = files[posy - pos:]
+            fileout.append(filesopt)
+        else:
+            fileout.append(files[maxlength - pos:])
+    else:
+        fileout.append(files)
+
+    # Upscaling images
+    print( '\n\n\nUpscaling images... \n\n\n\n\n\n PROCESS: ', number, '\n\n\n' )
+
+    while len( fileout ) > 0:
+        files_handle = fileout.pop(0)
+        if os_type == 'linux':
+            command_us = f'wine {fsrpath} -Mode NearestNeighbor -Scale {quality_setting} {quality_setting} {files_handle}'
+        elif os_type == 'win32':
+            command_us = f'FidelityFX_CLI -Mode NearestNeighbor -Scale {quality_setting} {quality_setting} {files_handle}'
+        else:
+            print( 'OS CURRENTLY UNSUPPORTED!' )
+            return False
+        sub = subprocess.Popen( command_us, shell=True );
+        sub.wait();        
+        time.sleep(3)
+    print( '\n\nCompleted executing Job\n\n\n PROCESS: ', number, '\n\n\n' );
 
 ########################
 # 

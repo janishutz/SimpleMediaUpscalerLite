@@ -24,7 +24,7 @@ if __name__ == '__main__':
     ap.add_argument( '-N', '--noscaling', help='Do not upscale video, instead only sharpen. Sharpening argument required!', action='store_true' )
     ap.add_argument( '-t', '--threading', help='Use special threading mode with SS scaler (spawns 16 threads upscaling at one time)', action='store_true' )
     ap.add_argument( '-T', '--threads', help='Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread). Scales well with FSR, barely with Real-ESRGAN, as it uses mostly the GPU to upscale' )
-    ap.add_argument( '-E', '--engine', help='Upscaling engine. Can be fsr or SS (for Real-ESRGAN). FSR tends to be lower quality, but faster, Real-ESRGAN is meant for anime. Defaults to fsr' )
+    ap.add_argument( '-E', '--engine', help='Upscaling engine. Can be fsr, NN (for NearestNeighbor) or SS (for Real-ESRGAN). FSR tends to be lower quality, but faster, NeirestNeighbour is super fast but very ugly, Real-ESRGAN is meant for anime and is super slow. Defaults to fsr' )
     ap.add_argument( '-M', '--model', help='Only available if using Real-ESRGAN. Change the ML-Model used to upsample video, can be: realesr-animevideov3 | realesrgan-x4plus-anime , defaults to realesr-animevideov3' )
     args = ap.parse_args()
 
@@ -49,7 +49,7 @@ if __name__ == '__main__':
             go = False
 
     if ( args.engine != None ):
-        if ( args.engine == 'fsr' or args.engine == 'SS' ):
+        if ( args.engine == 'fsr' or args.engine == 'SS' or args.engine == 'NN' ):
             engine = args.engine;
         else:
             print( 'Invalid argument for engine' )
