@@ -259,11 +259,11 @@ class Handler:
             for self.file in self.filelist:
                 self.number += 1
                 if ( self.os_type == 'win32' ):
-                    self.file_list.append( f"{tmppath}{self.file} {tmppath}us\\ig{str(self.number).zfill(8)}.{ filetype } " );
+                    self.file_list.append( f"{tmppath}{self.file} {tmppath}up\\up{str(self.number).zfill(8)}.{ filetype } " );
                 else:
-                    self.file_list.append( f"{tmppath}{self.file} {tmppath}us/ig{str(self.number).zfill(8)}.{ filetype } " );
+                    self.file_list.append( f"{tmppath}{self.file} {tmppath}up/up{str(self.number).zfill(8)}.{ filetype } " );
             try:
-                os.mkdir( f'{tmppath}us' )
+                os.mkdir( f'{tmppath}up' )
             except FileExistsError:
                 pass
         else:
@@ -329,9 +329,9 @@ class Handler:
 
             if ( not scaling ):
                 if ( self.os_type == 'win32' ):
-                    self.pathSharpening += 'us\\'
+                    self.pathSharpening += 'up\\'
                 elif ( self.os_type == 'linux' ):
-                    self.pathSharpening += 'us/'
+                    self.pathSharpening += 'up/'
 
             time.sleep( 2 );
             try:
@@ -368,7 +368,7 @@ class Handler:
                 if ( i == self.threads - 1 ):
                     for element in self.file_list:
                         self.files += element;
-                self.command_list.append( ( self.files, fsrpath, i, self.maxlength, self.os_type, sharpening ) )
+                self.command_list.append( ( self.files, fsrpath, i, self.maxlength, self.os_type, sharpening, not sharpening ) )
 
             self.pool = multiprocessing.Pool( self.threads )
             self.pool.starmap( sharpeningEngine, self.command_list );
@@ -417,8 +417,6 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
                 file_processing = files[posx:posy - pos]
                 if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
                     pos += 5
-                else:
-                    pass
                 while files[posy - pos:posy - pos + 1] != ' ':
                     pos += 1
 
@@ -460,8 +458,6 @@ def bilinearEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
         file_processing = files[:maxlength - pos]
         if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
             pos += 5
-        else:
-            pass
         while files[maxlength - pos:maxlength - pos + 1] != ' ':
             pos += 1
         fileout.append(files[:maxlength - pos])
@@ -517,7 +513,7 @@ def bilinearEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
 #
 #######################
 
-def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening ):
+def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening, didUpscale ):
     files = files;
     # Refactoring of commands that are longer than 32K characters
     fileout = [];
@@ -526,10 +522,12 @@ def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening ):
         while files[maxlength - pos:maxlength - pos + 1] != ' ':
             pos += 1
         file_processing = files[:maxlength - pos]
-        if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
-            pos += 5
+        if ( didUpscale ):
+            if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'up':
+                pos += 5
         else:
-            pass
+            if file_processing[len(file_processing) - 17:len(file_processing) - 15] == 'ru':
+                pos += 8
         while files[maxlength - pos:maxlength - pos + 1] != ' ':
             pos += 1
         fileout.append(files[:maxlength - pos])
@@ -546,10 +544,12 @@ def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening ):
                 while files[posy - pos:posy - pos + 1] != ' ':
                     pos += 1
                 file_processing = files[posx:posy - pos]
-                if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
-                    pos += 5
+                if ( didUpscale ):
+                    if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'up':
+                        pos += 5
                 else:
-                    pass
+                    if file_processing[len(file_processing) - 17:len(file_processing) - 15] == 'ru':
+                        pos += 8
                 while files[posy - pos:posy - pos + 1] != ' ':
                     pos += 1
 
