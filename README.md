@@ -22,6 +22,9 @@ This App also features a CLI interface.
 If you have any suggestions or features you'd like to have implemented, you may either implement the feature yourself and open a pull request, or open an issue on this GitHub page. Both things are appreciated!
 *I am looking for somebody willing to maintain the Windows version (including installer) as I am running Linux*
 
+Current Contributers
+-ThatPlasma
+
 # Roadmap
 V1.0.0:
 - Get the app working -- :white_check_mark:
