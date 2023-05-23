@@ -23,7 +23,9 @@ If you have any suggestions or features you'd like to have implemented, you may 
 *I am looking for somebody willing to maintain the Windows version (including installer) as I am running Linux*
 
 Current Contributers
--ThatPlasma
+- simplePCBuilding
+- ThatPlasma
+
 
 # Roadmap
 V1.0.0:
