@@ -575,6 +575,7 @@ def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening ):
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
+        print( command_sharpening )
         sub2 = subprocess.Popen( command_sharpening, shell=True );
         sub2.wait()
         time.sleep(3)
