@@ -11,97 +11,117 @@ import argparse
 import bin.handler
 import os
 import multiprocessing
+import json
+
+engineList = os.listdir( 'bin/engines' );
+engineList.pop( 0 )
+
+engineInfo = {}
+
+for engine in engineList:
+    engineInfo[ engine ] = json.load( open( 'bin/engines/' + engine + '/config.json' ) )
 
 allowedFiletypes = [ 'png', 'jpg' ];
 
+def performChecks ( args, ap ):
+    if ( args.details == None or args.details == '' ):
+        if ( not args.printengines ):
+            # Check if input and output file arguments are available
+            if ( args.inputfile == None or args.inputfile == '' or args.outputfile == None or args.outputfile == '' ):
+                print( '\n\n ==> ERROR: Input and output file required! <==\n\n' )
+                ap.print_usage();
+                return False
+
+            # check if output file exists and if, prompt user if it should be overwritten and remove if, if yes
+            if ( os.path.exists( args.outputfile ) ):
+                doReplace = input( '--> File already exists. Do you want to replace it? (Y/n) ' ).lower()
+                if ( doReplace == 'y' or doReplace == '' ):
+                    os.remove( args.outputfile );
+                else:
+                    print( '\n==> Refusing to Upscale video. Please delete the file or specify another filepath! <==' )
+                    return False
+                
+            # check if engine argument is valid
+            try:
+                engineInfo[ args.engine ]
+            except KeyError:
+                print( '\n==> ERROR: Engine not available. Ensure you have specified a valid engine' )
+                return False
+            
+            # Check scalefactor argument and also verify that engine supports upscaling
+            if ( int( args.scalefactor ) > 4 and int( args.scalefactor ) < -4 ):
+                print( '\n==> ERROR: Invalid scale factor. Value has to be an integer between -4 and 4' )
+                return False
+            else:
+                if ( not 'upscaling' in engineInfo[ args.engine ][ 'supports' ] ):
+                    print( '\n==> ERROR: This engine does NOT support upscaling' )
+                    return False
+                
+            # Check sharpening argument and also verify that engine supports it            
+            if ( float( args.sharpening ) >= 1 and float( args.sharpening ) <= 0 ):
+                print( '\n==> ERROR: Invalid value for sharpening. Value has to be between 0 and 1' )
+                return False
+            else:
+                if ( not 'sharpening' in engineInfo[ args.engine ][ 'supports' ] ):
+                    print( '\n==> ERROR: This engine does NOT support sharpening' )
+                    return False
+            
+            # check if scalefactor and / or sharpening is available
+            if ( args.scalefactor == 0 and args.sharpening == 0 ):
+                print( '\n==> ERROR: Either scalefactor or sharpening argument required!' )
+                return False
+            
+            # Check if filetype argument is valid
+            if ( not args.filetype in allowedFiletypes ):
+                print( '\n==> ERROR: Unknown filetype for temp files. Can be png or jpg' )
+                return False
+            
+            # Check if mode of engine is valid
+            try:
+                engineInfo[ args.engine ][ 'cliModeOptions' ][ args.mode ]
+            except KeyError:
+                print( '\n==> ERROR: The specified mode is not supported by this engine. Options:' )
+                for option in engineInfo[ args.engine ][ 'cliModeOptions' ]:
+                    print( '   --> ' + engineInfo[ args.engine ][ 'cliModeOptions' ][ option ][ 'displayName' ] + ' (' + option + ')' )
+                return False
+            
+            return True
+        else:
+            print( '\n\n==> Available engines <==\n' )
+            for entry in engineList:
+                print( '--> ' + entry )
+            print( '\n\n' )
+    else:
+        print( '\n\n ==> INFOS about ' + engineInfo[ args.details ][ 'displayName' ] + '\n' )
+        print( '   --> Engine cli option is: ' + engineInfo[ args.details ][ 'abbr' ].lower() )
+        print( '   --> CLI mode options are: ' )
+        for mode in engineInfo[ args.details ][ 'cliModeOptions' ]:
+            print( '       -> ' + engineInfo[ args.details ][ 'cliModeOptions' ][ mode ][ 'displayName' ] + ':' )
+            print( '           > CLI name: ' + mode )
+            print( '           > Is the default: ' + str( engineInfo[ args.details ][ 'cliModeOptions' ][ mode ][ 'default' ] ) )
+        print( '\n\n' )
+
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser( description='ImageVideoUpscaler - CLI, a CLI application to upscale videos and images using FSR.' )
-    ap.add_argument( 'inputfile', help='File path for the video / image to be upscaled' )
-    ap.add_argument( 'outputfile', help='File path for the video / image that was upscaled' )
-    ap.add_argument( '-s', '--scalefactor', help='Scale factor for the video / image. Can be a integer from 1 - 4' )
-    ap.add_argument( '-F', '--filetype', help='Change the file type of the temporary image files. Supports png, jpg. Video quality: png > jpg. PNG is default, if not specified.' )
+    ap = argparse.ArgumentParser( description='ImageVideoUpscaler - CLI, a CLI application to upscale videos and images using different upscaling engines.' )
+    ap.add_argument( '-i', '--inputfile', help='File path for the video / image to be upscaled' )
+    ap.add_argument( '-o', '--outputfile', help='Output file path for the video / image that was upscaled' )
+    ap.add_argument( '-s', '--scalefactor', help='Scale factor for the video / image. Can be a integer from -4 to 4' )
     ap.add_argument( '-S', '--sharpening', help='Sharpening factor (between 0 and 1 whereas 0 means no sharpening, 1 the most sharpening. Recommendation: Do not exceed 0.25, as it often looks bad)' )
-    ap.add_argument( '-t', '--threading', help='Use special threading mode with SS scaler (spawns 16 threads upscaling at one time)', action='store_true' )
     ap.add_argument( '-T', '--threads', help='Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread). Scales well with FSR, barely with Real-ESRGAN, as it uses mostly the GPU to upscale' )
-    ap.add_argument( '-E', '--engine', help='Upscaling engine. Can be fsr, C (for Cubic), HQC (for HighQuality Cubic) or SS (for Real-ESRGAN). FSR tends to be higher, Cubic is quite fast but quite low quality, HighQualityCubic is of higher quality, but slower. Real-ESRGAN is meant for anime and is super slow. Defaults to fsr' )
-    ap.add_argument( '-M', '--model', help='Only available if using Real-ESRGAN. Change the ML-Model used to upsample video, can be: realesr-animevideov3 | realesrgan-x4plus-anime , defaults to realesr-animevideov3' )
-    ap.add_argument( '-N', '--noscaling', help='Do not upscale video, instead only sharpen. Sharpening argument required!', action='store_true' )
+    ap.add_argument( '-E', '--engine', help='Upscaling engine. By default can be fsr or ss. Use the -p option to see all installed engines' )
+    ap.add_argument( '-M', '--mode', help='Specify a special mode for a specific engine. Might not be available in every engine. Use the -d option to find out more' )
+    ap.add_argument( '-F', '--filetype', help='Change the file type of the temporary image files. Supports png, jpg. Video quality: png > jpg. PNG is default, if not specified.' )
+    ap.add_argument( '-d', '--details', help='Get details on usage of a particular engine and exit. Reads the config.json file of that engine and displays it in a HR manner' )
+    ap.add_argument( '-p', '--printengines', help='Print all engines and exit', action='store_true' )
+    ap.set_defaults( scaling = 0, sharpening = 0, threads = 4, engine = 'fsr', mode = 'fsr', filetype = 'png' )
     args = ap.parse_args()
 
     handler = bin.handler.Handler()
-
-    go = True;
-    go2 = True;
-    go3 = True;
-    specialMode = False;
-    engine = 'fsr';
-    model = 'realesr-animevideov3';
-    availableModels = [ 'realesr-animevideov3', 'realesrgan-x4plus-anime' ];
-
+    
     multiprocessing.freeze_support();
-    if ( os.path.exists( args.outputfile ) ):
-        doReplace = input( 'File already exists. Do you want to replace it? (Y/n) ' ).lower()
-        if ( doReplace == 'y' or doReplace == '' ):
-            go = True
-            os.remove( args.outputfile );
-        else:
-            print( '\nRefusing to Upscale video. Please delete the file or specify another filepath!')
-            go = False
 
-    if ( args.engine != None ):
-        if ( args.engine == 'fsr' or args.engine == 'SS' or args.engine.lower() == 'c' or args.engine.lower() == 'hqc' ):
-            engine = args.engine;
-        else:
-            print( 'Invalid argument for engine' )
-            go2 = False;
-    
-    if ( engine == 'SS' and args.model != None ):
-        if ( args.model in availableModels ):
-            model = args.model;
-        else:
-            print( 'Invalid argument for model. Can be: realesr-animevideov3 | realesrgan-x4plus-anime' )
-            go2 = False;
+    if ( performChecks( args, ap ) ):
+        handler.handler( args.inputfile, args.scalefactor, args.outputfile, args.sharpening, args.filetype, args.engine, args.mode, args.threads )
+        print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nImageVideoUpscalerFrontend V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + args.outputfile + '\n\n\n' )
 
-    if ( args.noscaling ):
-        if ( args.sharpening != None ):
-            if ( float( args.sharpening ) > 0 ):
-                go2 = True;
-            else: 
-                go2 = False;
-        else:
-            print( 'Missing argument for Sharpening. Please specify that argument and try again!' )
-            go2 = False;
-
-    if ( args.sharpening != None ):
-        if ( float( args.sharpening ) > 1 ):
-            print( 'Invalid argument for Sharpening, please specify a value between 0 and 1!' )
-            go3 = False;
-    
-    if ( args.filetype != None ):
-        if ( args.filetype in allowedFiletypes ):
-            filetype = args.filetype
-        else:
-            go3 = False
-            print( 'Invalid filetype for temp images specified. Please ensure to only use png or jpg!' );
-    else:
-        filetype = 'png'
-
-    specialMode = args.threading;
-
-
-    if ( go and go2 and go3 ):
-        if ( args.scalefactor ):
-            if ( int( args.scalefactor ) ):
-                if ( args.threads != None ):
-                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, args.scalefactor, args.outputfile, args.sharpening, args.noscaling, filetype, engine, model, specialMode, threads=int( args.threads ) );
-                else:
-                    handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, args.scalefactor, args.outputfile, args.sharpening, args.noscaling, filetype, engine, model, specialMode );
-            else:
-                raise NameError( 'Argument Scale does require to be an integer!' )
-        else:
-            if ( args.threads != None ):
-                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, '2', args.outputfile, args.sharpening, args.noscaling, filetype, engine, model, specialMode, threads=int( args.threads ) );
-            else:
-                handler.handler( 'bin/lib/FidelityFX_CLI.exe', args.inputfile, '2', args.outputfile, args.sharpening, args.noscaling, filetype, engine, model, specialMode )
-        print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nImageVideoUpscalerFrontend V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nYour video was saved to ' + args.outputfile + '\n\n\n' )
 

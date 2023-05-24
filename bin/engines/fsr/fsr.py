@@ -4,21 +4,37 @@ import time
 import subprocess
 import sys
 
-class FSRScaler:
-    def __init__(self):
+class Scaler:
+    def __init__( self ):
         self.os_type = sys.platform
-        self.command = ""
-        self.tmppath = ""
+        self.command = ''
+        self.tmppath = ''
         self.videometa = {}
 
-    def fsrScaler ( self, tmppath, filepath, threads, fsrpath, quality_setting, sharpening, scaling, filetype, mode ):
+    def singleScaler ( self, input_path, output_path, scalefactor, threads, mode ):
+        if self.os_type == 'linux':
+            self.command = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode { mode } -Scale {scalefactor} {scalefactor} {input_path} {output_path}'
+        elif self.os_type == 'win32':
+            self.command = f'FidelityFX_CLI -Mode { mode } -Scale {scalefactor} {scalefactor} {input_path} {output_path}'
+        else:
+            print( 'OS CURRENTLY UNSUPPORTED!' )
+            return False 
+                      
+        os.system( self.command )
+        print( '\n\n==>Photo upscaled' );
+
+    def videoScaler ( self, tmppath, threads, scalefactor, sharpening, filetype, mode ):
+        self.isScaling = True
+        if ( scalefactor == 0 or scalefactor == None ):
+            self.isScaling = False
+
         # Locate Images and assemble FSR-Command
         self.file_list = []
-        self.filelist = os.listdir(tmppath)
+        self.filelist = os.listdir( tmppath )
         self.filelist.pop(0)
         self.filelist.sort()
         self.number = 0
-        if sharpening != '' and sharpening != None:
+        if sharpening != 0 and sharpening != None:
             for self.file in self.filelist:
                 self.number += 1
                 if ( self.os_type == 'win32' ):
@@ -57,10 +73,10 @@ class FSRScaler:
         if ( threads > multiprocessing.cpu_count() ):
             self.threads = multiprocessing.cpu_count();
 
-        if ( not scaling ):
+        if ( self.isScaling ):
             engines = { 'c': 'Cubic', 'hqc': 'High Quality Cubic', 'fsr':'FidelityFX Super Resolution' }
             print( f'\n\n==> Upscaling using { self.threads } threads <==\n\n' );
-            print( f'\n\n==> Upscaling Engine is { engines[ mode.lower() ] } <==\n\n' );
+            print( f'\n\n==> Upscaling Engine is FidelityFX_CLI with algorithm { engines[ mode.lower() ] } <==\n\n' );
 
             time.sleep( 2 );
 
@@ -74,20 +90,20 @@ class FSRScaler:
                 if ( i == self.threads - 1 ):
                     for element in self.file_list:
                         self.files += element;
-                self.command_list.append( ( self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type, mode ) )
+                self.command_list.append( ( self.files, scalefactor, i, self.maxlength, self.os_type, mode ) )
 
             self.pool = multiprocessing.Pool( self.threads )
             self.pool.starmap( upscalerEngine, self.command_list );
             self.pool.close();
             self.pool.join();
 
-        if sharpening != '' and sharpening != None:
+        if sharpening != 0 and sharpening != None:
             print( f'\n\n\n==> Sharpening using { self.threads } threads <==\n\n' );
             time.sleep( 2 );
 
             self.pathSharpening = tmppath
 
-            if ( not scaling ):
+            if ( self.isScaling ):
                 if ( self.os_type == 'win32' ):
                     self.pathSharpening += 'up\\'
                 elif ( self.os_type == 'linux' ):
@@ -128,7 +144,7 @@ class FSRScaler:
                 if ( i == self.threads - 1 ):
                     for element in self.file_list:
                         self.files += element;
-                self.command_list.append( ( self.files, fsrpath, i, self.maxlength, self.os_type, sharpening, not sharpening ) )
+                self.command_list.append( ( self.files, i, self.maxlength, self.os_type, sharpening, not sharpening ) )
 
             self.pool = multiprocessing.Pool( self.threads )
             self.pool.starmap( sharpeningEngine, self.command_list );
@@ -137,7 +153,7 @@ class FSRScaler:
 
 # Add return values
 
-def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type, version ):
+def upscalerEngine ( files, scalefactor, number, maxlength, os_type, version ):
     scaler = 'FSR'
     if ( version.upper() == 'HQC' ):
         scaler = 'HighQualityCubic'
@@ -191,9 +207,9 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
     while len( fileout ) > 0:
         files_handle = fileout.pop(0)
         if os_type == 'linux':
-            command_us = f'wine {fsrpath} -Mode { scaler } -Scale {quality_setting} {quality_setting} {files_handle}'
+            command_us = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {files_handle}'
         elif os_type == 'win32':
-            command_us = f'FidelityFX_CLI -Mode { scaler } -Scale {quality_setting} {quality_setting} {files_handle}'
+            command_us = f'FidelityFX_CLI -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {files_handle}'
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
@@ -209,7 +225,7 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
 #
 #######################
 
-def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening, didUpscale ):
+def sharpeningEngine ( files, number, maxlength, os_type, sharpening, didUpscale ):
     files = files;
     # Refactoring of commands that are longer than 32K characters
     fileout = [];
@@ -265,7 +281,7 @@ def sharpeningEngine ( files, fsrpath, number, maxlength, os_type, sharpening, d
         files_handle = fileout.pop(0)
         print( '\n\n\n PROCESS: ', number, '\nRunning sharpening filter\n\n\n' );
         if os_type == 'linux':
-            command_sharpening = f'wine {fsrpath} -Mode CAS -Sharpness {sharpening} {files_handle}'
+            command_sharpening = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode CAS -Sharpness {sharpening} {files_handle}'
         elif os_type == 'win32':
             command_sharpening = f'FidelityFX_CLI -Mode CAS -Sharpness {sharpening} {files_handle}'
         else:

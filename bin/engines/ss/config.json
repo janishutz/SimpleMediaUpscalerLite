@@ -1,0 +1,14 @@
+{
+    "abbr":"SS",
+    "displayName":"Real-ESGRAN",
+    "lastUsedFilePath":"sc",
+    "fileNameBeginning":"ig",
+    "cliModeOptions": {
+        "av3":{ "displayName": "realesr-animevideov3", "default": true },
+        "x4plus":{ "displayName": "realesrgan-x4plus-anime", "default": false }
+    },
+    "pluginCreator": "Janis Hutz",
+    "pluginCreatorLink": "https://janishutz.com",
+    "engineLink": "",
+    "supports": [ "upscaling" ]
+}
