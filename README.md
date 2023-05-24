@@ -76,23 +76,24 @@ If you encounter any problems with this app, please don't hesitate to open an is
 - GTK version only runs on Linux
 
 # FAQ
-Q: Can you add upscaling engine [upscaling engine here]?
+**Q: Can you add upscaling engine [upscaling engine here]?**
+
 A: We can add it most likely, please open an issue that contains a link to the library and please try and upscale an image using it yourself and copy-paste the command into a comment.
 Just remember that it might take time to implement it and this is all developed in our free time and we have no obligation to implement it.
 
-*Q: App no worky on OS XXXX*
+**Q: App no worky on OS XXXX**
 
 A: Please check [Supported OS](#supported-os) that your OS is actually supported officially. If so, please open an issue and provide command used (if CLI) and error message that the app spat out when running.
 If the OS is not officially supported, we may not be able to help you, since we intentionally don't support it officially
 
-*Q: Why no worky on MacOS? / Can you port to MacOS?*
+**Q: Why no worky on MacOS? / Can you port to MacOS?**
 
 A: MacOS cannot run some of the upscalers included by default so we cannot support it.
 
-*Q: Upscaled XXX looks not as great as I want*
+**Q: Upscaled XXX looks not as great as I want**
 
 A: Try out different engines (that's why we support so many) and try to use sharpening to improve quality. If it doesn't help, you might want to suggest another engine.
 
-*Q: How can I support you?*
+**Q: How can I support you?**
 
 A: You may contribute to this project by writing documentation, improving the website, adding plugins, fixing bugs, testing or by donating. 
