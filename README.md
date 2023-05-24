@@ -88,7 +88,7 @@ If the OS is not officially supported, we may not be able to help you, since we 
 
 **Q: Why no worky on MacOS? / Can you port to MacOS?**
 
-A: MacOS cannot run some of the upscalers included by default so we cannot support it.
+A: MacOS cannot run some of the upscalers included by default so we cannot support it. If you find a way to run all upscalers on Mac, feel free to open a PR to add that functionality
 
 **Q: Upscaled XXX looks not as great as I want**
 
