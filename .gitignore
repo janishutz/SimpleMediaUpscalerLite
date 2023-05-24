@@ -12,3 +12,7 @@ __pycache__
 
 # remove node_modules from repo
 node_modules
+
+# ignore build & dist folders
+build
+dist

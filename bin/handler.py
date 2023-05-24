@@ -22,6 +22,7 @@ importedModules = {}
 
 engineList = os.listdir( 'bin/engines' );
 engineList.pop( 0 )
+
 for element in engineList:
     importedModules[ element ] = importlib.import_module( 'bin.engines.' + element + '.' + element ).Scaler()
 
