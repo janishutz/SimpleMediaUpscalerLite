@@ -22,6 +22,4 @@ const router = createRouter({
   routes
 })
 
-console.log( process.env.IS_ELECTRON );
-
 export default router
