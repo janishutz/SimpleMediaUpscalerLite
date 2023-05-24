@@ -1,4 +1,18 @@
-# FSRImageVideoUpscalerFrontend
+<div id="title" align="center">
+    <img src="./logo.png" width="300">
+    <h1>ImageVideoUpscalerFrontend</h1>
+</div>
+
+<div id="badges" align="center">
+    <img src="https://img.shields.io/github/release/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
+    <img src="https://img.shields.io/github/license/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
+    <img src="https://img.shields.io/github/repo-size/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
+    <img src="https://img.shields.io/tokei/lines/github/simplePCBuilding/FSRImageVideoUpscalerFrontend">
+    <img src="https://img.shields.io/github/issues-pr-raw/simplePCBuilding/FSRImageVideoUpscalerFrontend">
+    <img src="https://img.shields.io/github/languages/top/simplePCBuilding/FSRImageVideoUpscalerFrontend">
+    <img src="https://img.shields.io/github/directory-file-count/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
+    <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
+</div>
 A PyQT5 frontend to upscale images / videos using AMD's FidelityFX Super Resolution. 
 
 # Functionality
@@ -39,17 +53,14 @@ V1.0.0:
 - Add about section inside app -- Might be implemented in V1.1.0
 
 V1.1.0: 
-- Migrate to PyQt5
+- Migrate to PyQt5 (or create Electron app and make python app CLI only)
 - Create Windows & Mac Version
-- Custom Quality target resolution
-- support more file formats (Which ones not decided yet)
+- Refactor backend to add plugin support
+- Add more scaling engines
+- Expand Wiki to feature documentation on how to create a plugin (and maybe add a project website)
 
 V1.2.0:
 - Show progress of scaling
-
-V1.3.0: 
-- Expand Wiki
-- ...
 
 # Issues
 The app is technically functional, but there may still be some big bugs. If you run into any of them, please open an issue on this Github page under "issues". I will attempt to fix them as fast as possible, but a fully compiled version might still take a couple of days to arrive. 
