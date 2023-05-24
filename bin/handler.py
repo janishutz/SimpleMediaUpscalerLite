@@ -314,7 +314,7 @@ class Handler:
                 self.command_list.append( ( self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type ) )
 
             self.pool = multiprocessing.Pool( self.threads )
-            if ( mode == 'NN' ):
+            if ( mode == 'B' ):
                 self.pool.starmap( bilinearEngine, self.command_list );
             elif ( mode == 'fsr' ):
                 self.pool.starmap( upscalerEngine, self.command_list );
@@ -447,7 +447,9 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
     print( '\n\nCompleted executing Job\n\n\n PROCESS: ', number, '\n\n\n' );
 
 
-def bilinearEngine ( files, fsrpath, quality_setting, number, maxlength, os_type ):
+def bilinearEngine ( files, fsrpath, quality_setting, number, maxlength, os_type, version ):
+    if ( version == 'HQC' ):
+        scaler = 'HighQualityCubic'
     files = files;
     # Refactoring of commands that are longer than 32K characters
     fileout = [];

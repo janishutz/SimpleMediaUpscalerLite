@@ -15,17 +15,17 @@ import multiprocessing
 allowedFiletypes = [ 'png', 'jpg' ];
 
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser( description='FSRImageVideoUpscaler - CLI, a CLI application to upscale videos and images using FSR.' )
+    ap = argparse.ArgumentParser( description='ImageVideoUpscaler - CLI, a CLI application to upscale videos and images using FSR.' )
     ap.add_argument( 'inputfile', help='File path for the video / image to be upscaled' )
     ap.add_argument( 'outputfile', help='File path for the video / image that was upscaled' )
     ap.add_argument( '-s', '--scalefactor', help='Scale factor for the video / image. Can be a integer from 1 - 4' )
-    ap.add_argument( '-F', '--filetype', help='Change the file type of the temporary image files. Supports png, jpg. Video quality: png > jpg. Png is default, if not specified.' )
+    ap.add_argument( '-F', '--filetype', help='Change the file type of the temporary image files. Supports png, jpg. Video quality: png > jpg. PNG is default, if not specified.' )
     ap.add_argument( '-S', '--sharpening', help='Sharpening factor (between 0 and 1 whereas 0 means no sharpening, 1 the most sharpening. Recommendation: Do not exceed 0.25, as it often looks bad)' )
-    ap.add_argument( '-N', '--noscaling', help='Do not upscale video, instead only sharpen. Sharpening argument required!', action='store_true' )
     ap.add_argument( '-t', '--threading', help='Use special threading mode with SS scaler (spawns 16 threads upscaling at one time)', action='store_true' )
     ap.add_argument( '-T', '--threads', help='Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread). Scales well with FSR, barely with Real-ESRGAN, as it uses mostly the GPU to upscale' )
-    ap.add_argument( '-E', '--engine', help='Upscaling engine. Can be fsr, NN (for NearestNeighbor) or SS (for Real-ESRGAN). FSR tends to be lower quality, but faster, NeirestNeighbour is super fast but very ugly, Real-ESRGAN is meant for anime and is super slow. Defaults to fsr' )
+    ap.add_argument( '-E', '--engine', help='Upscaling engine. Can be fsr, C (for Cubic), HQC (for HighQuality Cubic) or SS (for Real-ESRGAN). FSR tends to be higher, Cubic is quite fast but quite low quality, HighQualityCubic is of higher quality, but slower. Real-ESRGAN is meant for anime and is super slow. Defaults to fsr' )
     ap.add_argument( '-M', '--model', help='Only available if using Real-ESRGAN. Change the ML-Model used to upsample video, can be: realesr-animevideov3 | realesrgan-x4plus-anime , defaults to realesr-animevideov3' )
+    ap.add_argument( '-N', '--noscaling', help='Do not upscale video, instead only sharpen. Sharpening argument required!', action='store_true' )
     args = ap.parse_args()
 
     handler = bin.handler.Handler()
