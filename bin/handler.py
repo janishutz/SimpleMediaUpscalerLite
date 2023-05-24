@@ -13,9 +13,10 @@ import sys
 import bin.probe
 ffmpeg = bin.probe
 import configparser
-import time
-import shutil
+import json
 import importlib
+import shutil
+import time
 
 importedModules = {}
 
@@ -82,6 +83,7 @@ class Handler:
         pass
 
     def video_scaling( self, input_path, output_path, scalefactor, threads, sharpening, filetype, mode, engine ):
+        self.engineSetting = json.load( open( 'bin/engines/' + engine + '/config.json' ) )
         # DO NOT CALL THIS! Use Handler().handler() instead!
         
         # Splitting video into frames
@@ -155,12 +157,14 @@ class Handler:
             return False
         os.system( self.command )
 
+        
+
         # reassemble Video
         print( '\n\n==> Reassembling Video... with framerate @', self.framerate, '\n\n' )
         if self.os_type == 'linux':
-            self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}sc/ig%08d.{filetype} {output_path} -i {self.tmppath}audio.aac'
+            self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}{self.engineSetting[ "lastUsedFilePath" ]}/{self.engineSetting[ "fileNameBeginning" ]}%08d.{filetype} {output_path} -i {self.tmppath}audio.aac'
         elif self.os_type == 'win32':
-            self.command = f'ffmpeg -framerate {self.framerate} -i \'{self.tmppath}sc\\ig%08d.{filetype}\' {output_path} -i {self.tmppath}audio.aac'
+            self.command = f'ffmpeg -framerate {self.framerate} -i \'{self.tmppath}{self.engineSetting[ "lastUsedFilePath" ]}\\{self.engineSetting[ "fileNameBeginning" ]}%08d.{filetype}\' {output_path} -i {self.tmppath}audio.aac'
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' );
             return False
