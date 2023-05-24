@@ -58,16 +58,6 @@ If you have any suggestions or features you'd like to have implemented, you may 
 
 
 # Roadmap
-V1.0.0:
-- Get the app working -- :white_check_mark:
-- Quality selector (presets and custom multiplier) -- :white_check_mark:
-- Filechoosers -- :white_check_mark:
-- Imageformats: .png, .jpg, .jpeg; Videoformats: .mp4, .mkv -- :white_check_mark:
-- Working UI -- :white_check_mark:
-- Basic Wiki -- :white_check_mark:
-- Add all compiling infos to the repo -- :white_check_mark:
-- Add about section inside app -- Might be implemented in V1.1.0
-
 V1.1.0: 
 - Migrate to PyQt5 (or create Electron app and make python app CLI only)
 - Create Windows & Mac Version
@@ -90,15 +80,19 @@ Q: Can you add upscaling engine [upscaling engine here]?
 A: We can add it most likely, please open an issue that contains a link to the library and please try and upscale an image using it yourself and copy-paste the command into a comment.
 Just remember that it might take time to implement it and this is all developed in our free time and we have no obligation to implement it.
 
-Q: App no worky on OS XXXX
+*Q: App no worky on OS XXXX*
+
 A: Please check [Supported OS](#supported-os) that your OS is actually supported officially. If so, please open an issue and provide command used (if CLI) and error message that the app spat out when running.
 If the OS is not officially supported, we may not be able to help you, since we intentionally don't support it officially
 
-Q: Why no worky on MacOS? / Can you port to MacOS?
+*Q: Why no worky on MacOS? / Can you port to MacOS?*
+
 A: MacOS cannot run some of the upscalers included by default so we cannot support it.
 
-Q: Upscaled XXX looks not as great as I want
+*Q: Upscaled XXX looks not as great as I want*
+
 A: Try out different engines (that's why we support so many) and try to use sharpening to improve quality. If it doesn't help, you might want to suggest another engine.
 
-Q: How can I support you?
+*Q: How can I support you?*
+
 A: You may contribute to this project by writing documentation, improving the website, adding plugins, fixing bugs, testing or by donating. 
