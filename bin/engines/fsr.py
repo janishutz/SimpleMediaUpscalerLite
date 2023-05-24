@@ -58,9 +58,9 @@ class FSRScaler:
             self.threads = multiprocessing.cpu_count();
 
         if ( not scaling ):
-            engines = { 'NN': 'NearestNeighbor', 'fsr':'FidelityFX Super Resolution' }
+            engines = { 'c': 'Cubic', 'hqc': 'High Quality Cubic', 'fsr':'FidelityFX Super Resolution' }
             print( f'\n\n==> Upscaling using { self.threads } threads <==\n\n' );
-            print( f'\n\n==> Upscaling Engine is { engines[ mode ] } <==\n\n' );
+            print( f'\n\n==> Upscaling Engine is { engines[ mode.lower() ] } <==\n\n' );
 
             time.sleep( 2 );
 
@@ -74,13 +74,10 @@ class FSRScaler:
                 if ( i == self.threads - 1 ):
                     for element in self.file_list:
                         self.files += element;
-                self.command_list.append( ( self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type ) )
+                self.command_list.append( ( self.files, fsrpath, quality_setting, i, self.maxlength, self.os_type, mode ) )
 
             self.pool = multiprocessing.Pool( self.threads )
-            if ( mode == 'B' ):
-                self.pool.starmap( bilinearEngine, self.command_list );
-            elif ( mode == 'fsr' ):
-                self.pool.starmap( upscalerEngine, self.command_list );
+            self.pool.starmap( upscalerEngine, self.command_list );
             self.pool.close();
             self.pool.join();
 
@@ -140,8 +137,12 @@ class FSRScaler:
 
 # Add return values
 
-
-def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type ):
+def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type, version ):
+    scaler = 'FSR'
+    if ( version.upper() == 'HQC' ):
+        scaler = 'HighQualityCubic'
+    elif ( version.upper() == 'C' ):
+        scaler = 'Cubic'
     files = files;
     # Refactoring of commands that are longer than 32K characters
     fileout = [];
@@ -190,9 +191,9 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
     while len( fileout ) > 0:
         files_handle = fileout.pop(0)
         if os_type == 'linux':
-            command_us = f'wine {fsrpath} -Scale {quality_setting} {quality_setting} {files_handle}'
+            command_us = f'wine {fsrpath} -Mode { scaler } -Scale {quality_setting} {quality_setting} {files_handle}'
         elif os_type == 'win32':
-            command_us = f'FidelityFX_CLI -Scale {quality_setting} {quality_setting} {files_handle}'
+            command_us = f'FidelityFX_CLI -Mode { scaler } -Scale {quality_setting} {quality_setting} {files_handle}'
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
@@ -201,68 +202,6 @@ def upscalerEngine ( files, fsrpath, quality_setting, number, maxlength, os_type
         time.sleep(3)
     print( '\n\nCompleted executing Job\n\n\n PROCESS: ', number, '\n\n\n' );
 
-
-def bilinearEngine ( files, fsrpath, quality_setting, number, maxlength, os_type, version ):
-    if ( version == 'HQC' ):
-        scaler = 'HighQualityCubic'
-    files = files;
-    # Refactoring of commands that are longer than 32K characters
-    fileout = [];
-    pos = 0;
-    if len( files ) > maxlength:
-        while files[maxlength - pos:maxlength - pos + 1] != ' ':
-            pos += 1
-        file_processing = files[:maxlength - pos]
-        if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
-            pos += 5
-        while files[maxlength - pos:maxlength - pos + 1] != ' ':
-            pos += 1
-        fileout.append(files[:maxlength - pos])
-        filesopt = files[maxlength - pos:]
-        posx = 0
-        posy = maxlength
-
-        # Command refactoring for commands that are longer than 64K characters
-        if len(filesopt) > maxlength:
-            while len(filesopt) > maxlength:
-                posx += maxlength - pos
-                posy += maxlength - pos
-                pos = 1
-                while files[posy - pos:posy - pos + 1] != ' ':
-                    pos += 1
-                file_processing = files[posx:posy - pos]
-                if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
-                    pos += 5
-                else:
-                    pass
-                while files[posy - pos:posy - pos + 1] != ' ':
-                    pos += 1
-
-                file_processing = files[posx:posy - pos]
-                fileout.append(file_processing)
-                filesopt = files[posy - pos:]
-            fileout.append(filesopt)
-        else:
-            fileout.append(files[maxlength - pos:])
-    else:
-        fileout.append(files)
-
-    # Upscaling images
-    print( '\n\n\nUpscaling images... \n\n\n\n\n\n PROCESS: ', number, '\n\n\n' )
-
-    while len( fileout ) > 0:
-        files_handle = fileout.pop(0)
-        if os_type == 'linux':
-            command_us = f'wine {fsrpath} -Mode NearestNeighbor -Scale {quality_setting} {quality_setting} {files_handle}'
-        elif os_type == 'win32':
-            command_us = f'FidelityFX_CLI -Mode NearestNeighbor -Scale {quality_setting} {quality_setting} {files_handle}'
-        else:
-            print( 'OS CURRENTLY UNSUPPORTED!' )
-            return False
-        sub = subprocess.Popen( command_us, shell=True );
-        sub.wait();        
-        time.sleep(3)
-    print( '\n\nCompleted executing Job\n\n\n PROCESS: ', number, '\n\n\n' );
 
 ########################
 # 

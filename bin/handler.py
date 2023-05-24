@@ -136,9 +136,9 @@ class Handler:
 
         self.lastUsedPath = ''
 
-        if ( scalerEngine == 'fsr' or scalerEngine == 'NN' ):
+        if ( scalerEngine.lower() == 'fsr' or scalerEngine.lower() == 'c' or scalerEngine.lower() == 'hqc' ):
             self.lastUsedPath = fsr.fsrScaler( self.tmppath, filepath, threads, fsrpath, quality_setting + 'x', sharpening, scaling, filetype, scalerEngine )
-        elif ( scalerEngine == 'SS' ):
+        elif ( scalerEngine.upper() == 'SS' ):
             if ( not useSpecialModeSS ):
                 self.lastUsedPath = ss.superScaler( self.tmppath, threads, quality_setting, self.os_type, model )
             else:   

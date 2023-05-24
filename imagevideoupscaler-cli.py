@@ -49,7 +49,7 @@ if __name__ == '__main__':
             go = False
 
     if ( args.engine != None ):
-        if ( args.engine == 'fsr' or args.engine == 'SS' or args.engine == 'NN' ):
+        if ( args.engine == 'fsr' or args.engine == 'SS' or args.engine.lower() == 'c' or args.engine.lower() == 'hqc' ):
             engine = args.engine;
         else:
             print( 'Invalid argument for engine' )
