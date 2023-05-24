@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['fsrimagevideoupscaler.py'],
+    ['imagevideoupscaler-cli.py'],
     pathex=[],
     binaries=[],
     datas=[('config', 'config')],
@@ -26,7 +26,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='FSR Image & Video Upscaler',
+    name='Image & Video Upscaler',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -46,5 +46,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='fsrimagevideoupscaler',
+    name='imagevideoupscaler-cli',
 )
