@@ -50,7 +50,7 @@ def performChecks ( args, ap ):
                     return False
                 
                 # Check scalefactor argument and also verify that engine supports upscaling
-                if ( args.scalefactor != None ):
+                if ( args.scalefactor != None and args.scalefactor != 0 ):
                     if ( int( args.scalefactor ) > 4 and int( args.scalefactor ) < -4 ):
                         print( '\n==> ERROR: Invalid scale factor. Value has to be an integer between -4 and 4' )
                         return False
@@ -60,7 +60,7 @@ def performChecks ( args, ap ):
                             return False
                     
                 # Check sharpening argument and also verify that engine supports it   
-                if ( args.sharpening != None ):         
+                if ( args.sharpening != None and args.sharpening != 0 ):         
                     if ( float( args.sharpening ) >= 1 and float( args.sharpening ) <= 0 ):
                         print( '\n==> ERROR: Invalid value for sharpening. Value has to be between 0 and 1' )
                         return False

@@ -24,6 +24,7 @@ class Scaler:
         print( '\n\n==>Photo upscaled' );
 
     def videoScaler ( self, tmppath, threads, scalefactor, sharpening, filetype, mode ):
+        modes = { 'av3':'realesr-animevideov3', 'x4plus': 'realesrgan-x4plus-anime' }
         print( '\n\n==> Preparing to upscale videos <==\n\n==> You will see a lot of numbers flying by showing the progress of the upscaling of each individual image.\n==> This process might take a long time, depending on the length of the video.\n\n')
         time.sleep( 2 );
 
@@ -32,7 +33,7 @@ class Scaler:
         except FileExistsError:
             pass
         if ( self.os_type == 'win32' ):
-            self.command = f'realesrgan-ncnn-vulkan -i {tmppath} -o {tmppath}sc -s {scalefactor} -j {threads}:{threads}:{threads} -n {mode}'
+            self.command = f'realesrgan-ncnn-vulkan -i {tmppath} -o {tmppath}sc -s {scalefactor} -j {threads}:{threads}:{threads} -n {modes[ mode ]}'
         elif ( self.os_type == 'linux' ):
-            self.command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {tmppath} -o {tmppath}sc -s {scalefactor} -j {threads}:{threads}:{threads} -n {mode}'
+            self.command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {tmppath} -o {tmppath}sc -s {scalefactor} -j {threads}:{threads}:{threads} -n {modes[ mode ]}'
         os.system( self.command );
