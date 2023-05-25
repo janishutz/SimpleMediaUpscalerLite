@@ -52,7 +52,7 @@ def performChecks ( args, ap ):
                 # Check scalefactor argument and also verify that engine supports upscaling
                 if ( args.scalefactor != None and args.scalefactor != 0 ):
                     if ( int( args.scalefactor ) > 4 and int( args.scalefactor ) < -4 ):
-                        print( '\n==> ERROR: Invalid scale factor. Value has to be an integer between -4 and 4' )
+                        print( '\n==> ERROR: Invalid scale factor. Value has to be an integer between -4 and 4 (option -s)' )
                         return False
                     else:
                         if ( not 'upscaling' in engineInfo[ args.engine ][ 'supports' ] ):
@@ -80,13 +80,14 @@ def performChecks ( args, ap ):
                     return False
                 
                 # Check if mode of engine is valid
-                try:
-                    engineInfo[ args.engine.lower() ][ 'cliModeOptions' ][ args.mode.lower() ]
-                except KeyError:
-                    print( '\n==> ERROR: The specified mode is not supported by this engine. Options:' )
-                    for option in engineInfo[ args.engine ][ 'cliModeOptions' ]:
-                        print( '   --> ' + engineInfo[ args.engine ][ 'cliModeOptions' ][ option ][ 'displayName' ] + ' (' + option + ')' )
-                    return False
+                if ( args.mode != None ):
+                    try:
+                        engineInfo[ args.engine.lower() ][ 'cliModeOptions' ][ args.mode.lower() ]
+                    except KeyError:
+                        print( '\n==> ERROR: The specified mode is not supported by this engine. Options:' )
+                        for option in engineInfo[ args.engine ][ 'cliModeOptions' ]:
+                            print( '   --> ' + engineInfo[ args.engine ][ 'cliModeOptions' ][ option ][ 'displayName' ] + ' (' + option + ')' )
+                        return False
                 
                 return True
             else:
@@ -119,7 +120,7 @@ if __name__ == '__main__':
     ap.add_argument( '-d', '--details', help='Get details on usage of a particular engine and exit. Reads the config.json file of that engine and displays it in a HR manner' )
     ap.add_argument( '-p', '--printengines', help='Print all engines and exit', action='store_true' )
     ap.add_argument( '-v', '--version', help='Print version and exit', action='store_true' )
-    ap.set_defaults( scaling = 0, sharpening = 0, threads = 4, engine = 'fsr', mode = 'fsr', filetype = 'png' )
+    ap.set_defaults( scaling = 0, sharpening = 0, threads = 4, engine = 'fsr', filetype = 'png' )
     args = ap.parse_args()
 
     handler = bin.handler.Handler()
@@ -127,7 +128,15 @@ if __name__ == '__main__':
     multiprocessing.freeze_support();
 
     if ( performChecks( args, ap ) ):
-        handler.handler( args.inputfile, args.scalefactor, args.outputfile, args.sharpening, args.filetype, args.engine, args.mode, args.threads )
+        mode = 'fsr'
+        if ( args.mode != None ):
+            mode = args.mode
+        else:
+            for option in engineInfo[ args.engine ][ 'cliModeOptions' ]:
+                if ( engineInfo[ args.engine ][ 'cliModeOptions' ][ option ][ 'default' ] ):
+                    mode = option
+                    break
+        handler.handler( args.inputfile, args.scalefactor, args.outputfile, args.sharpening, args.filetype, args.engine, mode, args.threads )
         print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nImageVideoUpscalerFrontend V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + args.outputfile + '\n\n\n' )
 
 
