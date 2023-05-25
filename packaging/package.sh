@@ -1,5 +1,7 @@
 #! /bin/bash
 
+cd ..
+
 # Make linux executable
 pyinstaller imagevideoupscaler-cli.spec
 mv -r ./dist/imagevideupscaler ./dist/imagevideupscaler-linux
