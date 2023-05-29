@@ -1,0 +1,18 @@
+#
+#				FSRImageVideoUpscalerFrontend - .gitignore
+#
+#	Created by Janis Hutz 05/24/2023, Licensed under the GPL V3 License
+#			https://janishutz.com, development@janishutz.com
+#
+#
+#
+
+# remove pycache
+__pycache__
+
+# remove node_modules from repo
+node_modules
+
+# ignore build & dist folders
+build
+dist
