@@ -8,15 +8,9 @@
             <li>Janis Hutz (simplePCBuilding): Maintainer, CLI & GUI development, Packaging</li>
             <li>ThatPlasma: App name, Logo, testing, Windows installer</li>
         </ul>
+        <br><br>
         <div class="version-info">
-            <h3>You are currently running version 1.1.0</h3>
-            <h3>Changelog</h3>
-            <ul>
-                <li>
-                    Version 1.0
-                    <ul></ul>
-                </li>
-            </ul>
+            <h3>You are currently running version {{ appVersion }}. {{ versionNotice[ isUpToDate ] }}</h3>
         </div>
     </div>
 </template>
@@ -25,14 +19,22 @@
 export default {
     data() {
         return {
-            version: '',
+            versionNotice: { true: '==> up to date', false: '==> New version available' },
+            appVersion: 'V1.1.0',
+            latestVersion: '',
             isUpToDate: true,
+            releaseInfos: '',
         }
     },
     mounted () {
-        fetch( 'https://github.com/simplePCBuilding/ImageVideoUpscaler/blob/master/package.json' ).then( res => {
-            console.log( res );
-        })
+        fetch( 'https://api.github.com/repos/simplePCBuilding/ImageVideoUpscaler/releases/latest' ).then( res => {
+            res.json().then( data => {
+                this.latestVersion = data.tag_name;
+                if ( data.tag_name != this.appVersion ) {
+                    this.isUpToDate = false;
+                }
+            } );
+        } );
     }
 }
 </script>
