@@ -30,7 +30,7 @@ This app allows you to fully automatically upscale a single file or a full on fo
 - Real-ESGRAN
 - more to come!
 
-This App also features a CLI interface.
+This App also features a CLI interface (reference out of date).
 - Options:
 ```
 -s SCALEFACTOR	--scalefactor SCALEFACTOR		Factor of form 2x, maximum 4x
@@ -59,10 +59,11 @@ If you have any suggestions or features you'd like to have implemented, you may 
 
 # Roadmap
 V1.1.0: 
-- Migrate to PyQt5 (or create Electron app and make python app CLI only)
-- Create Windows & Mac Version
-- Refactor backend to add plugin support
-- Add more scaling engines
+- Migrate to Electron app
+- Make python app CLI only -- ✅
+- Package Windows & Linux Version
+- Refactor backend to add plugin support -- ✅
+- Add more scaling engines 
 - Expand Wiki to feature documentation on how to create a plugin (and maybe add a project website)
 
 V1.2.0:
