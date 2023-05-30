@@ -98,7 +98,7 @@ If the OS is not officially supported, we may not be able to help you, since we 
 
 **Q: Why no worky on MacOS? / Can you port to MacOS?**
 
-A: MacOS cannot run some of the upscalers included by default so we cannot support it. If you find a way to run all upscalers on Mac, feel free to open a PR to add that functionality
+A: Wine support on MacOS is still mediocre and most likely cannot run some of the upscalers included by default so we cannot support it. I will be testing it at some point in a VM, but that won't necesarily speak for full functionality. If you find a way to run all upscalers on Mac, feel free to open a PR to add that functionality or just let us know what you did in an issue.
 
 **Q: Upscaled XXX looks not as great as I want**
 
