@@ -1,6 +1,6 @@
 {
   "name": "imagevideoupscaler",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A frontend to upscale your videos and images using different upscale engines",
   "main": "index.js",
   "scripts": {
