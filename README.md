@@ -4,14 +4,23 @@
 </div>
 
 <div id="badges" align="center">
-    <img src="https://img.shields.io/github/release/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
-    <img src="https://img.shields.io/github/license/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
-    <img src="https://img.shields.io/github/repo-size/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
-    <img src="https://img.shields.io/tokei/lines/github/simplePCBuilding/FSRImageVideoUpscalerFrontend">
-    <img src="https://img.shields.io/github/issues-pr-raw/simplePCBuilding/FSRImageVideoUpscalerFrontend">
-    <img src="https://img.shields.io/github/languages/top/simplePCBuilding/FSRImageVideoUpscalerFrontend">
-    <img src="https://img.shields.io/github/directory-file-count/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
-    <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/FSRImageVideoUpscalerFrontend.svg">
+    <img src="https://img.shields.io/github/license/simplePCBuilding/ImageVideoUpscaler.svg">
+    <img src="https://img.shields.io/github/repo-size/simplePCBuilding/ImageVideoUpscaler.svg">
+    <img src="https://img.shields.io/tokei/lines/github/simplePCBuilding/ImageVideoUpscaler">
+    <img src="https://img.shields.io/github/languages/top/simplePCBuilding/ImageVideoUpscaler">
+    <img src="https://img.shields.io/github/directory-file-count/simplePCBuilding/ImageVideoUpscaler.svg">
+    <br>
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/simplePCBuilding/ImageVideoUpscaler">
+    <img alt="GitHub watchers" src="https://img.shields.io/github/watchers/simplePCBuilding/ImageVideoUpscaler">
+    <img src="https://img.shields.io/github/issues-pr-raw/simplePCBuilding/ImageVideoUpscaler">
+    <img alt="GitHub forks" src="https://img.shields.io/github/forks/simplePCBuilding/ImageVideoUpscaler">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/simplePCBuilding/ImageVideoUpscaler">
+    <br>
+    <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/simplePCBuilding/ImageVideoUpscaler/total?label=Downloads (total)">
+    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/downloads/simplePCBuilding/ImageVideoUpscaler/latest/total?label=Downloads (latest)">
+    <img src="https://img.shields.io/github/release/simplePCBuilding/ImageVideoUpscaler.svg">
+    <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/ImageVideoUpscaler.svg?label=Development Version">
+    
 </div>
 An Electron App with Python CLI to upscale images and videos using multiple different upscaling engines.
 
