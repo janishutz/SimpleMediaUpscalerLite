@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=FSR Image & Video Upscaler
-Comment=Upscale your videos and images with FSR
-Path=/opt/fsrimageupscaler
-Exec=/opt/fsrimageupscaler/FSR\ Image\ \&\ Video\ Upscaler
-Icon=fsrimageupscaler

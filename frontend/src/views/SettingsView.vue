@@ -6,12 +6,10 @@
 </template>
 
 <script>
-import run_script from '@/background.js'
-
 export default {
     methods: {
         run() {
-            run_script( 'ls' )
+            // run_script( 'ls' )
         }
     }
 }

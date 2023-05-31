@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Image & Video Upscaler
-Comment=Upscale your videos and images with different upscalers
-Path=/opt/imagevideoupscaler
-Exec=/opt/imagevideoupscaler/imagevideoupscaler
-Icon=imagevideoupscaler
