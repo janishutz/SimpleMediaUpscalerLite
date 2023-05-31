@@ -24,6 +24,9 @@
 </div>
 An Electron App with Python CLI to upscale images and videos using multiple different upscaling engines.
 
+# NEW NAME & LOGO NEEDED!
+If you have suggestions for a name, please let us know [here](https://github.com/simplePCBuilding/ImageVideoUpscaler/issues/16). If you want to contribute a new logo, please open a PR and add it, or just let us know in the beforementioned issue.
+
 # Functionality
 This app allows you to fully automatically upscale a single file or a full on folder with one of many different engines.
 - Choose an input & output file from a GUI filemanager.
