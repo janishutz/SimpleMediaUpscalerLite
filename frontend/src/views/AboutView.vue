@@ -23,7 +23,6 @@ export default {
             appVersion: 'V1.1.0',
             latestVersion: '',
             isUpToDate: true,
-            releaseInfos: '',
         }
     },
     mounted () {
