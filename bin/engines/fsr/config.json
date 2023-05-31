@@ -11,5 +11,7 @@
     "pluginCreator": "Janis Hutz",
     "pluginCreatorLink": "https://janishutz.com",
     "engineLink": "",
-    "supports": [ "upscaling", "sharpening" ]
+    "supports": [ "upscaling", "sharpening" ],
+    "engineDownloadLink":"",
+    "filesToInclude": [ "fsr.py" ]
 }

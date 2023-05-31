@@ -10,5 +10,7 @@
     "pluginCreator": "Janis Hutz",
     "pluginCreatorLink": "https://janishutz.com",
     "engineLink": "",
-    "supports": [ "upscaling" ]
+    "supports": [ "upscaling" ],
+    "engineDownloadLink":"",
+    "filesToInclude": [ "fsr.py" ]
 }
