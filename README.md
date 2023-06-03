@@ -70,15 +70,15 @@ If you have any suggestions or features you'd like to have implemented, you may 
 
 
 # Roadmap
-V1.1.0: 
+V2.0.0: 
 - Migrate to Electron app
-- Make python app CLI only -- ✅
 - Package Windows & Linux Version
+- Make python app CLI only -- ✅
 - Refactor backend to add plugin support -- ✅
+
+V2.1.0:
 - Add more scaling engines 
 - Expand Wiki to feature documentation on how to create a plugin (and maybe add a project website)
-
-V1.2.0:
 - Show progress of scaling
 
 # Issues
@@ -86,6 +86,7 @@ If you encounter any problems with this app, please don't hesitate to open an is
 
 ## Known issues
 - Electron App is not available yet
+- Electron App shows that it is out of date if running in the development version
 - GTK version only runs on Linux
 
 # FAQ
