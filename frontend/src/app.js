@@ -6,10 +6,23 @@ const bodyParser = require( 'body-parser' );
 const exec = require( 'child_process' ).exec;
 const upscaling = require( './upscalingHandler.js' );
 const upscalingHandler = new upscaling();
+const http = require( 'http' );
+const server = require( 'socket.io' ).Server;
+const Server = http.createServer( app );
+
+const io = new server( Server, {
+    cors: {
+        origin: 'http://localhost:8080'
+    }
+} );
 
 app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( bodyParser.json() );
 app.use( cors() );
+
+io.on( 'connection', ( socket ) => {
+    console.log( 'connected' );
+} )
 
 
 app.get( '/api/getEngines', ( request, response ) => {
@@ -45,10 +58,10 @@ app.post( '/api/startUpscaling', ( request, response ) => {
     let checks = upscalingHandler.verifyDataIntegrity( request.body );
     if ( checks[ 0 ] ) {
         response.send( { 'data': checks[ 1 ] } );
-        upscalingHandler.upscale( request.body );
+        upscalingHandler.upscale( request.body, io );
     } else {
         response.send( { 'data': checks[ 1 ] } );
     }
 } );
 
-app.listen( 8081 );
+Server.listen( 8081 );

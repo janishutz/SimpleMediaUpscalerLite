@@ -22,9 +22,15 @@
         <button @click="runCommand( 'OutputFile' )">Output file</button><br>
         <button @click="start()">Start upscaling</button>
 
+        <div class="output-box-wrapper">
+            <p id="cmd" @click="showCmdOutput()">Command output</p>
+            <div class="output-box" v-html="output" id="output">
+            </div>
+        </div>
+
         <dialog id="processing">
             <div class="dialog-container">
-                Your file is being processed. You will be notified when the upscaling process has finished. A future version of this app will show progress here.
+                Your file is being processed. You will be notified when the upscaling process has finished.
                 <form method="dialog">
                     <button>OK</button>
                 </form>
@@ -55,13 +61,16 @@
 </template>
 
 <script>
+import { socket } from "@/socket";
+
 export default {
     name: 'HomeView',
     data() {
         return {
-            upscaleSettings: { 'engine': 'ffc', 'algorithm': 'fsr', 'scale': 2, 'sharpening': 0, 'InputFile': [ '/home/janis/projects/myevent/assets/logo.png' ], 'OutputFile': [ '/home/janis/projects/myevent/assets/logo.jpg' ] },
+            upscaleSettings: { 'engine': 'ffc', 'algorithm': 'fsr', 'scale': 2, 'sharpening': 0, 'InputFile': [ '/home/janis/projects/myevent/assets/logo.png' ], 'OutputFile': '/home/janis/Downloads/test.png' },
             engines: { 'ffc':{ 'displayName': 'FidelityFX CLI', 'id': 'ffc', 'modes': { 'fsr': { 'displayName': 'FidelityFX Super Resolution', 'id': 'fsr' } }, 'supports': [ 'upscaling', 'sharpening' ] }, 'ss':{ 'displayName': 'REAL-ESGRAN', 'id': 'ss' } },
             fixed: false,
+            output: '',
         }
     },
     methods: {
@@ -85,7 +94,7 @@ export default {
             }
             fetch( 'http://127.0.0.1:8081/api/startUpscaling', fetchOptions ).then( res => {
                 res.json().then( data => {
-                    console.log( data.data );
+                    console.log( this.upscaleSettings );
                     if ( data.data == 'upscaling' ) {
                         document.getElementById( 'processing' ).showModal();
                     } else if ( data.data == 'dataMissing' ) {
@@ -97,17 +106,52 @@ export default {
                     console.log( error );
                 } )
             } );
+            this.output = '';
+
+            socket.on( 'progress', ( ...args) => {
+                this.output += args + '<br>';
+            } )
+        },
+        showCmdOutput () {
+            document.getElementById( 'output' ).classList.toggle( 'shown' );
         },
         fixFileExtension () {
             let fileExtension = this.upscaleSettings.InputFile[ 0 ].substring( this.upscaleSettings.InputFile[ 0 ].length - 4 );
-            this.upscaleSettings.OutputFile[ 0 ] = this.upscaleSettings.OutputFile[ 0 ].slice( 0, this.upscaleSettings.OutputFile[ 0 ].length - 4 ) + fileExtension;
+            this.upscaleSettings.OutputFile = this.upscaleSettings.OutputFile.slice( 0, this.upscaleSettings.OutputFile[ 0 ].length - 5 ) + fileExtension;
             this.fixed = true;
         }
+    },
+    created() {
+        socket.connect();
+    },
+    deactivated() {
+        socket.disconnect();
     }
 }
 </script>
 
 <style scoped>
+    .output-box-wrapper {
+        margin-top: 5%;
+        width: 100%;
+        height: 20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .output-box {
+        display: none;
+        overflow: scroll;
+        height: 100%;
+        width: 60%;
+        text-align: justify;
+    }
+
+    .shown {
+        display: block;
+    }
+
     dialog {
         border-radius: 10px;
         height: 30vh;
@@ -124,5 +168,12 @@ export default {
         justify-content: center;
         align-items: center;
         flex-direction: column;
+    }
+
+    #cmd {
+        text-align: justify;
+        width: 60%;
+        cursor: pointer;
+        user-select: none;
     }
 </style>

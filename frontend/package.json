@@ -1,14 +1,16 @@
 {
   "name": "imagevideoupscaler",
   "version": "2.0.0-dev1",
-  "maintainers": [ "Janis Hutz <development@janishutz.com>" ],
+  "maintainers": [
+    "Janis Hutz <development@janishutz.com>"
+  ],
   "description": "An Electron frontend to the ImageVideoUpscaler-CLI",
   "homepage": "https://janishutz.com/scaler.html",
   "author": {
-    "name":"Janis Hutz",
+    "name": "Janis Hutz",
     "email": "development@janishutz.com",
-    "url":"https://janishutz.com"
-  },  
+    "url": "https://janishutz.com"
+  },
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/simplePCBuilding/FSRImageVideoUpscalerFrontend/issues"
@@ -32,6 +34,8 @@
     "core-js": "^3.8.3",
     "cors": "^2.8.5",
     "electron-squirrel-startup": "^1.0.0",
+    "socket.io": "^4.6.2",
+    "socket.io-client": "^4.6.2",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },
