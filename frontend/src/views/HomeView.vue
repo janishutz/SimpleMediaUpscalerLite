@@ -28,7 +28,7 @@
 
         <div class="output-box-wrapper">
             <p id="cmd" @click="showCmdOutput()">Command output</p>
-            <div class="output-box" v-html="output" id="output">
+            <div class="output-box" id="output" v-html="output">
             </div>
         </div>
 
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { socket } from "@/socket";
+import { ipcRenderer } from 'electron';
 
 export default {
     name: 'HomeView',
@@ -79,42 +79,33 @@ export default {
     },
     methods: {
         runCommand ( command ) {
-            fetch( 'http://127.0.0.1:49369/api/get' + command ).then( res => {
-                res.json().then( data => {
-                    this.upscaleSettings[ command ] = data[ 'data' ];
-                } ).catch( error => {
-                    console.log( error );
-                } );
+            ipcRenderer.send( 'select' + command );
+            ipcRenderer.on( 'select' + command, ( event, data ) => {
+                this.upscaleSettings[ command ] = data[ 'data' ];
             } );
         },
         start() {
-            let fetchOptions = {
-                method: 'post',
-                body: JSON.stringify( this.upscaleSettings ),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'charset': 'utf-8'
-                },
-            }
-            fetch( 'http://127.0.0.1:49369/api/startUpscaling', fetchOptions ).then( res => {
-                res.json().then( data => {
-                    console.log( this.upscaleSettings );
-                    if ( data.data == 'upscaling' ) {
-                        document.getElementById( 'processing' ).showModal();
-                    } else if ( data.data == 'dataMissing' ) {
-                        document.getElementById( 'wrong' ).showModal();
-                    } else {
-                        document.getElementById( 'fileExtension' ).showModal();
-                    }
-                } ).catch( error => {
-                    console.log( error );
-                } )
-            } );
             this.output = '';
+            ipcRenderer.send( 'startUpscaling', JSON.stringify ( this.upscaleSettings ) );
+            ipcRenderer.on( 'startUpscaling', ( event, data ) => {
+                if ( data.data == 'upscaling' ) {
+                    try {
+                        document.getElementById( 'processing' ).showModal();
+                    } catch ( error ) {
+                        console.log( error );
+                    }
+                } else if ( data.data == 'dataMissing' ) {
+                    document.getElementById( 'wrong' ).showModal();
+                } else {
+                    document.getElementById( 'fileExtension' ).showModal();
+                }
+            } );
 
-            socket.on( 'progress', ( ...args) => {
-                this.output += args + '<br>';
-            } )
+            let self = this;
+
+            ipcRenderer.on( 'progress', function ( evt, message ) {
+                self.output += message;
+            });
         },
         showCmdOutput () {
             document.getElementById( 'output' ).classList.toggle( 'shown' );
@@ -125,12 +116,6 @@ export default {
             this.fixed = true;
         }
     },
-    created() {
-        socket.connect();
-    },
-    deactivated() {
-        socket.disconnect();
-    }
 }
 </script>
 

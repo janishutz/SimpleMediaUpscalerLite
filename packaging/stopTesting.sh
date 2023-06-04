@@ -4,12 +4,12 @@ cd ../frontend
 
 rm -rf ./bin
 rm -rf ./config
+rm -rf ./lib-dynload
 rm -rf ./libdynload
 rm ./image*
 rm ./lib*
 rm ./ld*
 rm ./base_library.zip
-rm ./imagevideoupscaler-cli.py
 rm ./LICENSE
 
 cd ..

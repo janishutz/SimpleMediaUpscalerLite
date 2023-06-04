@@ -17,7 +17,7 @@ class UpscalingHandler {
         this.os = process.platform
     }
 
-    upscale( options, io ) {
+    upscale( options, win ) {
         // required options: engine, algorithm, scale, sharpening, InputFile & OutputFile
         // Options is an object!
 
@@ -46,7 +46,7 @@ class UpscalingHandler {
         
         child.stdout.on( 'data', data => {
             console.log( '' + data );
-            io.emit( 'progress', '\n' + data );
+            win.send( 'progress', '\n' + data );
         } );
         
         child.stderr.on( 'data', ( data ) => {
