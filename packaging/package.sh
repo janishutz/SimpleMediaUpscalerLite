@@ -3,16 +3,19 @@
 cd ..
 
 # Make linux executable
-pyinstaller imagevideoupscaler-cli.spec
-mv -r ./dist/imagevideupscaler ./dist/imagevideupscaler-linux
-cp -r ./bin ./dist/imagevideupscaler-linux
-cp -r ./config ./dist/imagevideupscaler-linux
-cp ./imagevideupscaler-cli.py ./dist/imagevideupscaler-linux
-cp ./LICENSE ./dist/imagevideupscaler-linux
-cp ./logo.png ./dist/imagevideupscaler-linux
+pyinstaller imagevideoupscaler.spec
+cp ./dist/imagevideoupscaler/* ./frontend/src/
 
-# package rpm & deb
-cp ./dist/imagevideoupscaler-linux/* ./frontend/src/
+# wine python -m pyinstaller imagevideoupscaler.spec
+# cp ./dist/imagevideoupscaler/* ./frontend/src/
+
+cp -r ./bin ./frontend/src/
+cp -r ./config ./frontend/src/
+cp ./imagevideoupscaler-cli.py ./frontend/src/
+cp ./LICENSE ./frontend/src/
+cp ./logo.png ./frontend/src/
+
+# package for all platforms (includes GUI & CLI)
 cd frontend
 npm run electron:build -- --linux deb rpm --win nsis
 
