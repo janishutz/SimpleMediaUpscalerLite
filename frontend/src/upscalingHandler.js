@@ -39,6 +39,8 @@ class UpscalingHandler {
         // add additional options
         // baseCommand +=  + ' -S ' + options.sharpening
         // baseCommand += ' -E ' + options.engine + ' -M ' + options.algorithm
+
+        console.log( 'upscaling' );
         
         let child = child_process.spawn( baseCommand, args );
         
@@ -52,6 +54,7 @@ class UpscalingHandler {
         } );
         
         child.on( 'error', ( error ) => {
+            console.log( 'An error occurred' + error );
             new Notification( { title: `ImageVideoUpscaler - Error whilst upscaling', body: 'Your upscaling Job encountered an error whilst upscaling. (Error message: ${ error.message }).`} )
         } );
         

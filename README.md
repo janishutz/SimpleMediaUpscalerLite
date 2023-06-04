@@ -59,20 +59,20 @@ This App also features a CLI interface (reference out of date).
 
 # Contributing
 If you have any suggestions or features you'd like to have implemented, you may either implement the feature yourself and open a pull request, or open an issue on this GitHub page. Both things are appreciated!
-*I am looking for somebody willing to maintain the Windows version (including installer) as I am running Linux*
 
 --> Follow the rules layed out in CONTRIBUTING.md
 --> We will add a linter that will then run on circleci to ensure code quality is high
 
 ### Current Contributers
 - simplePCBuilding (Maintainer) [Core (CLI), Docs, Website, Frontend, Linux packages]
-- ThatPlasma (Testing, Packager) [Testing, Windows Package]
+- ThatPlasma (Testing, Packager) [Testing]
 
 
 # Roadmap
 V2.0.0: 
-- Migrate to Electron app
-- Package Windows & Linux Version
+- Migrate to Electron app -- ✅
+- Package Windows & Linux Version -- ✅
+- Add packaging script for Linux & Windows version -- ✅
 - Make python app CLI only -- ✅
 - Refactor backend to add plugin support -- ✅
 

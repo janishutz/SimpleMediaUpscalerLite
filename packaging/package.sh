@@ -4,15 +4,15 @@ cd ..
 
 # Compile for Linux
 pyinstaller imagevideoupscaler.spec
-cp -r ./dist/imagevideoupscaler/* ./frontend/
+cp -rv ./dist/imagevideoupscaler/* ./frontend/
 
 
 # Copy python files
-cp -r ./bin ./frontend/
-cp -r ./config ./frontend/
-cp ./imagevideoupscaler-cli.py ./frontend/
-cp ./LICENSE ./frontend/
-cp ./logo.png ./frontend/
+cp -rv ./bin ./frontend/
+cp -rv ./config ./frontend/
+cp -v ./imagevideoupscaler-cli.py ./frontend/
+cp -v ./LICENSE ./frontend/
+cp -v ./logo.png ./frontend/
 
 
 # package for Linux (includes GUI & CLI)
@@ -34,8 +34,8 @@ printf '\n\n==> Finished Linux packaging, preparing Windows\n\n'
 
 # Compile for Windows
 wine python -m PyInstaller imagevideoupscaler.spec
-cp -r ./dist/imagevideoupscaler/* ./frontend/
-
+cp -rv ./dist/imagevideoupscaler/* ./frontend/
+cp -v ./imagevideoupscaler-cli.py ./frontend/
 
 # package for Windows (includes GUI & CLI)
 cd frontend
@@ -46,7 +46,11 @@ rm -rf ./config
 rm -rf ./lib-dynload
 rm ./image*
 rm ./_*
-rm ./imagevideoupscaler-cli.py
+rm ./py*
+rm ./lib*
+rm ./base_library.zip
+rm ./*.pyd
+rm ./*.dll
 rm ./LICENSE
 
 cd ..

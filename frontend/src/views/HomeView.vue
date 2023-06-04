@@ -12,11 +12,15 @@
             <option v-for="engine in engines[ upscaleSettings.engine ][ 'modes' ]" :key="engine.id" :value="engine.id">{{ engine.displayName }}</option>
         </select><br>
 
-        <label for="scale" v-if="engines[ upscaleSettings.engine ][ 'supports' ].includes( 'upscaling' )">Scale factor</label><br>
-        <input type="number" name="scale" id="scale" v-model="upscaleSettings.scale" min="2" max="4" onkeydown="return false">x<br>
+        <div v-if="engines[ upscaleSettings.engine ][ 'supports' ].includes( 'upscaling' )">
+            <label for="scale">Scale factor</label><br>
+            <input type="number" name="scale" id="scale" v-model="upscaleSettings.scale" min="2" max="4" onkeydown="return false">x<br>
+        </div>
 
-        <label for="sharpening" v-if="engines[ upscaleSettings.engine ][ 'supports' ].includes( 'sharpening' )">Sharpening factor</label><br>
-        <input type="number" step="0.01" name="scale" id="scale" v-model="upscaleSettings.sharpening" min="0" max="1"><br>
+        <div v-if="engines[ upscaleSettings.engine ][ 'supports' ].includes( 'sharpening' )">
+            <label for="sharpening">Sharpening factor</label><br>
+            <input type="number" step="0.01" name="scale" id="scale" v-model="upscaleSettings.sharpening" min="0" max="1"><br>
+        </div>
 
         <button @click="runCommand( 'InputFile' )">Input file</button><br>
         <button @click="runCommand( 'OutputFile' )">Output file</button><br>
@@ -68,7 +72,7 @@ export default {
     data() {
         return {
             upscaleSettings: { 'engine': 'ffc', 'algorithm': 'fsr', 'scale': 2, 'sharpening': 0, 'InputFile': [ '/home/janis/projects/myevent/assets/logo.png' ], 'OutputFile': '/home/janis/Downloads/test.png' },
-            engines: { 'ffc':{ 'displayName': 'FidelityFX CLI', 'id': 'ffc', 'modes': { 'fsr': { 'displayName': 'FidelityFX Super Resolution', 'id': 'fsr' } }, 'supports': [ 'upscaling', 'sharpening' ] }, 'ss':{ 'displayName': 'REAL-ESGRAN', 'id': 'ss' } },
+            engines: { 'ffc':{ 'displayName': 'FidelityFX CLI', 'id': 'ffc', 'modes': { 'fsr': { 'displayName': 'FidelityFX Super Resolution', 'id': 'fsr' }, 'c': { 'displayName': 'Cubic', 'id': 'c' }, 'hqc': { 'displayName': 'High Quality Cubic', 'id': 'hqc' } }, 'supports': [ 'upscaling', 'sharpening' ] }, 'ss':{ 'displayName': 'REAL-ESRGAN', 'id': 'ss', 'modes': { 'av3': { 'displayName': 'realesr-animevideov3', 'id': 'av3' }, 'x4plus': { 'displayName': 'realesrgan-x4plus-anime', 'id': 'x4plus' } }, 'supports': [ 'upscaling' ] } },
             fixed: false,
             output: '',
         }
