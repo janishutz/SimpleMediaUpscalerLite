@@ -42,14 +42,34 @@ This app allows you to fully automatically upscale a single file or a full on fo
 - Real-ESGRAN
 - more to come!
 
-This App also features a CLI interface (reference out of date).
-- Options:
+This App also features a CLI interface.
 ```
--s SCALEFACTOR	--scalefactor SCALEFACTOR		Factor of form 2x, maximum 4x
--S SHARPENING	--sharpening SHARPENING			Value (0 - 1)
--T THREADCOUNT	--threads THREADCOUNT			Choose how many threads in parallel. Maximum is max threads of your CPU
--F FILETYPE		--filetype FILETYPE				Choose file type of temporary image files when upscaling videos (required)
--N 				--noscaling						No upscaling, requires -S option (Sharpening option)
+usage: imagevideoupscaler-cli.py [-h] [-i INPUTFILE] [-o OUTPUTFILE] [-s SCALEFACTOR] [-S SHARPENING] [-T THREADS] [-E ENGINE] [-M MODE] [-F FILETYPE] [-d DETAILS] [-p] [-v]
+
+ImageVideoUpscaler - CLI, a CLI application to upscale videos and images using different upscaling engines.
+
+options:
+  -h, --help            show this help message and exit
+  -i INPUTFILE, --inputfile INPUTFILE
+                        File path for the video / image to be upscaled
+  -o OUTPUTFILE, --outputfile OUTPUTFILE
+                        Output file path for the video / image that was upscaled
+  -s SCALEFACTOR, --scalefactor SCALEFACTOR
+                        Scale factor for the video / image. Can be a integer from -4 to 4
+  -S SHARPENING, --sharpening SHARPENING
+                        Sharpening factor (between 0 and 1 whereas 0 means no sharpening, 1 the most sharpening. Recommendation: Do not exceed 0.25, as it often looks bad)
+  -T THREADS, --threads THREADS
+                        Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread). Scales well with FSR, barely with
+                        Real-ESRGAN, as it uses mostly the GPU to upscale
+  -E ENGINE, --engine ENGINE
+                        Upscaling engine. By default can be fsr or ss. Use the -p option to see all installed engines
+  -M MODE, --mode MODE  Specify a special mode for a specific engine. Might not be available in every engine. Use the -d option to find out more
+  -F FILETYPE, --filetype FILETYPE
+                        Change the file type of the temporary image files. Supports png, jpg. Video quality: png > jpg. PNG is default, if not specified.
+  -d DETAILS, --details DETAILS
+                        Get details on usage of a particular engine and exit. Reads the config.json file of that engine and displays it in a HR manner
+  -p, --printengines    Print all engines and exit
+  -v, --version         Print version and exit
 ```
 
 # Supported OS
