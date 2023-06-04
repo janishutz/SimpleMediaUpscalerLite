@@ -64,4 +64,4 @@ app.post( '/api/startUpscaling', ( request, response ) => {
     }
 } );
 
-Server.listen( 8081 );
+Server.listen( 49369 );

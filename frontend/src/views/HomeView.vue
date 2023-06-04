@@ -79,7 +79,7 @@ export default {
     },
     methods: {
         runCommand ( command ) {
-            fetch( 'http://127.0.0.1:8081/api/get' + command ).then( res => {
+            fetch( 'http://127.0.0.1:49369/api/get' + command ).then( res => {
                 res.json().then( data => {
                     this.upscaleSettings[ command ] = data[ 'data' ];
                 } ).catch( error => {
@@ -96,7 +96,7 @@ export default {
                     'charset': 'utf-8'
                 },
             }
-            fetch( 'http://127.0.0.1:8081/api/startUpscaling', fetchOptions ).then( res => {
+            fetch( 'http://127.0.0.1:49369/api/startUpscaling', fetchOptions ).then( res => {
                 res.json().then( data => {
                     console.log( this.upscaleSettings );
                     if ( data.data == 'upscaling' ) {
