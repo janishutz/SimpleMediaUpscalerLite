@@ -135,6 +135,7 @@ export default {
         height: 100%;
         width: 60%;
         text-align: justify;
+				white-space: pre-line;
     }
 
     .shown {
