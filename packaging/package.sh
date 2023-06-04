@@ -19,5 +19,10 @@ cp ./logo.png ./frontend/src/
 cd frontend
 npm run electron:build -- --linux deb rpm --win nsis
 
+print '\n\n==> Cleaning up\n\n'
+rm -rf ./src/bin
+rm -rf ./src/config
+rm ./src/imagevideoupscaler-cli.py
+rm ./src/LICENSE
 # Make windows executable
 # TODO: create compiler
