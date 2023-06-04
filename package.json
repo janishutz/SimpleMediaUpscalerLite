@@ -21,7 +21,8 @@
   "author": "Janis Hutz",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/simplePCBuilding/FSRImageVideoUpscalerFrontend/issues"
+    "url": "https://github.com/simplePCBuilding/FSRImageVideoUpscalerFrontend/issues",
+    "email": "development@janishutz.com"
   },
   "homepage": "https://github.com/simplePCBuilding/FSRImageVideoUpscalerFrontend#readme"
 }
