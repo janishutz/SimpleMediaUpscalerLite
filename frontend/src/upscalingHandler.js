@@ -9,6 +9,7 @@
 
 const exec = require( 'child_process' ).exec;
 const process = require( 'process' );
+const Notification = require( 'electron' ).Notification;
 
 function execute(command, callback){
     exec(command, function(error, stdout, stderr){ callback(stdout); });
@@ -39,14 +40,19 @@ class UpscalingHandler {
 
         execute( baseCommand, out => {
             console.log( out );
+            new Notification( { title: 'ImageVideoUpscaler - Job complete', body: 'Your file has been processed successfully' } )
         } );
     }
 
     verifyDataIntegrity ( data ) {
         if ( data[ 'InputFile' ] && data[ 'OutputFile' ] && data[ 'engine' ] && data[ 'algorithm' ] && 1 < data[ 'scale' ] <= 4 && 0 <= data[ 'sharpening' ] <= 1 ) {
-            return true;
+            if ( data[ 'InputFile' ][ 0 ].substring( data[ 'InputFile' ].length - 4 ) == data[ 'OutputFile' ][ 0 ].substring( data[ 'OutputFile' ].length - 4 ) ) {
+                return [ true, 'upscaling' ];
+            } else { 
+                return [ false, 'differentFileExtensions' ]; 
+            }
         } else {
-            return false;
+            return [ false, 'dataMissing' ];
         };
     }
 }

@@ -21,6 +21,36 @@
         <button @click="runCommand( 'InputFile' )">Input file</button><br>
         <button @click="runCommand( 'OutputFile' )">Output file</button><br>
         <button @click="start()">Start upscaling</button>
+
+        <dialog id="processing">
+            <div class="dialog-container">
+                Your file is being processed. You will be notified when the upscaling process has finished. A future version of this app will show progress here.
+                <form method="dialog">
+                    <button>OK</button>
+                </form>
+            </div>
+        </dialog>
+
+        <dialog id="wrong">
+            <div class="dialog-container">
+                Some entries are missing. Please ensure that you have specified an input and output file!
+                <form method="dialog">
+                    <button>OK</button>
+                </form>
+            </div>
+        </dialog>
+
+        <dialog id="fileExtension">
+            <div class="dialog-container">
+                File extension of input and output file don't match! Please ensure that they are the same.
+                Click the button below to fix it.
+                <button @click="fixFileExtension();">Fix</button>
+                <p v-if="fixed">Fixed!</p>
+                <form method="dialog">
+                    <button @click="this.fixed = false;">OK</button>
+                </form>
+            </div>
+        </dialog>
     </div>
 </template>
 
@@ -29,8 +59,9 @@ export default {
     name: 'HomeView',
     data() {
         return {
-            upscaleSettings: { 'engine': 'ffc', 'algorithm': 'fsr', 'scale': 2, 'sharpening': 0, 'InputFile': '', 'OutputFile': '' },
+            upscaleSettings: { 'engine': 'ffc', 'algorithm': 'fsr', 'scale': 2, 'sharpening': 0, 'InputFile': [ '/home/janis/projects/myevent/assets/logo.png' ], 'OutputFile': [ '/home/janis/projects/myevent/assets/logo.jpg' ] },
             engines: { 'ffc':{ 'displayName': 'FidelityFX CLI', 'id': 'ffc', 'modes': { 'fsr': { 'displayName': 'FidelityFX Super Resolution', 'id': 'fsr' } }, 'supports': [ 'upscaling', 'sharpening' ] }, 'ss':{ 'displayName': 'REAL-ESGRAN', 'id': 'ss' } },
+            fixed: false,
         }
     },
     methods: {
@@ -54,12 +85,44 @@ export default {
             }
             fetch( 'http://127.0.0.1:8081/api/startUpscaling', fetchOptions ).then( res => {
                 res.json().then( data => {
-                    console.log( data );
+                    console.log( data.data );
+                    if ( data.data == 'upscaling' ) {
+                        document.getElementById( 'processing' ).showModal();
+                    } else if ( data.data == 'dataMissing' ) {
+                        document.getElementById( 'wrong' ).showModal();
+                    } else {
+                        document.getElementById( 'fileExtension' ).showModal();
+                    }
                 } ).catch( error => {
                     console.log( error );
                 } )
             } );
+        },
+        fixFileExtension () {
+            let fileExtension = this.upscaleSettings.InputFile[ 0 ].substring( this.upscaleSettings.InputFile[ 0 ].length - 4 );
+            this.upscaleSettings.OutputFile[ 0 ] = this.upscaleSettings.OutputFile[ 0 ].slice( 0, this.upscaleSettings.OutputFile[ 0 ].length - 4 ) + fileExtension;
+            this.fixed = true;
         }
     }
 }
 </script>
+
+<style scoped>
+    dialog {
+        border-radius: 10px;
+        height: 30vh;
+        width: 30vw;
+        background-color: var( --background-color );
+        border-style: none;
+        color: var( --primary-color );
+    }
+
+    .dialog-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+</style>

@@ -42,11 +42,12 @@ app.get( '/api/getOutputFile', ( request, response ) => {
 } );
 
 app.post( '/api/startUpscaling', ( request, response ) => {
-    if ( upscalingHandler.verifyDataIntegrity( request.body ) ) {
-        response.send( { 'data': 'upscaling' } );
+    let checks = upscalingHandler.verifyDataIntegrity( request.body );
+    if ( checks[ 0 ] ) {
+        response.send( { 'data': checks[ 1 ] } );
         upscalingHandler.upscale( request.body );
     } else {
-        response.send( { 'data': 'dataIncorrect' } );
+        response.send( { 'data': checks[ 1 ] } );
     }
 } );
 

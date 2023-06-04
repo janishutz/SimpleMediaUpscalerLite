@@ -50,6 +50,7 @@ export default {
 <style>
 :root, :root.light {
     --background-color: rgb(224, 222, 222);
+    --dialog-color: rgb(243, 241, 241);
     --foreground-color: #2c3e50;
     --highlight-color: rgb(221, 0, 0);
 }
@@ -57,6 +58,7 @@ export default {
 :root.dark {
     --background-color: rgb(34, 34, 34);
     --foreground-color: white;
+    --dialog-color: rgb(51, 51, 51);
 }
 
 body, html {
