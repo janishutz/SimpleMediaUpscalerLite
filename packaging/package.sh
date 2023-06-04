@@ -2,34 +2,56 @@
 
 cd ..
 
-# Make linux executable
+# Compile for Linux
 pyinstaller imagevideoupscaler.spec
 cp -r ./dist/imagevideoupscaler/* ./frontend/
 
-# wine python -m pyinstaller imagevideoupscaler.spec
-# cp ./dist/imagevideoupscaler/* ./frontend/
 
+# Copy python files
 cp -r ./bin ./frontend/
 cp -r ./config ./frontend/
 cp ./imagevideoupscaler-cli.py ./frontend/
 cp ./LICENSE ./frontend/
 cp ./logo.png ./frontend/
 
-# package for all platforms (includes GUI & CLI)
+
+# package for Linux (includes GUI & CLI)
 cd frontend
-npm run electron:build -- --linux deb rpm --win nsis
+npm run electron:build -- --linux deb rpm
 
-printf '\n\n==> Cleaning up\n\n'
-# rm -rf ./lib/bin
-# rm -rf ./src/config
-# rm -rf ./src/libdynload
-# rm ./lib/image*
-# rm ./lib/lib*
-# rm ./lib/ld*
-# rm ./lib/base_library.zip
-# rm ./lib/imagevideoupscaler-cli.py
-# rm ./lib/LICENSE
+rm -rf ./libdynload
+rm ./image*
+rm ./lib*
+rm ./ld*
+rm ./base_library.zip
+
+cd ..
+
+rm -rf ./build
+rm -rf ./dist
+
+printf '\n\n==> Finished Linux packaging, preparing Windows\n\n'
+
+# Compile for Windows
+wine python -m PyInstaller imagevideoupscaler.spec
+cp -r ./dist/imagevideoupscaler/* ./frontend/
 
 
-# Make windows executable
-# TODO: create compiler
+# package for Windows (includes GUI & CLI)
+cd frontend
+npm run electron:build -- --win nsis
+
+rm -rf ./bin
+rm -rf ./config
+rm -rf ./lib-dynload
+rm ./image*
+rm ./_*
+rm ./imagevideoupscaler-cli.py
+rm ./LICENSE
+
+cd ..
+
+rm -rf ./build
+rm -rf ./dist
+
+printf '\n\n==> DONE\n\n'
