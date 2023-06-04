@@ -11,17 +11,42 @@ class Scaler:
         self.tmppath = ''
         self.videometa = {}
 
-    def singleScaler ( self, input_path, output_path, scalefactor, threads, mode ):
-        if self.os_type == 'linux':
-            self.command = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode { mode } -Scale {scalefactor} {scalefactor} {input_path} {output_path}'
-        elif self.os_type == 'win32':
-            self.command = f'FidelityFX_CLI -Mode { mode } -Scale {scalefactor} {scalefactor} {input_path} {output_path}'
+    def singleScaler ( self, input_path, output_path, scalefactor, sharpening, threads, mode, tmppath ):
+        scaler = 'FSR'
+        if ( mode.upper() == 'HQC' ):
+            scaler = 'HighQualityCubic'
+        elif ( mode.upper() == 'C' ):
+            scaler = 'Cubic'
+        if ( sharpening == 0 ):
+            output = output_path
+        elif ( scalefactor != 0 and sharpening != 0 ):
+            output = tmppath + 'tmpImage.' + output_path.split( '.' )[ 1 ]
         else:
-            print( 'OS CURRENTLY UNSUPPORTED!' )
-            return False 
+            output = input_path
+
+        if ( scalefactor != 0 ):
+            if self.os_type == 'linux':
+                self.command = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {input_path} {output}'
+            elif self.os_type == 'win32':
+                self.command = f'FidelityFX_CLI -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {input_path} {output}'
+            else:
+                print( 'OS CURRENTLY UNSUPPORTED!' )
+                return False
+            
+            os.system( self.command )
+        
+        if ( sharpening != 0 ):
+            if self.os_type == 'linux':
+                self.command = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode CAS -Sharpness {sharpening} {output} {output_path}'
+            elif self.os_type == 'win32':
+                self.command = f'FidelityFX_CLI -Mode CAS -Sharpness {sharpening} {output} {output_path}'
+            else:
+                print( 'OS CURRENTLY UNSUPPORTED!' )
+                return False
+            
+            os.system( self.command )
                       
-        os.system( self.command )
-        print( '\n\n==>Photo upscaled' );
+        print( '\n\n==> Photo upscaled' );
 
     def videoScaler ( self, tmppath, threads, scalefactor, sharpening, filetype, mode ):
         self.isScaling = True

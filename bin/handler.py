@@ -67,27 +67,7 @@ class Handler:
                 self.filepath += '\ '
             else:
                 self.filepath += self.letter
-
-        # Determining filetype
-        if str(filepath)[len(filepath) - 4:] == '.mp4' or str(filepath)[len(filepath) - 4:] == '.mkv' or str(filepath)[len(filepath) - 4:] == '.MP4':
-            print( '\n\n==> Upscaling video' )
-            self.video_scaling( filepath, output_path, scalefactor, threads, sharpening, filetype, mode, engine )
-        elif str(filepath)[len(filepath) - 4:] == '.JPG' or str(filepath)[len(filepath) - 4:] == '.png' or str(filepath)[len(filepath) - 4:] == '.jpg' or str(filepath)[len(filepath) - 5:] == '.jpeg':
-            print( '\n==>upscaling image' )
-            self.photo_scaling( scalefactor, output_path, engine )
-        else:
-            print('not supported')
-            return False
-
-    def photo_scaling(self, scalefactor, output_path, engine, mode):
-        # DO NOT CALL THIS! Use Handler().handler() instead!
-        pass
-
-    def video_scaling( self, input_path, output_path, scalefactor, threads, sharpening, filetype, mode, engine ):
-        self.engineSetting = json.load( open( 'bin/engines/' + engine + '/config.json' ) )
-        # DO NOT CALL THIS! Use Handler().handler() instead!
-        
-        # Splitting video into frames
+            
         try:
             shutil.rmtree(self.tmppath)
         except FileNotFoundError:
@@ -97,6 +77,27 @@ class Handler:
         except FileExistsError:
             print( '==> ERROR: Temp path does not exist! <==' )
             return False
+
+        # Determining filetype
+        if str(filepath)[len(filepath) - 4:] == '.mp4' or str(filepath)[len(filepath) - 4:] == '.mkv' or str(filepath)[len(filepath) - 4:] == '.MP4':
+            print( '\n\n==> Upscaling video' )
+            self.video_scaling( filepath, output_path, scalefactor, threads, sharpening, filetype, mode, engine )
+        elif str(filepath)[len(filepath) - 4:] == '.JPG' or str(filepath)[len(filepath) - 4:] == '.png' or str(filepath)[len(filepath) - 4:] == '.jpg' or str(filepath)[len(filepath) - 5:] == '.jpeg':
+            print( '\n==> Upscaling Image' )
+            self.photo_scaling( filepath, output_path, scalefactor, sharpening, threads, engine, mode )
+        else:
+            print('not supported')
+            return False
+
+    def photo_scaling(self, input_path, output_path, scalefactor, sharpening, threads, engine, mode ):
+        # DO NOT CALL THIS! Use Handler().handler() instead!
+        importedModules[ engine ].singleScaler( input_path, output_path, scalefactor, sharpening, threads, mode, self.tmppath );
+
+    def video_scaling( self, input_path, output_path, scalefactor, threads, sharpening, filetype, mode, engine ):
+        self.engineSetting = json.load( open( 'bin/engines/' + engine + '/config.json' ) )
+        # DO NOT CALL THIS! Use Handler().handler() instead!
+        
+        # Splitting video into frames
             
         print( '\n==> Created directory' )
                 
