@@ -56,12 +56,12 @@ class UpscalingHandler {
         child.on( 'error', ( error ) => {
             console.log( 'An error occurred' + error );
             win.send( 'error', 'An error occurred during upscaling. (Error message: ' + error.message + ')' );
-            new Notification( { title: `SimpleMediaScalerLite - Error whilst upscaling', body: 'Your upscaling Job encountered an error whilst upscaling. (Error message: ${ error.message }).`} )
+            new Notification( { title: `SimpleMediaScalerLite - Error whilst upscaling', body: 'Your upscaling Job encountered an error whilst upscaling. (Error message: ${ error.message }).`} ).show();
         } );
         
         child.on( 'close', ( code ) => {
             win.send( 'finish', 'Your upscaling job finished with exit code ' + code + '. You may find its output here: ' + options.OutputFile  );
-            new Notification( { title: `SimpleMediaScalerLite - Job complete', body: 'Your Upscaling job has completed successfully (Code ${ code }). You may find its output here: ` + options.OutputFile } )
+            new Notification( { title: `SimpleMediaScalerLite - Job complete', body: 'Your Upscaling job has completed successfully (Code ${ code }). You may find its output here: ` + options.OutputFile } ).show();
         } );
     }
 
