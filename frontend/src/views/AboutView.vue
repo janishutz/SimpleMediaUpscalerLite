@@ -1,8 +1,8 @@
 <template>
     <div class="about">
         <img src="@/assets/logo.png">
-        <h1>About ImageVideoUpscaler</h1>
-        <p>ImageVideoUpscaler is an application that allows you to upscale your videos and / or images. It uses an Electron GUI (Graphical User Interface) and a Python CLI (Command Line Interface).</p>
+        <h1>About SimpleMediaScalerLite</h1>
+        <p>SimpleMediaScalerLite is an application that allows you to upscale your videos and / or images. It uses an Electron GUI (Graphical User Interface) and a Python CLI (Command Line Interface).</p>
         <div class="version-info">
             <h3>You are currently running version {{ appVersion }}. {{ versionNotice[ isUpToDate ] }}.</h3>
         </div>
@@ -20,7 +20,7 @@ export default {
         }
     },
     mounted () {
-        fetch( 'https://api.github.com/repos/simplePCBuilding/ImageVideoUpscaler/releases/latest' ).then( res => {
+        fetch( 'https://api.github.com/repos/simplePCBuilding/SimpleMediaScalerLite/releases/latest' ).then( res => {
             res.json().then( data => {
                 this.latestVersion = data.tag_name;
                 if ( data.tag_name != this.appVersion ) {

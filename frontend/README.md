@@ -1,4 +1,4 @@
-# imagevideoupscaler
+# SimpleMediaScalerLite
 
 ## Project setup
 ```

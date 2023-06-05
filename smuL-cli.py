@@ -1,5 +1,5 @@
 """
-*				FSRImageVideoUpscalerFrontend - fsrimagevideoupscaler-cli.py
+*				FSRSimpleMediaScalerLiteFrontend - fsrSimpleMediaScalerLite-cli.py
 *
 *	Created by Janis Hutz 03/15/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -23,21 +23,21 @@ for engine in engineList:
 
 allowedFiletypes = [ 'png', 'jpg' ];
 
-def performChecks ( args, ap ):
+def performChecks ( args, ap, output ):
     if ( args.details == None or args.details == '' ):
         if ( not args.printengines ):
             if ( not args.version ):
                 # Check if input and output file arguments are available
-                if ( args.inputfile == None or args.inputfile == '' or args.outputfile == None or args.outputfile == '' ):
-                    print( '\n\n ==> ERROR: Input and output file required! <==\n\n' )
+                if ( args.inputfile == None or args.inputfile == '' ):
+                    print( '\n\n ==> ERROR: Input file required! <==\n\n' )
                     ap.print_usage();
                     return False
 
                 # check if output file exists and if, prompt user if it should be overwritten and remove if, if yes
-                if ( os.path.exists( args.outputfile ) ):
+                if ( os.path.exists( output ) ):
                     doReplace = input( '--> File already exists. Do you want to replace it? (Y/n) ' ).lower()
                     if ( doReplace == 'y' or doReplace == '' ):
-                        os.remove( args.outputfile );
+                        os.remove( output );
                     else:
                         print( '\n==> Refusing to Upscale video. Please delete the file or specify another filepath! <==' )
                         return False
@@ -108,7 +108,7 @@ def performChecks ( args, ap ):
         print( '\n\n' )
 
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser( description='ImageVideoUpscaler - CLI, a CLI application to upscale videos and images using different upscaling engines.' )
+    ap = argparse.ArgumentParser( description='SimpleMediaScalerLite - CLI, a CLI application to upscale videos and images using different upscaling engines.' )
     ap.add_argument( '-i', '--inputfile', help='File path for the video / image to be upscaled' )
     ap.add_argument( '-o', '--outputfile', help='Output file path for the video / image that was upscaled' )
     ap.add_argument( '-s', '--scalefactor', help='Scale factor for the video / image. Can be a integer from -4 to 4' )
@@ -127,7 +127,11 @@ if __name__ == '__main__':
     
     multiprocessing.freeze_support();
 
-    if ( performChecks( args, ap ) ):
+    output = args.outputfile;
+    if ( args.outputfile == None or args.outputfile == '' ):
+        output = args.inputfile[ :len( args.inputfile ) - 4 ] + '_upscaled' + args.inputfile[ len( args.inputfile ) - 4: ]
+
+    if ( performChecks( args, ap, output ) ):
         mode = 'fsr'
         if ( args.mode != None ):
             mode = args.mode
@@ -136,7 +140,7 @@ if __name__ == '__main__':
                 if ( engineInfo[ args.engine ][ 'cliModeOptions' ][ option ][ 'default' ] ):
                     mode = option
                     break
-        handler.handler( args.inputfile, args.scalefactor, args.outputfile, args.sharpening, args.filetype, args.engine, mode, args.threads )
-        print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nImageVideoUpscalerFrontend V1.1.0\n\nCopyright 2023 FSRImageVideoUpscalerFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + args.outputfile + '\n\n\n' )
+        handler.handler( args.inputfile, args.scalefactor, output, args.sharpening, args.filetype, args.engine, mode, args.threads )
+        print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nSimpleMediaScalerLiteFrontend V1.1.0\n\nCopyright 2023 FSRSimpleMediaScalerLiteFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + output + '\n\n\n' )
 
 

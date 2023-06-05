@@ -6,7 +6,7 @@ rm -rf ./bin
 rm -rf ./config
 rm -rf ./lib-dynload
 rm -rf ./libdynload
-rm ./image*
+rm ./smuL*
 rm ./lib*
 rm ./ld*
 rm ./base_library.zip

@@ -3,13 +3,13 @@
 cd ..
 
 # Compile for Windows
-wine python -m PyInstaller imagevideoupscaler.spec
-cp -r ./dist/imagevideoupscaler/* ./frontend/
+wine python -m PyInstaller smuL-cli.spec
+cp -r ./dist/smuL-cli/* ./frontend/
 
 # Copy python files
 cp -rv ./bin ./frontend/
 cp -rv ./config ./frontend/
-cp -v ./imagevideoupscaler-cli.py ./frontend/
+cp -v ./smuL-cli.py ./frontend/
 cp -v ./LICENSE ./frontend/
 cp -v ./logo.png ./frontend/
 
@@ -20,7 +20,7 @@ npm run electron:build -- --win nsis
 rm -rf ./bin
 rm -rf ./config
 rm -rf ./lib-dynload
-rm ./image*
+rm ./smuL*
 rm ./_*
 rm ./py*
 rm ./lib*

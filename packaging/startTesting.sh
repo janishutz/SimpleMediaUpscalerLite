@@ -3,13 +3,13 @@
 cd ..
 
 # Compile for Linux
-pyinstaller imagevideoupscaler.spec
-cp -r ./dist/imagevideoupscaler/* ./frontend/
+pyinstaller smuL-cli.spec
+cp -r ./dist/smuL-cli/* ./frontend/
 
 
 # Copy python files
 cp -r ./bin ./frontend/
 cp -r ./config ./frontend/
-cp ./imagevideoupscaler-cli.py ./frontend/
+cp ./smuL-cli.py ./frontend/
 cp ./LICENSE ./frontend/
 cp ./logo.png ./frontend/

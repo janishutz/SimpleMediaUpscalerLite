@@ -1,10 +1,10 @@
 {
-  "name": "imagevideoupscaler",
+  "name": "SimpleMediaScalerLite",
   "version": "2.0.0-dev1",
   "maintainers": [
     "Janis Hutz <development@janishutz.com>"
   ],
-  "description": "An Electron frontend to the ImageVideoUpscaler-CLI",
+  "description": "An Electron frontend to the SimpleMediaScalerLite-CLI",
   "homepage": "https://janishutz.com/scaler.html",
   "author": {
     "name": "Janis Hutz",
@@ -13,7 +13,7 @@
   },
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/simplePCBuilding/FSRImageVideoUpscalerFrontend/issues"
+    "url": "https://github.com/simplePCBuilding/FSRSimpleMediaScalerLiteFrontend/issues"
   },
   "private": true,
   "scripts": {

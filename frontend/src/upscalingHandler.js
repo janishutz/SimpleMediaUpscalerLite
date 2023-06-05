@@ -1,5 +1,5 @@
 /*
-*				ImageVideoUpscaler - upscalingHandler.js
+*				SimpleMediaScalerLite - upscalingHandler.js
 *
 *	Created by Janis Hutz 06/03/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -24,9 +24,9 @@ class UpscalingHandler {
         let baseCommand = '';
         // Create cli command to upscale
         if ( this.os === 'linux' ) {
-            baseCommand = './imagevideoupscaler';
+            baseCommand = './smuL-cli';
         } else if ( this.os === 'win32' ) {
-            baseCommand = 'imagevideoupscaler';
+            baseCommand = 'smuL-cli';
         }
 
         
@@ -55,11 +55,11 @@ class UpscalingHandler {
         
         child.on( 'error', ( error ) => {
             console.log( 'An error occurred' + error );
-            new Notification( { title: `ImageVideoUpscaler - Error whilst upscaling', body: 'Your upscaling Job encountered an error whilst upscaling. (Error message: ${ error.message }).`} )
+            new Notification( { title: `SimpleMediaScalerLite - Error whilst upscaling', body: 'Your upscaling Job encountered an error whilst upscaling. (Error message: ${ error.message }).`} )
         } );
         
         child.on( 'close', ( code ) => {
-            new Notification( { title: `ImageVideoUpscaler - Job complete', body: 'Your Upscaling job has completed successfully (Code ${ code }). You may find its output here: ` + options.OutputFile } )
+            new Notification( { title: `SimpleMediaScalerLite - Job complete', body: 'Your Upscaling job has completed successfully (Code ${ code }). You may find its output here: ` + options.OutputFile } )
         } );
     }
 

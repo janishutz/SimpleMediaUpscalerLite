@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <h1>ImageVideoUpscaler</h1>
+        <h1>SimpleMediaScalerLite</h1>
 
         <label for="algorithm">Upscaler engine</label><br>
         <select name="engine" id="engine" v-model="upscaleSettings.engine">

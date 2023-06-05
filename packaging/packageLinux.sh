@@ -3,14 +3,14 @@
 cd ..
 
 # Compile for Linux
-pyinstaller imagevideoupscaler.spec
-cp -r ./dist/imagevideoupscaler/* ./frontend/
+pyinstaller smuL-cli.spec
+cp -r ./dist/smuL-cli/* ./frontend/
 
 
 # Copy python files
 cp -r ./bin ./frontend/
 cp -r ./config ./frontend/
-cp ./imagevideoupscaler-cli.py ./frontend/
+cp ./smuL-cli.py ./frontend/
 cp ./LICENSE ./frontend/
 cp ./logo.png ./frontend/
 
@@ -22,11 +22,10 @@ npm run electron:build -- --linux deb rpm
 rm -rf ./bin
 rm -rf ./config
 rm -rf ./libdynload
-rm ./image*
+rm ./smuL*
 rm ./lib*
 rm ./ld*
 rm ./base_library.zip
-rm ./imagevideoupscaler-cli.py
 rm ./LICENSE
 
 cd ..

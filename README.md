@@ -1,31 +1,31 @@
 <div id="title" align="center">
     <img src="./logo.png" width="300">
-    <h1>ImageVideoUpscalerFrontend</h1>
+    <h1>SimpleMediaScalerLiteFrontend</h1>
 </div>
 
 <div id="badges" align="center">
-    <img src="https://img.shields.io/github/license/simplePCBuilding/ImageVideoUpscaler.svg">
-    <img src="https://img.shields.io/github/repo-size/simplePCBuilding/ImageVideoUpscaler.svg">
-    <img src="https://img.shields.io/tokei/lines/github/simplePCBuilding/ImageVideoUpscaler">
-    <img src="https://img.shields.io/github/languages/top/simplePCBuilding/ImageVideoUpscaler">
-    <img src="https://img.shields.io/github/directory-file-count/simplePCBuilding/ImageVideoUpscaler.svg">
+    <img src="https://img.shields.io/github/license/simplePCBuilding/SimpleMediaScalerLite.svg">
+    <img src="https://img.shields.io/github/repo-size/simplePCBuilding/SimpleMediaScalerLite.svg">
+    <img src="https://img.shields.io/tokei/lines/github/simplePCBuilding/SimpleMediaScalerLite">
+    <img src="https://img.shields.io/github/languages/top/simplePCBuilding/SimpleMediaScalerLite">
+    <img src="https://img.shields.io/github/directory-file-count/simplePCBuilding/SimpleMediaScalerLite.svg">
     <br>
-    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/simplePCBuilding/ImageVideoUpscaler">
-    <img alt="GitHub watchers" src="https://img.shields.io/github/watchers/simplePCBuilding/ImageVideoUpscaler">
-    <img src="https://img.shields.io/github/issues-pr-raw/simplePCBuilding/ImageVideoUpscaler">
-    <img alt="GitHub forks" src="https://img.shields.io/github/forks/simplePCBuilding/ImageVideoUpscaler">
-    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/simplePCBuilding/ImageVideoUpscaler">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/simplePCBuilding/SimpleMediaScalerLite">
+    <img alt="GitHub watchers" src="https://img.shields.io/github/watchers/simplePCBuilding/SimpleMediaScalerLite">
+    <img src="https://img.shields.io/github/issues-pr-raw/simplePCBuilding/SimpleMediaScalerLite">
+    <img alt="GitHub forks" src="https://img.shields.io/github/forks/simplePCBuilding/SimpleMediaScalerLite">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/simplePCBuilding/SimpleMediaScalerLite">
     <br>
-    <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/simplePCBuilding/ImageVideoUpscaler/total?label=Downloads (total)">
-    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/downloads/simplePCBuilding/ImageVideoUpscaler/latest/total?label=Downloads (latest)">
-    <img src="https://img.shields.io/github/release/simplePCBuilding/ImageVideoUpscaler.svg">
-    <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/ImageVideoUpscaler.svg?label=Development Version">
+    <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/simplePCBuilding/SimpleMediaScalerLite/total?label=Downloads (total)">
+    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/downloads/simplePCBuilding/SimpleMediaScalerLite/latest/total?label=Downloads (latest)">
+    <img src="https://img.shields.io/github/release/simplePCBuilding/SimpleMediaScalerLite.svg">
+    <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/SimpleMediaScalerLite.svg?label=Development Version">
     
 </div>
 An Electron App with Python CLI to upscale images and videos using multiple different upscaling engines.
 
 # NEW NAME & LOGO NEEDED!
-If you have suggestions for a name, please let us know [here](https://github.com/simplePCBuilding/ImageVideoUpscaler/issues/16). If you want to contribute a new logo, please open a PR and add it, or just let us know in the beforementioned issue.
+If you have suggestions for a name, please let us know [here](https://github.com/simplePCBuilding/SimpleMediaScalerLite/issues/16). If you want to contribute a new logo, please open a PR and add it, or just let us know in the beforementioned issue.
 
 # Functionality
 This app allows you to fully automatically upscale a single file or a full on folder with one of many different engines.
@@ -44,9 +44,9 @@ This app allows you to fully automatically upscale a single file or a full on fo
 
 This App also features a CLI interface.
 ```
-usage: imagevideoupscaler-cli.py [-h] [-i INPUTFILE] [-o OUTPUTFILE] [-s SCALEFACTOR] [-S SHARPENING] [-T THREADS] [-E ENGINE] [-M MODE] [-F FILETYPE] [-d DETAILS] [-p] [-v]
+usage: SimpleMediaScalerLite-cli.py [-h] [-i INPUTFILE] [-o OUTPUTFILE] [-s SCALEFACTOR] [-S SHARPENING] [-T THREADS] [-E ENGINE] [-M MODE] [-F FILETYPE] [-d DETAILS] [-p] [-v]
 
-ImageVideoUpscaler - CLI, a CLI application to upscale videos and images using different upscaling engines.
+SimpleMediaScalerLite - CLI, a CLI application to upscale videos and images using different upscaling engines.
 
 options:
   -h, --help            show this help message and exit
