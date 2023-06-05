@@ -71,7 +71,7 @@ export default {
     name: 'HomeView',
     data() {
         return {
-            upscaleSettings: { 'engine': 'ffc', 'algorithm': 'fsr', 'scale': 2, 'sharpening': 0, 'InputFile': [ '/home/janis/projects/myevent/assets/logo.png' ], 'OutputFile': '/home/janis/Downloads/test.png' },
+            upscaleSettings: { 'engine': 'ffc', 'algorithm': 'fsr', 'scale': 2, 'sharpening': 0, 'InputFile': [], 'OutputFile': '' },
             engines: { 'ffc':{ 'displayName': 'FidelityFX CLI', 'id': 'ffc', 'modes': { 'fsr': { 'displayName': 'FidelityFX Super Resolution', 'id': 'fsr' }, 'c': { 'displayName': 'Cubic', 'id': 'c' }, 'hqc': { 'displayName': 'High Quality Cubic', 'id': 'hqc' } }, 'supports': [ 'upscaling', 'sharpening' ] }, 'ss':{ 'displayName': 'REAL-ESRGAN', 'id': 'ss', 'modes': { 'av3': { 'displayName': 'realesr-animevideov3', 'id': 'av3' }, 'x4plus': { 'displayName': 'realesrgan-x4plus-anime', 'id': 'x4plus' } }, 'supports': [ 'upscaling' ] } },
             fixed: false,
             output: '',
@@ -81,6 +81,10 @@ export default {
         runCommand ( command ) {
             ipcRenderer.send( 'select' + command );
             ipcRenderer.on( 'select' + command, ( event, data ) => {
+                if ( command == 'InputFile' ) {
+                    this.upscaleSettings[ 'OutputFile' ] = data[ 'data' ][ 0 ].substring( 0, data[ 'data' ][ 0 ].length - 4 ) + '_upscaled' + data[ 'data' ][ 0 ].substring( data[ 'data' ][ 0 ].length - 4 );
+                    console.log( this.upscaleSettings );
+                }
                 this.upscaleSettings[ command ] = data[ 'data' ];
             } );
         },

@@ -27,7 +27,6 @@ export default {
         }
     },
     created() {
-        this.run();
     }
 }
 </script>
