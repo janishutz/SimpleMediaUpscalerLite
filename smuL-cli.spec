@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['SimpleMediaScalerLite-cli.py'],
+    ['smuL-cli.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -26,7 +26,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='SimpleMediaScalerLite-cli',
+    name='smuL-cli',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -46,5 +46,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='SimpleMediaScalerLite-cli',
+    name='smuL-cli',
 )
