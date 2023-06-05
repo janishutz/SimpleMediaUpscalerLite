@@ -53,12 +53,14 @@ export default {
     --dialog-color: rgb(243, 241, 241);
     --foreground-color: #2c3e50;
     --highlight-color: rgb(221, 0, 0);
+    --input-color: rgb(150, 150, 150);
 }
 
 :root.dark {
     --background-color: rgb(34, 34, 34);
     --foreground-color: white;
     --dialog-color: rgb(51, 51, 51);
+    --input-color: rgb(121, 121, 121);
 }
 
 body, html {
