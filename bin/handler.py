@@ -17,6 +17,7 @@ import json
 import importlib
 import shutil
 import time
+import tempfile
 
 importedModules = {}
 
@@ -50,9 +51,9 @@ class Handler:
         print( '\n\n SimpleMediaScalerLite - V1.1.0\n\n(c) 2023 SimpleMediaScalerLite contributors\n\n\n\n' );
 
         if self.os_type == 'linux':
-            self.tmppath = config['PathSettings']['tmpPathLinux']
+            self.tmppath = tempfile.gettempdir()
         elif self.os_type == 'win32':
-            self.tmppath = config['PathSettings']['tmpPathWindows']
+            self.tmppath = tempfile.gettempdir()
         else:
             print('OS CURRENTLY UNSUPPORTED!')
             return False

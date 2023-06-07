@@ -16,7 +16,7 @@ class Scaler:
         if self.os_type == 'linux':
             self.command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {input_path} -o {output_path} -s {scalefactor} -j {threads}:{threads}:{threads} -n { modes[ mode ] }'
         elif self.os_type == 'win32':
-            self.command = f'realesrgan-ncnn-vulkan -i {input_path} -o {output_path} -s {scalefactor} -j {threads}:{threads}:{threads} -n { modes[ mode ] }'
+            self.command = f'bin\\lib\\realesrgan-ncnn-vulkan.exe -i {input_path} -o {output_path} -s {scalefactor} -j {threads}:{threads}:{threads} -n { modes[ mode ] }'
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False 
@@ -34,7 +34,7 @@ class Scaler:
         except FileExistsError:
             pass
         if ( self.os_type == 'win32' ):
-            self.command = f'realesrgan-ncnn-vulkan -i {tmppath} -o {tmppath}sc -s {scalefactor} -j {threads}:{threads}:{threads} -n {modes[ mode ]}'
+            self.command = f'bin\\lib\\realesrgan-ncnn-vulkan.exe -i {tmppath} -o {tmppath}sc -s {scalefactor} -j {threads}:{threads}:{threads} -n {modes[ mode ]}'
         elif ( self.os_type == 'linux' ):
             self.command = f'wine ./bin/lib/realesrgan-ncnn-vulkan.exe -i {tmppath} -o {tmppath}sc -s {scalefactor} -j {threads}:{threads}:{threads} -n {modes[ mode ]}'
         os.system( self.command );

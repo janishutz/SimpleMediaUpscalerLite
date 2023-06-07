@@ -28,7 +28,7 @@ class Scaler:
             if self.os_type == 'linux':
                 self.command = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {input_path} {output}'
             elif self.os_type == 'win32':
-                self.command = f'FidelityFX_CLI -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {input_path} {output}'
+                self.command = f'bin\\lib\\FidelityFX_CLI.exe -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {input_path} {output}'
             else:
                 print( 'OS CURRENTLY UNSUPPORTED!' )
                 return False
@@ -39,7 +39,7 @@ class Scaler:
             if self.os_type == 'linux':
                 self.command = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode CAS -Sharpness {sharpening} {output} {output_path}'
             elif self.os_type == 'win32':
-                self.command = f'FidelityFX_CLI -Mode CAS -Sharpness {sharpening} {output} {output_path}'
+                self.command = f'bin\\lib\\FidelityFX_CLI.exe -Mode CAS -Sharpness {sharpening} {output} {output_path}'
             else:
                 print( 'OS CURRENTLY UNSUPPORTED!' )
                 return False
@@ -234,7 +234,7 @@ def upscalerEngine ( files, scalefactor, number, maxlength, os_type, version ):
         if os_type == 'linux':
             command_us = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {files_handle}'
         elif os_type == 'win32':
-            command_us = f'FidelityFX_CLI -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {files_handle}'
+            command_us = f'bin\\lib\\FidelityFX_CLI.exe -Mode { scaler } -Scale {scalefactor}x {scalefactor}x {files_handle}'
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
@@ -308,7 +308,7 @@ def sharpeningEngine ( files, number, maxlength, os_type, sharpening, didUpscale
         if os_type == 'linux':
             command_sharpening = f'wine ./bin/lib/FidelityFX_CLI.exe -Mode CAS -Sharpness {sharpening} {files_handle}'
         elif os_type == 'win32':
-            command_sharpening = f'FidelityFX_CLI -Mode CAS -Sharpness {sharpening} {files_handle}'
+            command_sharpening = f'bin\\lib\\FidelityFX_CLI.exe -Mode CAS -Sharpness {sharpening} {files_handle}'
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
