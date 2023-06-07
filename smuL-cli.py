@@ -23,7 +23,7 @@ for engine in engineList:
 
 allowedFiletypes = [ 'png', 'jpg' ];
 
-def performChecks ( args, ap, output ):
+def performChecks ( args, ap ):
     if ( args.details == None or args.details == '' ):
         if ( not args.printengines ):
             if ( not args.version ):
@@ -32,6 +32,10 @@ def performChecks ( args, ap, output ):
                     print( '\n\n ==> ERROR: Input file required! <==\n\n' )
                     ap.print_usage();
                     return False
+                
+                output = args.outputfile;
+                if ( args.outputfile == None or args.outputfile == '' ):
+                    output = args.inputfile[ :len( args.inputfile ) - 4 ] + '_upscaled' + args.inputfile[ len( args.inputfile ) - 4: ]
 
                 # check if output file exists and if, prompt user if it should be overwritten and remove if, if yes
                 if ( os.path.exists( output ) ):
@@ -127,11 +131,11 @@ if __name__ == '__main__':
     
     multiprocessing.freeze_support();
 
-    output = args.outputfile;
-    if ( args.outputfile == None or args.outputfile == '' ):
-        output = args.inputfile[ :len( args.inputfile ) - 4 ] + '_upscaled' + args.inputfile[ len( args.inputfile ) - 4: ]
+    if ( performChecks( args, ap ) ):
+        output = args.outputfile;
+        if ( args.outputfile == None or args.outputfile == '' ):
+            output = args.inputfile[ :len( args.inputfile ) - 4 ] + '_upscaled' + args.inputfile[ len( args.inputfile ) - 4: ]
 
-    if ( performChecks( args, ap, output ) ):
         mode = 'fsr'
         if ( args.mode != None ):
             mode = args.mode
