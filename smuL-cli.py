@@ -1,5 +1,5 @@
 """
-*				FSRSimpleMediaUpscalerLiteFrontend - fsrSimpleMediaUpscalerLite-cli.py
+*				SimpleMediaUpscalerLite - fsrSimpleMediaUpscalerLite-cli.py
 *
 *	Created by Janis Hutz 03/15/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com

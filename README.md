@@ -1,6 +1,6 @@
 <div id="title" align="center">
     <img src="./logo.png" width="300">
-    <h1>SimpleMediaUpscalerLiteFrontend</h1>
+    <h1>SimpleMediaUpscalerLite</h1>
 </div>
 
 <div id="badges" align="center">
@@ -22,7 +22,10 @@
     <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/SimpleMediaUpscalerLite.svg?label=Development Version">
     
 </div>
-An Electron App with Python CLI to upscale images and videos using multiple different upscaling engines.
+smuL (pronounced like "small") is an Electron App with Python CLI to upscale images and videos using multiple different upscaling engines. 
+
+# New LOGO needed!
+If you have a suggestion for a new logo, please comment on this issue [here](https://github.com/simplePCBuilding/SimpleMediaScalerLite/issues/16)
 
 # Functionality
 This app allows you to fully automatically upscale a single file or a full on folder with one of many different engines.

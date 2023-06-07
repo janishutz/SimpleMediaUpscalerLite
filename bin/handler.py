@@ -1,5 +1,5 @@
 '''
-*				FSRSimpleMediaUpscalerLiteFrontend - handler.py
+*				SimpleMediaUpscalerLite - handler.py
 *
 *	Created by Janis Hutz 03/14/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com

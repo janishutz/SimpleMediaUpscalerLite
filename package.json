@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/simplePCBuilding/FSRSimpleMediaUpscalerLiteFrontend.git"
+    "url": "git+https://github.com/simplePCBuilding/SimpleMediaUpscalerLite.git"
   },
   "keywords": [
     "upscaler",
@@ -21,8 +21,8 @@
   "author": "Janis Hutz",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/simplePCBuilding/FSRSimpleMediaUpscalerLiteFrontend/issues",
+    "url": "https://github.com/simplePCBuilding/SimpleMediaUpscalerLite/issues",
     "email": "development@janishutz.com"
   },
-  "homepage": "https://github.com/simplePCBuilding/FSRSimpleMediaUpscalerLiteFrontend#readme"
+  "homepage": "https://github.com/simplePCBuilding/SimpleMediaUpscalerLite#readme"
 }
