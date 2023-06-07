@@ -6,7 +6,7 @@
 <div id="badges" align="center">
     <img src="https://img.shields.io/github/license/simplePCBuilding/SimpleMediaUpscalerLite.svg">
     <img src="https://img.shields.io/github/repo-size/simplePCBuilding/SimpleMediaUpscalerLite.svg">
-    <img src="https://img.shields.io/tokei/lines/github/simplePCBuilding/SimpleMediaUpscalerLite">
+    <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/simplePCBuilding/SimpleMediaUpscalerLite">
     <img src="https://img.shields.io/github/languages/top/simplePCBuilding/SimpleMediaUpscalerLite">
     <img src="https://img.shields.io/github/directory-file-count/simplePCBuilding/SimpleMediaUpscalerLite.svg">
     <br>
