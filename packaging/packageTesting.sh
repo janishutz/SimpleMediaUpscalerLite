@@ -4,6 +4,7 @@ cd ..
 
 # Compile for Linux
 pyinstaller smuL-cli.spec
+mkdir ./frontend/lib
 cp -r ./dist/smuL-cli/* ./frontend/lib/
 
 
@@ -18,7 +19,7 @@ cp ./logo.png ./frontend/lib/
 # package for Linux (includes GUI & CLI)
 cd frontend
 rm -rf ./dist_electron
-npm run electron:build -- --linux deb rpm
+npm run electron:build -- --linux zip
 
 rm -rf ./lib
 

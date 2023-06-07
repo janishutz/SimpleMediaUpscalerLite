@@ -4,30 +4,24 @@ cd ..
 
 # Compile for Windows
 wine python -m PyInstaller smuL-cli.spec
-cp -r ./dist/smuL-cli/* ./frontend/
+
+mkdir ./frontend/lib
+
+cp -r ./dist/smuL-cli/* ./frontend/lib/
 
 # Copy python files
-cp -rv ./bin ./frontend/
-cp -rv ./config ./frontend/
-cp -v ./smuL-cli.py ./frontend/
-cp -v ./LICENSE ./frontend/
-cp -v ./logo.png ./frontend/
+cp -rv ./bin ./frontend/lib/
+cp -rv ./config ./frontend/lib/
+cp -v ./smuL-cli.py ./frontend/lib/
+cp -v ./LICENSE ./frontend/lib/
+cp -v ./logo.png ./frontend/lib/
 
 # package for Windows (includes GUI & CLI)
 cd frontend
+rm -rf ./dist_electron
 npm run electron:build -- --win nsis
 
-rm -rf ./bin
-rm -rf ./config
-rm -rf ./lib-dynload
-rm ./smuL*
-rm ./_*
-rm ./py*
-rm ./lib*
-rm ./base_library.zip
-rm ./*.pyd
-rm ./*.dll
-rm ./LICENSE
+rm -rf ./lib
 
 cd ..
 
