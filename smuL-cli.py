@@ -14,7 +14,11 @@ import multiprocessing
 import json
 
 engineList = os.listdir( 'bin/engines' );
-engineList.pop( 0 )
+counter = 0;
+for element in engineList: 
+    if ( element == '__pycache__' ):
+        engineList.pop( counter );
+    counter += 1;
 
 engineInfo = {}
 
