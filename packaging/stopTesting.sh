@@ -11,6 +11,9 @@ rm ./lib*
 rm ./ld*
 rm ./base_library.zip
 rm ./LICENSE
+rm ./_*
+rm ./*.dll
+rm ./*.pyd
 
 cd ..
 
