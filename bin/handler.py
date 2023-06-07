@@ -119,7 +119,11 @@ class Handler:
 
         # Retrieving Video metadata
         self.filelist = os.listdir(self.tmppath)
-        self.videometa = ffmpeg.probe(str(input_path))['streams'].pop(0)
+        try:
+            self.videometa = ffmpeg.probe(str(input_path))['streams'].pop(0)
+        except Exception:
+            print( '\n\n==> Failed to execute ffprobe. Please ensure that you have a valid ffmpeg & ffprobe installation.\n    --> Refer to our wiki for a guide on a proper installation\n\n')
+            return False;
 
         self.duration = self.videometa.get( 'duration' )
         self.frames = len( self.filelist )
@@ -176,3 +180,5 @@ class Handler:
             print( 'OS CURRENTLY UNSUPPORTED!' );
             return False
         os.system( self.command )
+
+        return True;

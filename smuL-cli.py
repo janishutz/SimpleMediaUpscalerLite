@@ -68,8 +68,8 @@ def performChecks ( args, ap ):
                             return False
                     
                 # Check sharpening argument and also verify that engine supports it   
-                if ( args.sharpening != None and args.sharpening != 0 ):         
-                    if ( float( args.sharpening ) >= 1 and float( args.sharpening ) <= 0 ):
+                if ( args.sharpening != None and args.sharpening != 0 ):     
+                    if ( float( args.sharpening ) >= 1.0 or float( args.sharpening ) <= 0.0 ):
                         print( '\n==> ERROR: Invalid value for sharpening. Value has to be between 0 and 1' )
                         return False
                     else:
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     ap.add_argument( '-d', '--details', help='Get details on usage of a particular engine and exit. Reads the config.json file of that engine and displays it in a HR manner' )
     ap.add_argument( '-p', '--printengines', help='Print all engines and exit', action='store_true' )
     ap.add_argument( '-v', '--version', help='Print version and exit', action='store_true' )
-    ap.set_defaults( scaling = 0, sharpening = 0, threads = 4, engine = 'fsr', filetype = 'png' )
+    ap.set_defaults( scalefactor = 0, sharpening = 0, threads = 4, engine = 'fsr', filetype = 'png' )
     args = ap.parse_args()
 
     handler = bin.handler.Handler()
@@ -148,7 +148,5 @@ if __name__ == '__main__':
                 if ( engineInfo[ args.engine ][ 'cliModeOptions' ][ option ][ 'default' ] ):
                     mode = option
                     break
-        handler.handler( args.inputfile, args.scalefactor, output, args.sharpening, args.filetype, args.engine, mode, args.threads )
-        print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nSimpleMediaScalerLiteFrontend V1.1.0\n\nCopyright 2023 FSRSimpleMediaScalerLiteFrontend contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + output + '\n\n\n' )
-
-
+        if ( handler.handler( args.inputfile, args.scalefactor, output, args.sharpening, args.filetype, args.engine, mode, args.threads ) ):
+            print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nSimpleMediaScalerLite V1.1.0\n\nCopyright 2023 SimpleMediaScalerLite contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + output + '\n\n\n' )
