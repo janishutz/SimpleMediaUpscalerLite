@@ -26,7 +26,7 @@ class UpscalingHandler {
         if ( this.os === 'linux' ) {
             baseCommand = './smuL-cli';
         } else if ( this.os === 'win32' ) {
-            baseCommand = 'smuL-cli';
+            baseCommand = 'smuL-cli.exe';
         }
 
         
