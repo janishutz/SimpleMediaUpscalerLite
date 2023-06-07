@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <h1>SimpleMediaScalerLite</h1>
+        <h1>SimpleMediaUpscalerLite</h1>
         <div class="table-container">
             <table>
                 <tr id="group1" class="group">

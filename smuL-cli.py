@@ -1,5 +1,5 @@
 """
-*				FSRSimpleMediaScalerLiteFrontend - fsrSimpleMediaScalerLite-cli.py
+*				FSRSimpleMediaUpscalerLiteFrontend - fsrSimpleMediaUpscalerLite-cli.py
 *
 *	Created by Janis Hutz 03/15/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -116,7 +116,7 @@ def performChecks ( args, ap ):
         print( '\n\n' )
 
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser( description='SimpleMediaScalerLite - CLI, a CLI application to upscale videos and images using different upscaling engines.' )
+    ap = argparse.ArgumentParser( description='SimpleMediaUpscalerLite - CLI, a CLI application to upscale videos and images using different upscaling engines.' )
     ap.add_argument( '-i', '--inputfile', help='File path for the video / image to be upscaled' )
     ap.add_argument( '-o', '--outputfile', help='Output file path for the video / image that was upscaled' )
     ap.add_argument( '-s', '--scalefactor', help='Scale factor for the video / image. Can be a integer from -4 to 4' )
@@ -149,4 +149,4 @@ if __name__ == '__main__':
                     mode = option
                     break
         if ( handler.handler( args.inputfile, args.scalefactor, output, args.sharpening, args.filetype, args.engine, mode, args.threads ) ):
-            print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nSimpleMediaScalerLite V1.1.0\n\nCopyright 2023 SimpleMediaScalerLite contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + output + '\n\n\n' )
+            print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nSimpleMediaUpscalerLite V1.1.0\n\nCopyright 2023 SimpleMediaUpscalerLite contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + output + '\n\n\n' )

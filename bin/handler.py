@@ -1,5 +1,5 @@
 '''
-*				FSRSimpleMediaScalerLiteFrontend - handler.py
+*				FSRSimpleMediaUpscalerLiteFrontend - handler.py
 *
 *	Created by Janis Hutz 03/14/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -48,7 +48,7 @@ class Handler:
 
     def handler( self, filepath, scalefactor, output_path, sharpening, filetype, engine, mode, threads=4 ):
         # Function to be called when using this class as this function automatically determines if file is video or image
-        print( '\n\n SimpleMediaScalerLite - V1.1.0\n\n(c) 2023 SimpleMediaScalerLite contributors\n\n\n\n' );
+        print( '\n\n SimpleMediaUpscalerLite - V1.1.0\n\n(c) 2023 SimpleMediaUpscalerLite contributors\n\n\n\n' );
 
         if self.os_type == 'linux':
             self.tmppath = tempfile.gettempdir()

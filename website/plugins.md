@@ -1,4 +1,4 @@
-# Writing plugins for SimpleMediaScalerLite
+# Writing plugins for SimpleMediaUpscalerLite
 
 Your plugin has to fulfill the following requirements:
 - Name of class it exposes has to be [name of engine]Scaler. The name of the file should be just the name of the engine in all lower case.

@@ -1,5 +1,5 @@
 {
-  "name": "SimpleMediaScalerLite",
+  "name": "SimpleMediaUpscalerLite",
   "version": "2.0.0",
   "description": "A frontend to upscale your videos and images using different upscale engines",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/simplePCBuilding/FSRSimpleMediaScalerLiteFrontend.git"
+    "url": "git+https://github.com/simplePCBuilding/FSRSimpleMediaUpscalerLiteFrontend.git"
   },
   "keywords": [
     "upscaler",
@@ -21,8 +21,8 @@
   "author": "Janis Hutz",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/simplePCBuilding/FSRSimpleMediaScalerLiteFrontend/issues",
+    "url": "https://github.com/simplePCBuilding/FSRSimpleMediaUpscalerLiteFrontend/issues",
     "email": "development@janishutz.com"
   },
-  "homepage": "https://github.com/simplePCBuilding/FSRSimpleMediaScalerLiteFrontend#readme"
+  "homepage": "https://github.com/simplePCBuilding/FSRSimpleMediaUpscalerLiteFrontend#readme"
 }

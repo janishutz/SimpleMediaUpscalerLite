@@ -1,10 +1,10 @@
 {
-  "name": "SimpleMediaScalerLite",
+  "name": "SimpleMediaUpscalerLite",
   "version": "2.0.0-dev1",
   "maintainers": [
     "Janis Hutz <development@janishutz.com>"
   ],
-  "description": "An Electron frontend to the SimpleMediaScalerLite-CLI",
+  "description": "An Electron frontend to the SimpleMediaUpscalerLite-CLI",
   "homepage": "https://janishutz.com/scaler.html",
   "author": {
     "name": "Janis Hutz",
@@ -13,7 +13,7 @@
   },
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/simplePCBuilding/FSRSimpleMediaScalerLiteFrontend/issues"
+    "url": "https://github.com/simplePCBuilding/FSRSimpleMediaUpscalerLiteFrontend/issues"
   },
   "private": true,
   "scripts": {

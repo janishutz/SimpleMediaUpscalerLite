@@ -1,4 +1,4 @@
-# SimpleMediaScalerLite
+# SimpleMediaUpscalerLite
 
 ## Project setup
 ```
