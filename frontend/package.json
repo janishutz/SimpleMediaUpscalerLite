@@ -15,11 +15,6 @@
   "bugs": {
     "url": "https://github.com/simplePCBuilding/SimpleMediaUpscalerLite/issues"
   },
-  "build": {
-    "appId": "com.janishutz.smuL",
-    "copyright": "Copyright (c) 2023 SimpleMediaUpscalerLite contributors",
-    "buildVersion": "V2.0.0-dev2"
-  },
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
