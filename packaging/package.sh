@@ -3,7 +3,7 @@
 cd ..
 
 # Compile for Linux
-pyinstaller smuL-cli.spec
+python -m PyInstaller smuL-cli.spec
 
 mkdir ./frontend/lib/
 cp -rv ./dist/smuL-cli/* ./frontend/lib/
