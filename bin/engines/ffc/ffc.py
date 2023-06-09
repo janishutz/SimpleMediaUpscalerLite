@@ -239,6 +239,7 @@ def upscalerEngine ( files, scalefactor, number, maxlength, os_type, version ):
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
+        print( command_us );
         sub = subprocess.Popen( command_us, shell=True );
         sub.wait();        
         time.sleep(3)
@@ -313,6 +314,7 @@ def sharpeningEngine ( files, number, maxlength, os_type, sharpening, didUpscale
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
+        print( command_sharpening );
         sub2 = subprocess.Popen( command_sharpening, shell=True );
         sub2.wait()
         time.sleep(3)
