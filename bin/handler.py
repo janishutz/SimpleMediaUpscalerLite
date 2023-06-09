@@ -96,7 +96,7 @@ class Handler:
 
     def photo_scaling(self, input_path, output_path, scalefactor, sharpening, threads, engine, mode ):
         # DO NOT CALL THIS! Use Handler().handler() instead!
-        importedModules[ engine ].singleScaler( input_path, output_path, scalefactor, sharpening, threads, mode, self.tmppath );
+        return importedModules[ engine ].singleScaler( input_path, output_path, scalefactor, sharpening, threads, mode, self.tmppath );
 
     def video_scaling( self, input_path, output_path, scalefactor, threads, sharpening, filetype, mode, engine ):
         self.engineSetting = json.load( open( 'bin/engines/' + engine + '/config.json' ) )

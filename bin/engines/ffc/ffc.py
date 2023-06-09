@@ -47,6 +47,7 @@ class Scaler:
             os.system( self.command )
                       
         print( '\n\n==> Photo upscaled' );
+        return True
 
     def videoScaler ( self, tmppath, threads, scalefactor, sharpening, filetype, mode ):
         self.isScaling = True
