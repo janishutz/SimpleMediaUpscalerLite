@@ -172,6 +172,9 @@ class Handler:
 
         # reassemble Video
         print( '\n\n==> Reassembling Video... with framerate @', self.framerate, '\n\n' )
+
+        time.wait( 2 )
+
         if self.os_type == 'linux':
             self.command = f'ffmpeg -framerate {self.framerate} -i {self.tmppath}{self.engineSetting[ "lastUsedFilePath" ]}/{self.engineSetting[ "fileNameBeginning" ]}%08d.{filetype} {output_path} -i {self.tmppath}audio.aac'
         elif self.os_type == 'win32':
