@@ -130,7 +130,7 @@ if __name__ == '__main__':
     ap.add_argument( '-d', '--details', help='Get details on usage of a particular engine and exit. Reads the config.json file of that engine and displays it in a HR manner' )
     ap.add_argument( '-p', '--printengines', help='Print all engines and exit', action='store_true' )
     ap.add_argument( '-v', '--version', help='Print version and exit', action='store_true' )
-    ap.set_defaults( scalefactor = 0, sharpening = 0, threads = 4, engine = 'fsr', filetype = 'png' )
+    ap.set_defaults( scalefactor = 0, sharpening = 0, threads = 4, engine = 'ffc', filetype = 'png' )
     args = ap.parse_args()
 
     handler = bin.handler.Handler()
