@@ -42,7 +42,7 @@ def performChecks ( args, ap ):
                     output = args.inputfile[ :len( args.inputfile ) - 4 ] + '_upscaled' + args.inputfile[ len( args.inputfile ) - 4: ]
 
                 # check if output file exists and if, prompt user if it should be overwritten and remove if, if yes
-                if ( os.path.exists( output ) ):
+                if ( os.path.exists( output ) and ( args.overwrite == None or args.overwrite == '' ) ):
                     doReplace = input( '--> File already exists. Do you want to replace it? (Y/n) ' ).lower()
                     if ( doReplace == 'y' or doReplace == '' ):
                         os.remove( output );
@@ -54,7 +54,7 @@ def performChecks ( args, ap ):
                 try:
                     engineInfo[ args.engine.lower() ]
                 except KeyError:
-                    print( '\n==> ERROR: Engine not available. Ensure you have specified a valid engine. Possible engines: ' )
+                    print( '\n==> ERROR: Engine ' + args.engine.lower() + ' not available. Ensure you have specified a valid engine. Possible engines: ' )
                     for entry in engineList:
                         print( '    --> ' + entry )
                     return False
@@ -72,7 +72,7 @@ def performChecks ( args, ap ):
                 # Check sharpening argument and also verify that engine supports it   
                 if ( args.sharpening != None and args.sharpening != 0 ):     
                     if ( float( args.sharpening ) >= 1.0 or float( args.sharpening ) <= 0.0 ):
-                        print( '\n==> ERROR: Invalid value for sharpening. Value has to be between 0 and 1' )
+                        print( '\n==> ERROR: Invalid value (' + args.sharpening + ') for sharpening. Value has to be between 0 and 1' )
                         return False
                     else:
                         if ( not 'sharpening' in engineInfo[ args.engine ][ 'supports' ] ):
@@ -133,6 +133,7 @@ if __name__ == '__main__':
     ap.add_argument( '-M', '--mode', help='Specify a special mode for a specific engine. Might not be available in every engine. Use the -d option to find out more' )
     ap.add_argument( '-F', '--filetype', help='Change the file type of the temporary image files. Supports png, jpg. Video quality: png > jpg. PNG is default, if not specified.' )
     ap.add_argument( '-d', '--details', help='Get details on usage of a particular engine and exit. Reads the config.json file of that engine and displays it in a HR manner' )
+    ap.add_argument( '-y', '--overwrite', help='Always overwrite output path and do not ask', action='store_true' )
     ap.add_argument( '-p', '--printengines', help='Print all engines and exit', action='store_true' )
     ap.add_argument( '-v', '--version', help='Print version and exit', action='store_true' )
     ap.set_defaults( scalefactor = 0, sharpening = 0, threads = 4, engine = 'ffc', filetype = 'png' )
@@ -155,5 +156,8 @@ if __name__ == '__main__':
                 if ( engineInfo[ args.engine ][ 'cliModeOptions' ][ option ][ 'default' ] ):
                     mode = option
                     break
+
         if ( handler.handler( args.inputfile, args.scalefactor, output, args.sharpening, args.filetype, args.engine, mode, args.threads ) ):
             print( '\n\n---------------------------------------------------------------------------------\n\nDONE \n\n\n\nSimpleMediaUpscalerLite V1.1.0\n\nCopyright 2023 SimpleMediaUpscalerLite contributors\nThis application comes with absolutely no warranty to the extent permitted by applicable law\n\n\n\nOutput was written to ' + output + '\n\n\n' )
+    else:
+        raise Exception( 'ERRORS in arguments' );

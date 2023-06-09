@@ -23,6 +23,7 @@ class Scaler:
                       
         os.system( self.command )
         print( '\n\n==>Photo upscaled' );
+        return True;
 
     def videoScaler ( self, tmppath, threads, scalefactor, sharpening, filetype, mode ):
         modes = { 'av3':'realesr-animevideov3', 'x4plus': 'realesrgan-x4plus-anime' }

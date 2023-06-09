@@ -1,6 +1,6 @@
 <template>
     <div class="about">
-        <img src="@/assets/logo.png">
+        <img src="@/assets/logo.png" style="height: 30vh;">
         <h1>About SimpleMediaUpscalerLite</h1>
         <p>SimpleMediaUpscalerLite is an application that allows you to upscale your videos and / or images. It uses an Electron GUI (Graphical User Interface) and a Python CLI (Command Line Interface).</p>
         <div class="version-info">

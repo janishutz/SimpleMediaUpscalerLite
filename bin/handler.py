@@ -86,10 +86,10 @@ class Handler:
         # Determining filetype
         if str(filepath)[len(filepath) - 4:] == '.mp4' or str(filepath)[len(filepath) - 4:] == '.mkv' or str(filepath)[len(filepath) - 4:] == '.MP4':
             print( '\n\n==> Upscaling video' )
-            self.video_scaling( filepath, output_path, scalefactor, threads, sharpening, filetype, mode, engine )
+            return self.video_scaling( filepath, output_path, scalefactor, threads, sharpening, filetype, mode, engine )
         elif str(filepath)[len(filepath) - 4:] == '.JPG' or str(filepath)[len(filepath) - 4:] == '.png' or str(filepath)[len(filepath) - 4:] == '.jpg' or str(filepath)[len(filepath) - 5:] == '.jpeg':
             print( '\n==> Upscaling Image' )
-            self.photo_scaling( filepath, output_path, scalefactor, sharpening, threads, engine, mode )
+            return self.photo_scaling( filepath, output_path, scalefactor, sharpening, threads, engine, mode )
         else:
             print('not supported')
             return False
