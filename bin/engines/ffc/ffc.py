@@ -54,13 +54,17 @@ class Scaler:
         if ( scalefactor == 0 or scalefactor == None ):
             self.isScaling = False
 
+        self.isSharpening = True
+        if sharpening != 0 and sharpening != None:
+            self.isSharpening = False
+
         # Locate Images and assemble FSR-Command
         self.file_list = []
         self.filelist = os.listdir( tmppath )
         self.filelist.pop(0)
         self.filelist.sort()
         self.number = 0
-        if sharpening != 0 and sharpening != None:
+        if self.isSharpening:
             for self.file in self.filelist:
                 self.number += 1
                 if ( self.os_type == 'win32' ):
@@ -116,14 +120,14 @@ class Scaler:
                 if ( i == self.threads - 1 ):
                     for element in self.file_list:
                         self.files += element;
-                self.command_list.append( ( self.files, scalefactor, i, self.maxlength, self.os_type, mode ) )
+                self.command_list.append( ( self.files, scalefactor, i, self.maxlength, self.os_type, mode, self.isSharpening ) )
 
             self.pool = multiprocessing.Pool( self.threads )
             self.pool.starmap( upscalerEngine, self.command_list );
             self.pool.close();
             self.pool.join();
 
-        if sharpening != 0 and sharpening != None:
+        if self.isSharpening:
             print( f'\n\n\n==> Sharpening using { self.threads } threads <==\n\n' );
             time.sleep( 2 );
 
@@ -179,7 +183,10 @@ class Scaler:
 
 # Add return values
 
-def upscalerEngine ( files, scalefactor, number, maxlength, os_type, version ):
+def upscalerEngine ( files, scalefactor, number, maxlength, os_type, version, isSharpening ):
+    comparison = 'sc'
+    if ( isSharpening ):
+        comparison = 'up'
     scaler = 'FSR'
     if ( version.upper() == 'HQC' ):
         scaler = 'HighQualityCubic'
@@ -193,7 +200,7 @@ def upscalerEngine ( files, scalefactor, number, maxlength, os_type, version ):
         while files[maxlength - pos:maxlength - pos + 1] != ' ':
             pos += 1
         file_processing = files[:maxlength - pos]
-        if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
+        if file_processing[len(file_processing) - 17:len(file_processing) - 15] != comparison:
             pos += 5
         else:
             pass
@@ -213,7 +220,7 @@ def upscalerEngine ( files, scalefactor, number, maxlength, os_type, version ):
                 while files[posy - pos:posy - pos + 1] != ' ':
                     pos += 1
                 file_processing = files[posx:posy - pos]
-                if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'ig':
+                if file_processing[len(file_processing) - 17:len(file_processing) - 15] != comparison:
                     pos += 5
                 while files[posy - pos:posy - pos + 1] != ' ':
                     pos += 1
@@ -239,7 +246,6 @@ def upscalerEngine ( files, scalefactor, number, maxlength, os_type, version ):
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
-        print( command_us );
         sub = subprocess.Popen( command_us, shell=True );
         sub.wait();        
         time.sleep(3)
@@ -262,7 +268,7 @@ def sharpeningEngine ( files, number, maxlength, os_type, sharpening, didUpscale
             pos += 1
         file_processing = files[:maxlength - pos]
         if ( didUpscale ):
-            if file_processing[len(file_processing) - 14:len(file_processing) - 12] == 'up':
+            if file_processing[len(file_processing) - 17:len(file_processing) - 15] == 'up':
                 pos += 5
         else:
             if file_processing[len(file_processing) - 17:len(file_processing) - 15] == 'ru':
@@ -314,7 +320,6 @@ def sharpeningEngine ( files, number, maxlength, os_type, sharpening, didUpscale
         else:
             print( 'OS CURRENTLY UNSUPPORTED!' )
             return False
-        print( command_sharpening );
         sub2 = subprocess.Popen( command_sharpening, shell=True );
         sub2.wait()
         time.sleep(3)
