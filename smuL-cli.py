@@ -108,6 +108,11 @@ def performChecks ( args, ap ):
                 print( '    --> ' + entry )
             print( '\n\n' )
     else:
+        try:
+            engineInfo[ args.details.lower() ]
+        except KeyError:
+            print( '\n\n ==> That engine does not exist. Please use the -p option to check for available engines!\n\n' )
+            return False
         print( '\n\n ==> INFOS about ' + engineInfo[ args.details.lower() ][ 'displayName' ] + '\n' )
         print( '   --> Engine cli option is: ' + engineInfo[ args.details ][ 'abbr' ].lower() )
         print( '   --> CLI mode options are: ' )
