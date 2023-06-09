@@ -1,5 +1,5 @@
 {
-    "abbr":"FSR",
+    "abbr":"ffc",
     "displayName":"FidelityFX_CLI",
     "lastUsedFilePath":"sc",
     "fileNameBeginning":"ig",
@@ -13,5 +13,5 @@
     "engineLink": "",
     "supports": [ "upscaling", "sharpening" ],
     "engineDownloadLink":"",
-    "filesToInclude": [ "fsr.py" ]
+    "filesToInclude": [ "ffc.py" ]
 }

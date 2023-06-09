@@ -54,7 +54,9 @@ def performChecks ( args, ap ):
                 try:
                     engineInfo[ args.engine.lower() ]
                 except KeyError:
-                    print( '\n==> ERROR: Engine not available. Ensure you have specified a valid engine' )
+                    print( '\n==> ERROR: Engine not available. Ensure you have specified a valid engine. Possible engines: ' )
+                    for entry in engineList:
+                        print( '    --> ' + entry )
                     return False
                 
                 # Check scalefactor argument and also verify that engine supports upscaling
@@ -103,7 +105,7 @@ def performChecks ( args, ap ):
         else:
             print( '\n\n==> Available engines <==\n' )
             for entry in engineList:
-                print( '--> ' + entry )
+                print( '    --> ' + entry )
             print( '\n\n' )
     else:
         print( '\n\n ==> INFOS about ' + engineInfo[ args.details.lower() ][ 'displayName' ] + '\n' )
