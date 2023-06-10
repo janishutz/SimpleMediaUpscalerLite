@@ -156,7 +156,7 @@ export default {
             let self = this;
 
             ipcRenderer.on( 'progress', function ( evt, message ) {
-                self.output += message;
+                self.output = message + self.output;
             });
 
             ipcRenderer.on( 'finish', function ( evt, message ) {

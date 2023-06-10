@@ -61,6 +61,7 @@ class UpscalingHandler {
         
         child.stderr.on( 'data', ( data ) => {
             console.error(`stderr: ${ data }`);
+            win.send( 'progress', '\n' + data );
         } );
         
         child.on( 'error', ( error ) => {
