@@ -102,9 +102,7 @@ V2.1.0:
 If you encounter any problems with this app, please don't hesitate to open an issue on GitHub.
 
 ## Known issues
-- Electron App is not available yet
 - Electron App shows that it is out of date if running in the development version
-- GTK version only runs on Linux
 
 # FAQ
 **Q: Can you add upscaling engine [upscaling engine here]?**
