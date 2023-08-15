@@ -24,6 +24,9 @@
 </div>
 smuL (pronounced like "small") is an Electron App with Python CLI to upscale images and videos using multiple different upscaling engines. 
 
+# Ongoing change: New CLI
+smuL's CLI is currently getting a complete overhaul and is being rewritten in Rust. Don't expect any more updates to the Python CLI.
+
 # Functionality
 This app allows you to upscale a single file or (in the future) a full on folder with one of many different engines that can be added as plugins.
 - Choose an input & output file from a GUI filemanager.
