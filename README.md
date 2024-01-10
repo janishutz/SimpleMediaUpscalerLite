@@ -22,7 +22,7 @@
     <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/SimpleMediaUpscalerLite.svg?label=Development Version">
     
 </div>
-smuL (pronounced like "small") is an Electron App with Python CLI to upscale images and videos using multiple different upscaling engines. 
+smuL (pronounced like "small") is an Electron App that can be used to upscale images and videos using multiple different upscaling engines. 
 
 # Ongoing change: 
 We are abandoning the CLI in favour of tighter integration with the frontend and to provide you with more information on the upscaling process.
