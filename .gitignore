@@ -1,20 +1,26 @@
-#
-#				SimpleMediaUpscalerLite - .gitignore
-#
-#	Created by Janis Hutz 05/24/2023, Licensed under the GPL V3 License
-#			https://janishutz.com, development@janishutz.com
-#
-#
-#
-
-# remove pycache
-__pycache__
-
-# remove node_modules from repo
+.DS_Store
 node_modules
+/dist
 
-# ignore build & dist folders
-build
-dist
 
-target
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+#Electron-builder output
+/dist_electron
