@@ -27,6 +27,8 @@ smuL (pronounced like "small") is an Electron App that can be used to upscale im
 # Ongoing change: 
 We are abandoning the CLI in favour of tighter integration with the frontend and to provide you with more information on the upscaling process.
 
+Please don't use Upstream for now
+
 WE ARE LOOKING TO ALSO SUPPORT MacOS IN THE FUTURE. IF YOU USE OR KNOW SOMEBODY THAT USES MacOS and who'd be willing to run smuL to test, please let us know through an issue or the [contact form on my website](https://janishutz.com/support/contact)
 
 # Functionality
