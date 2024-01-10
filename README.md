@@ -24,8 +24,10 @@
 </div>
 smuL (pronounced like "small") is an Electron App with Python CLI to upscale images and videos using multiple different upscaling engines. 
 
-# Ongoing change: New CLI
-smuL's CLI is currently getting a complete overhaul and is being rewritten in Rust. Don't expect any more updates to the Python CLI. If you are familiar with Rust, some help would be greatly appreciated, as I just started learning that programming language
+# Ongoing change: 
+We are abandoning the CLI in favour of tighter integration with the frontend and to provide you with more information on the upscaling process.
+
+WE ARE LOOKING TO ALSO SUPPORT MacOS IN THE FUTURE. IF YOU USE OR KNOW SOMEBODY THAT USES MacOS and who'd be willing to run smuL to test, please let us know through an issue or the [contact form on my website](https://janishutz.com/support/contact)
 
 # Functionality
 This app allows you to upscale a single file or (in the future) a full on folder with one of many different engines that can be added as plugins.
@@ -33,7 +35,7 @@ This app allows you to upscale a single file or (in the future) a full on folder
 - Set your own scaling multiplier
 - You may upscale Images (currently .png, .jpg and .jpeg) or Videos (currently .mp4 and .mkv)
 - Choose from one of many different upscaling algorithms.
-- Add plugins to add even more upscaling engines to it
+- Add plugins to add even more upscaling engines to it (will now have to be written in JS, see wiki for more info)
 
 ## Engines
 - AMD Fidelity FX Super Resolution
@@ -42,39 +44,9 @@ This app allows you to upscale a single file or (in the future) a full on folder
 - Real-ESGRAN
 - more to come!
 
-This App also features a CLI interface.
-```
-usage: SimpleMediaUpscalerLite-cli.py [-h] [-i INPUTFILE] [-o OUTPUTFILE] [-s SCALEFACTOR] [-S SHARPENING] [-T THREADS] [-E ENGINE] [-M MODE] [-F FILETYPE] [-d DETAILS] [-p] [-v]
-
-SimpleMediaUpscalerLite - CLI, a CLI application to upscale videos and images using different upscaling engines.
-
-options:
-  -h, --help            show this help message and exit
-  -i INPUTFILE, --inputfile INPUTFILE
-                        File path for the video / image to be upscaled
-  -o OUTPUTFILE, --outputfile OUTPUTFILE
-                        Output file path for the video / image that was upscaled
-  -s SCALEFACTOR, --scalefactor SCALEFACTOR
-                        Scale factor for the video / image. Can be a integer from -4 to 4
-  -S SHARPENING, --sharpening SHARPENING
-                        Sharpening factor (between 0 and 1 whereas 0 means no sharpening, 1 the most sharpening. Recommendation: Do not exceed 0.25, as it often looks bad)
-  -T THREADS, --threads THREADS
-                        Thread count to use. Cannot exceed CPU thread count. Scaling non-linear (using 2 threads is not exactly 2x the speed of 1 thread). Scales well with FSR, barely with
-                        Real-ESRGAN, as it uses mostly the GPU to upscale
-  -E ENGINE, --engine ENGINE
-                        Upscaling engine. By default can be fsr or ss. Use the -p option to see all installed engines
-  -M MODE, --mode MODE  Specify a special mode for a specific engine. Might not be available in every engine. Use the -d option to find out more
-  -F FILETYPE, --filetype FILETYPE
-                        Change the file type of the temporary image files. Supports png, jpg. Video quality: png > jpg. PNG is default, if not specified.
-  -d DETAILS, --details DETAILS
-                        Get details on usage of a particular engine and exit. Reads the config.json file of that engine and displays it in a HR manner
-  -p, --printengines    Print all engines and exit
-  -v, --version         Print version and exit
-```
-
 # Supported OS
 - Windows 10, 11 (officially)
-- Windows XP, Vista, 7, 8 (unofficially through python directly, may cause problems)
+- Windows XP, Vista, 7, 8 might or might not work
 - Any modern Linux distro with wine installed
 
 # Contributing
@@ -84,8 +56,8 @@ If you have any suggestions or features you'd like to have implemented, you may 
 --> We will add a linter that will then run on circleci to ensure code quality is high
 
 ### Current Contributers
-- simplePCBuilding (Maintainer) [Core (CLI), Docs, Website, Frontend, Linux packages]
-- ThatPlasma (Testing, Packager) [Testing]
+- simplePCBuilding (Maintainer) [Docs, Website, Frontend, Linux packages]
+- ThatPlasma (Testing) [Testing]
 
 
 # Roadmap
@@ -97,10 +69,10 @@ V2.0.0:
 - Refactor backend to add plugin support -- ✅
 
 V2.1.0:
-- Rewrite CLI in Rust to make it slightly faster and to remove Python from this project
+- Remove CLI and make tighter integration with GUI
 - Add more scaling engines (as plugins, currently planning on adding the mpv-player cli)
 - Expand Wiki to feature documentation on how to create a plugin and maybe add a project website
-- Show progress of scaling by guessing progress from output
+- Show progress of scaling
 
 # Issues
 If you encounter any problems with this app, please don't hesitate to open an issue on GitHub.
