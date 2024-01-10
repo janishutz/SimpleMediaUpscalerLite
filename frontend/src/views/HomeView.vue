@@ -34,9 +34,21 @@
                 <tr id="group3" class="group">
                     <td>
                         <button @click="runCommand( 'InputFile' )">Input file</button><br>
+                        <div v-if="upscaleSettings.InputFile[ 0 ]" id="inputCheck" @mouseenter="showElement( 'inputfile' )" @mouseleave="hideElement( 'inputfile' )">&#10004;</div>
+                        <div class="info-container">
+                            <div class="info" id="inputfile">
+                                {{ upscaleSettings.InputFile[ 0 ] }}
+                            </div>
+                        </div>
                     </td>
                     <td>
                         <button @click="runCommand( 'OutputFile' )">Output file</button><br>
+                        <div v-if="upscaleSettings.OutputFile" id="outputCheck" @mouseenter="showElement( 'outputfile' )" @mouseleave="hideElement( 'outputfile' )">&#10004;</div>
+                        <div class="info-container">
+                            <div class="info" id="outputfile">
+                                {{ upscaleSettings.OutputFile }}
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -144,7 +156,7 @@ export default {
             let self = this;
 
             ipcRenderer.on( 'progress', function ( evt, message ) {
-                self.output += message;
+                self.output = message + self.output;
             });
 
             ipcRenderer.on( 'finish', function ( evt, message ) {
@@ -176,12 +188,35 @@ export default {
             let fileExtension = this.upscaleSettings.InputFile[ 0 ].substring( this.upscaleSettings.InputFile[ 0 ].length - 4 );
             this.upscaleSettings.OutputFile = this.upscaleSettings.OutputFile.slice( 0, this.upscaleSettings.OutputFile[ 0 ].length - 5 ) + fileExtension;
             this.fixed = true;
+        },
+        showElement( element ) {
+            document.getElementById( element ).classList.add( 'shown' );
+        },
+        hideElement( element ) {
+            document.getElementById( element ).classList.remove( 'shown' );
         }
     },
 }
 </script>
 
 <style scoped>
+    .info-container {
+        position: relative;
+    }
+
+    .info {
+        display: none;
+        position: absolute;
+        background-color: var( --dialog-color );
+        padding: 2vw;
+        width: 20vw;
+        height: 20vh;
+        word-wrap: break-word;
+    }
+
+    .shown {
+        display: block;
+    }
     .table-container {
         width: 100%;
         display: flex;
@@ -198,6 +233,7 @@ export default {
         margin-top: 5vh;
         padding: 1vw 2vw;
         margin-bottom: 0;
+        cursor: pointer;
     }
 
     button {

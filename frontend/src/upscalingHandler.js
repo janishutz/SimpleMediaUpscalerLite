@@ -32,15 +32,25 @@ class UpscalingHandler {
         
         let args = []
         args.push( '-i' + options.InputFile );
-        args.push( '-o ' + options.OutputFile );
+        args.push( '-o' + options.OutputFile );
         
-        args.push( '-s ' + options.scale )
-        
+        if ( options.scale != 0 ) {
+            args.push( '-s' + options.scale );
+        }
+
+        if ( options.sharpening != 0 ) {
+            args.push( '-S' + options.sharpening );
+        }
+
+        args.push( '-M' + options.algorithm );
+        args.push( '-E' + options.engine );
         // add additional options
         // baseCommand +=  + ' -S ' + options.sharpening
         // baseCommand += ' -E ' + options.engine + ' -M ' + options.algorithm
 
         console.log( 'upscaling' );
+
+        console.log( args );
         
         let child = child_process.spawn( baseCommand, args );
         
@@ -51,6 +61,7 @@ class UpscalingHandler {
         
         child.stderr.on( 'data', ( data ) => {
             console.error(`stderr: ${ data }`);
+            win.send( 'progress', '\n' + data );
         } );
         
         child.on( 'error', ( error ) => {
