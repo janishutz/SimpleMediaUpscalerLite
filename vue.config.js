@@ -16,8 +16,8 @@ module.exports = {
         ],
         extraFiles: [
           {
-            from: "./lib",
-            to: "./",
+            from: "./config",
+            to: "./config",
             filter: [ "**/*" ]
           }
         ]
