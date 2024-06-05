@@ -1,5 +1,5 @@
 <div id="title" align="center">
-    <img src="./logo.png" width="300">
+    <img src="./assets/logo.png" width="300">
     <h1>SimpleMediaUpscalerLite</h1>
 </div>
 
@@ -20,8 +20,12 @@
     <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/downloads/simplePCBuilding/SimpleMediaUpscalerLite/latest/total?label=Downloads (latest)">
     <img src="https://img.shields.io/github/release/simplePCBuilding/SimpleMediaUpscalerLite.svg">
     <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/SimpleMediaUpscalerLite.svg?label=Development Version">
-    
 </div>
+
+<div id="donate" align="center">
+    <a href="https://store.janishutz.com/donate" target="_blank"><img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px"></a>
+</div>
+
 smuL (pronounced like "small") is an Electron App with Python CLI to upscale images and videos using multiple different upscaling engines. 
 
 # Functionality
