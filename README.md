@@ -26,6 +26,10 @@
     <a href="https://store.janishutz.com/donate" target="_blank"><img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px"></a>
 </div>
 
+# BIG REWRITE
+smuL is currently undergoing a BIG rewrite. The new version will be completely Electron-Based and will entirely drop the CLI interface, as all and more features will be available in GUI!
+
+
 smuL (pronounced like "small") is an Electron App with Python CLI to upscale images and videos using multiple different upscaling engines. 
 
 # Functionality
