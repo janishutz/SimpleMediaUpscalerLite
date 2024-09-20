@@ -95,3 +95,7 @@ A: Try out different engines (that's why we support so many) and try to use shar
 **Q: How can I support you?**
 
 A: You may contribute to this project by writing documentation, improving the website, adding plugins, fixing bugs, testing or by donating. 
+
+<div id="donate" align="center">
+    <a href="https://store.janishutz.com/donate" target="_blank"><img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px"></a>
+</div>
